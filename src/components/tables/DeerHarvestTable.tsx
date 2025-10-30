@@ -17,6 +17,32 @@ export function DeerHarvestTable() {
   
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
+
+  const visibleCategories = [
+    "All manners of take",
+    "2nd season rifle Antlered (Does not include PLO)",
+    "3rd season rifle Antlered (Does not include PLO)",
+    "4th  season rifle Antlered (Does not include PLO)",
+    "All Archery Seasons",
+    "Antlered Muzzleloader",
+    "Antlerless Muzzleloader"
+  ];
+
+  const allCategories = useMemo(() => {
+    const cats = new Set<string>();
+    data.forEach((row: any) => {
+      if (row.Category) cats.add(row.Category);
+    });
+    return Array.from(cats).sort((a, b) => {
+      const aIdx = visibleCategories.indexOf(a);
+      const bIdx = visibleCategories.indexOf(b);
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      if (aIdx !== -1) return -1;
+      if (bIdx !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [data]);
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
 
@@ -131,18 +157,24 @@ export function DeerHarvestTable() {
           <Label>Category</Label>
           <RadioGroup value={categoryFilter} onValueChange={setCategoryFilter}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="cat-all" />
-              <Label htmlFor="cat-all">All</Label>
+              <RadioGroupItem value="all" id="deer-cat-all" />
+              <Label htmlFor="deer-cat-all">All</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="High Country" id="cat-high" />
-              <Label htmlFor="cat-high">High Country</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Plains" id="cat-plains" />
-              <Label htmlFor="cat-plains">Plains</Label>
-            </div>
+            {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
+              <div key={idx} className="flex items-center space-x-2">
+                <RadioGroupItem value={cat} id={`deer-cat-${idx}`} />
+                <Label htmlFor={`deer-cat-${idx}`} className="text-xs">{cat}</Label>
+              </div>
+            ))}
           </RadioGroup>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full text-xs"
+            onClick={() => setShowMoreCategories(!showMoreCategories)}
+          >
+            {showMoreCategories ? 'Show Less' : 'More'}
+          </Button>
         </div>
 
         <Button 

@@ -17,6 +17,32 @@ export function ElkHarvestTable() {
   
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
+
+  const visibleCategories = [
+    "All manners of take",
+    "Antlered Second Rifle Seasons (No PLO or Either-sex tags included)",
+    "Antlered Third Rifle Seasons (No PLO or Either-sex tags included)",
+    "Antlered Fourth Rifle Seasons (No PLO or Either-sex tags included)",
+    "All Archery Seasons",
+    "Antlered Muzzleloader",
+    "Antlerless Muzzleloader"
+  ];
+
+  const allCategories = useMemo(() => {
+    const cats = new Set<string>();
+    data.forEach((row: any) => {
+      if (row.Category) cats.add(row.Category);
+    });
+    return Array.from(cats).sort((a, b) => {
+      const aIdx = visibleCategories.indexOf(a);
+      const bIdx = visibleCategories.indexOf(b);
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      if (aIdx !== -1) return -1;
+      if (bIdx !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [data]);
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
 
@@ -109,19 +135,21 @@ export function ElkHarvestTable() {
               <RadioGroupItem value="all" id="elk-cat-all" />
               <Label htmlFor="elk-cat-all">All</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery" id="elk-cat-arch" />
-              <Label htmlFor="elk-cat-arch">Archery</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Muzzleloader" id="elk-cat-muzz" />
-              <Label htmlFor="elk-cat-muzz">Muzzleloader</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Rifle" id="elk-cat-rifle" />
-              <Label htmlFor="elk-cat-rifle">Rifle</Label>
-            </div>
+            {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
+              <div key={idx} className="flex items-center space-x-2">
+                <RadioGroupItem value={cat} id={`elk-cat-${idx}`} />
+                <Label htmlFor={`elk-cat-${idx}`} className="text-xs">{cat}</Label>
+              </div>
+            ))}
           </RadioGroup>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full text-xs"
+            onClick={() => setShowMoreCategories(!showMoreCategories)}
+          >
+            {showMoreCategories ? 'Show Less' : 'More'}
+          </Button>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {

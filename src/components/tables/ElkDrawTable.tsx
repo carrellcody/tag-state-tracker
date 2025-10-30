@@ -22,12 +22,12 @@ export function ElkDrawTable() {
   const [sexFilter, setSexFilter] = useState('all');
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [hunterClass, setHunterClass] = useState('all');
+  const [hunterClass, setHunterClass] = useState('A_R');
   const [ploFilter, setPloFilter] = useState('all');
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(20);
-  const [showNoApplicants, setShowNoApplicants] = useState(true);
+  const [showNoApplicants, setShowNoApplicants] = useState('yes');
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -95,7 +95,7 @@ export function ElkDrawTable() {
       if (dol < minPoints || dol > maxPoints) return false;
       
       // No applicants filter
-      if (!showNoApplicants && row.NoApps === 'Yes') return false;
+      if (showNoApplicants === 'no' && row.NoApps === 'Yes') return false;
       
       return true;
     });
@@ -184,10 +184,6 @@ export function ElkDrawTable() {
         <div className="space-y-2">
           <Label>Hunter Class</Label>
           <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="elk-class-all" />
-              <Label htmlFor="elk-class-all">All</Label>
-            </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="A_R" id="elk-class-ar" />
               <Label htmlFor="elk-class-ar">Resident Adult</Label>
@@ -313,20 +309,23 @@ export function ElkDrawTable() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="elk-no-apps"
-            checked={showNoApplicants}
-            onChange={(e) => setShowNoApplicants(e.target.checked)}
-            className="rounded"
-          />
-          <Label htmlFor="elk-no-apps" className="cursor-pointer">Show tags with no applicants?</Label>
+        <div className="space-y-2">
+          <Label>Show tags with no applicants?</Label>
+          <RadioGroup value={showNoApplicants} onValueChange={setShowNoApplicants}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="elk-no-apps-yes" />
+              <Label htmlFor="elk-no-apps-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="elk-no-apps-no" />
+              <Label htmlFor="elk-no-apps-no">No</Label>
+            </div>
+          </RadioGroup>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
           setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
-          setHunterClass('all'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants(true);
+          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('yes');
         }}>Clear Filters</Button>
       </aside>
 
@@ -356,13 +355,18 @@ export function ElkDrawTable() {
                 const huntCode = row.Tag;
                 const pageNum = huntCodeMap[huntCode];
                 const pdfUrl = "https://cpw.widen.net/s/p2hln8gpxf/postdrawrecapreport_elk-25_05172025_0612";
-                const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
+                const harvestUnits = String(row.harvestunit || '').split(',').map(u => {
+                  const trimmed = u.trim();
+                  // Extract unit number (first part before space)
+                  const unitNum = trimmed.split(' ')[0];
+                  return unitNum;
+                }).filter(Boolean);
 
                 return (
                   <>
                     <tr key={idx} className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
                       {visibleColumns.map((col) => (
-                        <td key={col} className="border border-border p-2">
+                        <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
                           {col === 'Tag' ? (
                             <div className="flex items-center gap-2">
                               <span>{isExpanded ? '▼' : '▶'}</span>
@@ -372,6 +376,8 @@ export function ElkDrawTable() {
                                 </a>
                               ) : huntCode}
                             </div>
+                          ) : (col === 'Valid GMUs' || col === 'Notes') ? (
+                            <span title={row[col] || ''}>{row[col] || ''}</span>
                           ) : (row[col] || '')}
                         </td>
                       ))}

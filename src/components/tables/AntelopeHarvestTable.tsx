@@ -17,6 +17,30 @@ export function AntelopeHarvestTable() {
   
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
+  const [showMoreCategories, setShowMoreCategories] = useState(false);
+
+  const visibleCategories = [
+    "All manners of take",
+    "All Rifle Seasons",
+    "All Archery Seasons",
+    "All Muzzleloader Seasons",
+    "All Private Land Only Seasons",
+  ];
+
+  const allCategories = useMemo(() => {
+    const cats = new Set<string>();
+    data.forEach((row: any) => {
+      if (row.Category) cats.add(row.Category);
+    });
+    return Array.from(cats).sort((a, b) => {
+      const aIdx = visibleCategories.indexOf(a);
+      const bIdx = visibleCategories.indexOf(b);
+      if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+      if (aIdx !== -1) return -1;
+      if (bIdx !== -1) return 1;
+      return a.localeCompare(b);
+    });
+  }, [data]);
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
 
@@ -109,15 +133,21 @@ export function AntelopeHarvestTable() {
               <RadioGroupItem value="all" id="ant-cat-all" />
               <Label htmlFor="ant-cat-all">All</Label>
             </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Rifle" id="ant-cat-rifle" />
-              <Label htmlFor="ant-cat-rifle">Rifle</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery" id="ant-cat-arch" />
-              <Label htmlFor="ant-cat-arch">Archery</Label>
-            </div>
+            {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
+              <div key={idx} className="flex items-center space-x-2">
+                <RadioGroupItem value={cat} id={`ant-cat-${idx}`} />
+                <Label htmlFor={`ant-cat-${idx}`} className="text-xs">{cat}</Label>
+              </div>
+            ))}
           </RadioGroup>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="w-full text-xs"
+            onClick={() => setShowMoreCategories(!showMoreCategories)}
+          >
+            {showMoreCategories ? 'Show Less' : 'More'}
+          </Button>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {

@@ -22,12 +22,12 @@ export function AntelopeDrawTable() {
   const [sexFilter, setSexFilter] = useState('all');
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [hunterClass, setHunterClass] = useState('all');
+  const [hunterClass, setHunterClass] = useState('A_R');
   const [ploFilter, setPloFilter] = useState('all');
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(20);
-  const [showNoApplicants, setShowNoApplicants] = useState(true);
+  const [showNoApplicants, setShowNoApplicants] = useState('yes');
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -90,7 +90,7 @@ export function AntelopeDrawTable() {
       if (dol < minPoints || dol > maxPoints) return false;
       
       // No applicants filter
-      if (!showNoApplicants && row.NoApps === 'Yes') return false;
+      if (showNoApplicants === 'no' && row.NoApps === 'Yes') return false;
       
       return true;
     });
@@ -179,10 +179,6 @@ export function AntelopeDrawTable() {
         <div className="space-y-2">
           <Label>Hunter Class</Label>
           <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="ant-class-all" />
-              <Label htmlFor="ant-class-all">All</Label>
-            </div>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="A_R" id="ant-class-ar" />
               <Label htmlFor="ant-class-ar">Resident Adult</Label>
@@ -303,20 +299,23 @@ export function AntelopeDrawTable() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            id="ant-no-apps"
-            checked={showNoApplicants}
-            onChange={(e) => setShowNoApplicants(e.target.checked)}
-            className="rounded"
-          />
-          <Label htmlFor="ant-no-apps" className="cursor-pointer">Show tags with no applicants?</Label>
+        <div className="space-y-2">
+          <Label>Show tags with no applicants?</Label>
+          <RadioGroup value={showNoApplicants} onValueChange={setShowNoApplicants}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="ant-no-apps-yes" />
+              <Label htmlFor="ant-no-apps-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="ant-no-apps-no" />
+              <Label htmlFor="ant-no-apps-no">No</Label>
+            </div>
+          </RadioGroup>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
           setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
-          setHunterClass('all'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants(true);
+          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('yes');
         }}>Clear Filters</Button>
       </aside>
 
@@ -346,13 +345,18 @@ export function AntelopeDrawTable() {
                 const huntCode = row.Tag;
                 const pageNum = huntCodeMap[huntCode];
                 const pdfUrl = "https://cpw.widen.net/s/abcdefghi/postdrawrecapreport_antelope-25";
-                const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
+                const harvestUnits = String(row.harvestunit || '').split(',').map(u => {
+                  const trimmed = u.trim();
+                  // Extract unit number (first part before space)
+                  const unitNum = trimmed.split(' ')[0];
+                  return unitNum;
+                }).filter(Boolean);
 
                 return (
                   <>
                     <tr key={idx} className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
                       {visibleColumns.map((col) => (
-                        <td key={col} className="border border-border p-2">
+                        <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
                           {col === 'Tag' ? (
                             <div className="flex items-center gap-2">
                               <span>{isExpanded ? '▼' : '▶'}</span>
@@ -362,6 +366,8 @@ export function AntelopeDrawTable() {
                                 </a>
                               ) : huntCode}
                             </div>
+                          ) : (col === 'Valid GMUs' || col === 'Notes') ? (
+                            <span title={row[col] || ''}>{row[col] || ''}</span>
                           ) : (row[col] || '')}
                         </td>
                       ))}
