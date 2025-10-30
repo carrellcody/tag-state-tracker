@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,9 +20,21 @@ export function ElkDrawTable() {
   
   const [unitSearch, setUnitSearch] = useState('');
   const [sexFilter, setSexFilter] = useState('all');
-  const [weaponFilter, setWeaponFilter] = useState('all');
+  const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [maxDrawLevel, setMaxDrawLevel] = useState('');
+  const [hunterClass, setHunterClass] = useState('all');
+  const [ploFilter, setPloFilter] = useState('all');
+  const [rfwFilter, setRfwFilter] = useState('all');
+  const [minPoints, setMinPoints] = useState(0);
+  const [maxPoints, setMaxPoints] = useState(20);
+  const [showNoApplicants, setShowNoApplicants] = useState(true);
+
+  // Auto-hide RFW for non-residents
+  useEffect(() => {
+    if (hunterClass === 'A_NR' || hunterClass === 'Y_NR') {
+      setRfwFilter('none');
+    }
+  }, [hunterClass]);
 
   const huntCodeMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -44,12 +56,50 @@ export function ElkDrawTable() {
     return data.filter((row: any) => {
       if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
       if (sexFilter !== 'all' && row.Sex !== sexFilter) return false;
-      if (weaponFilter !== 'all' && row.Weapon !== weaponFilter) return false;
+      
+      // Season/Weapon filter (checkboxes)
+      if (!seasonWeapons.includes('Any')) {
+        const sw = row.SeasonWeapon || '';
+        const matchesFilter = seasonWeapons.some(filter => {
+          if (filter === 'A') return sw.includes('A');
+          if (filter === 'M') return sw.includes('M');
+          if (filter === 'O1R') return sw.includes('O1R');
+          if (filter === 'O2R') return sw.includes('O2R');
+          if (filter === 'O3R') return sw.includes('O3R');
+          if (filter === 'O4R') return sw.includes('O4R');
+          if (filter === 'E') return sw.includes('E');
+          if (filter === 'L') return sw.includes('L');
+          if (filter === 'Other') {
+            return !sw.includes('A') && !sw.includes('M') && !sw.includes('O1R') && !sw.includes('O2R') && !sw.includes('O3R') && !sw.includes('O4R') && !sw.includes('E') && !sw.includes('L');
+          }
+          return false;
+        });
+        if (!matchesFilter) return false;
+      }
+      
       if (minPublicLand && parseFloat(row.Public_Percent || 0) < parseFloat(minPublicLand)) return false;
-      if (maxDrawLevel && parseFloat(row.Drawn_out_level || 99) > parseFloat(maxDrawLevel)) return false;
+      
+      // Hunter Class filter
+      if (hunterClass !== 'all' && row.Class !== hunterClass) return false;
+      
+      // PLO filter
+      if (ploFilter === 'only' && row.PLO !== 'Yes') return false;
+      if (ploFilter === 'none' && row.PLO === 'Yes') return false;
+      
+      // RFW filter
+      if (rfwFilter === 'only' && row.RFW !== 'Yes') return false;
+      if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
+      
+      // Points sliders
+      const dol = parseFloat(row.Drawn_out_level || 0);
+      if (dol < minPoints || dol > maxPoints) return false;
+      
+      // No applicants filter
+      if (!showNoApplicants && row.NoApps === 'Yes') return false;
+      
       return true;
     });
-  }, [data, unitSearch, sexFilter, weaponFilter, minPublicLand, maxDrawLevel]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, minPublicLand, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;

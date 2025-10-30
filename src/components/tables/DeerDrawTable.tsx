@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -18,63 +18,94 @@ export function DeerDrawTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   
-  // Filters
   const [unitSearch, setUnitSearch] = useState('');
   const [sexFilter, setSexFilter] = useState('all');
-  const [weaponFilter, setWeaponFilter] = useState('all');
+  const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [maxDrawLevel, setMaxDrawLevel] = useState('');
+  const [hunterClass, setHunterClass] = useState('all');
+  const [ploFilter, setPloFilter] = useState('all');
+  const [rfwFilter, setRfwFilter] = useState('all');
+  const [minPoints, setMinPoints] = useState(0);
+  const [maxPoints, setMaxPoints] = useState(20);
+  const [showNoApplicants, setShowNoApplicants] = useState(true);
 
-  // Build hunt code to page mapping
+  // Auto-hide RFW for non-residents
+  useEffect(() => {
+    if (hunterClass === 'A_NR' || hunterClass === 'Y_NR') {
+      setRfwFilter('none');
+    }
+  }, [hunterClass]);
+
   const huntCodeMap = useMemo(() => {
     const map: Record<string, string> = {};
     codePages.forEach((row: any) => {
-      if (row.HuntCode && row.Page) {
-        map[row.HuntCode] = row.Page;
-      }
+      if (row.HuntCode && row.Page) map[row.HuntCode] = row.Page;
     });
     return map;
   }, [codePages]);
 
-  // Build harvest lookup by unit
   const harvestByUnit = useMemo(() => {
     const map: Record<string, any> = {};
     harvestData.forEach((row: any) => {
-      if (row.Unit) {
-        map[row.Unit] = row;
-      }
+      if (row.Unit) map[row.Unit] = row;
     });
     return map;
   }, [harvestData]);
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
-      if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) {
-        return false;
+      if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
+      if (sexFilter !== 'all' && row.Sex !== sexFilter) return false;
+      
+      // Season/Weapon filter (checkboxes)
+      if (!seasonWeapons.includes('Any')) {
+        const sw = row.SeasonWeapon || '';
+        const matchesFilter = seasonWeapons.some(filter => {
+          if (filter === 'A') return sw.includes('A');
+          if (filter === 'M') return sw.includes('M');
+          if (filter === 'O1R') return sw.includes('O1R');
+          if (filter === 'O2R') return sw.includes('O2R');
+          if (filter === 'O3R') return sw.includes('O3R');
+          if (filter === 'O4R') return sw.includes('O4R');
+          if (filter === 'E') return sw.includes('E');
+          if (filter === 'L') return sw.includes('L');
+          if (filter === 'Other') {
+            return !sw.includes('A') && !sw.includes('M') && !sw.includes('O1R') && !sw.includes('O2R') && !sw.includes('O3R') && !sw.includes('O4R') && !sw.includes('E') && !sw.includes('L');
+          }
+          return false;
+        });
+        if (!matchesFilter) return false;
       }
-      if (sexFilter !== 'all' && row.Sex !== sexFilter) {
-        return false;
-      }
-      if (weaponFilter !== 'all' && row.Weapon !== weaponFilter) {
-        return false;
-      }
-      if (minPublicLand && parseFloat(row.Public_Percent || 0) < parseFloat(minPublicLand)) {
-        return false;
-      }
-      if (maxDrawLevel && parseFloat(row.Drawn_out_level || 99) > parseFloat(maxDrawLevel)) {
-        return false;
-      }
+      
+      if (minPublicLand && parseFloat(row.Public_Percent || 0) < parseFloat(minPublicLand)) return false;
+      
+      // Hunter Class filter
+      if (hunterClass !== 'all' && row.Class !== hunterClass) return false;
+      
+      // PLO filter
+      if (ploFilter === 'only' && row.PLO !== 'Yes') return false;
+      if (ploFilter === 'none' && row.PLO === 'Yes') return false;
+      
+      // RFW filter
+      if (rfwFilter === 'only' && row.RFW !== 'Yes') return false;
+      if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
+      
+      // Points sliders
+      const dol = parseFloat(row.Drawn_out_level || 0);
+      if (dol < minPoints || dol > maxPoints) return false;
+      
+      // No applicants filter
+      if (!showNoApplicants && row.NoApps === 'Yes') return false;
+      
       return true;
     });
-  }, [data, unitSearch, sexFilter, weaponFilter, minPublicLand, maxDrawLevel]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, minPublicLand, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
-    
     return [...filteredData].sort((a: any, b: any) => {
       const aVal = a[sortColumn];
       const bVal = b[sortColumn];
-      
       const aNum = parseFloat(aVal);
       const bNum = parseFloat(bVal);
       
@@ -84,7 +115,6 @@ export function DeerDrawTable() {
       
       const aStr = String(aVal || '').toLowerCase();
       const bStr = String(bVal || '').toLowerCase();
-      
       if (aStr < bStr) return sortDirection === 'asc' ? -1 : 1;
       if (aStr > bStr) return sortDirection === 'asc' ? 1 : -1;
       return 0;
@@ -128,98 +158,181 @@ export function DeerDrawTable() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
-      {/* Sidebar Filters */}
       <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
         <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
           <Label>Search Units</Label>
-          <Input
-            placeholder="e.g. 201"
-            value={unitSearch}
-            onChange={(e) => setUnitSearch(e.target.value)}
-          />
+          <Input placeholder="e.g. 201" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
         </div>
 
         <div className="space-y-2">
           <Label>Min Public Land %</Label>
-          <Input
-            type="number"
-            placeholder="e.g. 50"
-            value={minPublicLand}
-            onChange={(e) => setMinPublicLand(e.target.value)}
-          />
+          <Input type="number" placeholder="e.g. 50" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
         </div>
 
         <div className="space-y-2">
-          <Label>Max Draw Level</Label>
-          <Input
-            type="number"
-            placeholder="e.g. 5"
-            value={maxDrawLevel}
-            onChange={(e) => setMaxDrawLevel(e.target.value)}
-          />
+          <Label>Minimum Preference Points: {minPoints}</Label>
+          <input type="range" min="0" max="20" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
         </div>
+
+        <div className="space-y-2">
+          <Label>Maximum Preference Points: {maxPoints}</Label>
+          <input type="range" min="0" max="20" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Hunter Class</Label>
+          <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="deer-class-all" />
+              <Label htmlFor="deer-class-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_R" id="deer-class-ar" />
+              <Label htmlFor="deer-class-ar">Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_NR" id="deer-class-anr" />
+              <Label htmlFor="deer-class-anr">Non-Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_R" id="deer-class-yr" />
+              <Label htmlFor="deer-class-yr">Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_NR" id="deer-class-ynr" />
+              <Label htmlFor="deer-class-ynr">Non-Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_U" id="deer-class-lu" />
+              <Label htmlFor="deer-class-lu">Landowner Unrestricted</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_R" id="deer-class-lr" />
+              <Label htmlFor="deer-class-lr">Landowner Restricted</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        <div className="space-y-2">
+          <Label>PLO Tags</Label>
+          <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="deer-plo-all" />
+              <Label htmlFor="deer-plo-all">Show all tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="only" id="deer-plo-only" />
+              <Label htmlFor="deer-plo-only">Show only PLO tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="deer-plo-none" />
+              <Label htmlFor="deer-plo-none">Don't show PLO tags</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {hunterClass !== 'A_NR' && hunterClass !== 'Y_NR' && (
+          <div className="space-y-2">
+            <Label>RFW Tags</Label>
+            <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="deer-rfw-all" />
+                <Label htmlFor="deer-rfw-all">Show all tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="only" id="deer-rfw-only" />
+                <Label htmlFor="deer-rfw-only">Show only RFW tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="deer-rfw-none" />
+                <Label htmlFor="deer-rfw-none">Don't show RFW tags</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>Sex</Label>
           <RadioGroup value={sexFilter} onValueChange={setSexFilter}>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="sex-all" />
-              <Label htmlFor="sex-all">All</Label>
+              <RadioGroupItem value="all" id="deer-sex-all" />
+              <Label htmlFor="deer-sex-all">All</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Either" id="sex-either" />
-              <Label htmlFor="sex-either">Either</Label>
+              <RadioGroupItem value="Either" id="deer-sex-either" />
+              <Label htmlFor="deer-sex-either">Either</Label>
             </div>
             <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Male" id="sex-male" />
-              <Label htmlFor="sex-male">Male</Label>
+              <RadioGroupItem value="Male" id="deer-sex-male" />
+              <Label htmlFor="deer-sex-male">Male</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Female" id="deer-sex-female" />
+              <Label htmlFor="deer-sex-female">Female</Label>
             </div>
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
-          <Label>Weapon</Label>
-          <RadioGroup value={weaponFilter} onValueChange={setWeaponFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="weapon-all" />
-              <Label htmlFor="weapon-all">All</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Rifle" id="weapon-rifle" />
-              <Label htmlFor="weapon-rifle">Rifle</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Muzzleloader" id="weapon-muzz" />
-              <Label htmlFor="weapon-muzz">Muzzleloader</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery" id="weapon-arch" />
-              <Label htmlFor="weapon-arch">Archery</Label>
-            </div>
-          </RadioGroup>
+          <Label>Weapon/Season</Label>
+          <div className="space-y-1">
+            {[
+              { value: 'A', label: 'Archery' },
+              { value: 'M', label: 'Muzzleloader' },
+              { value: 'O1R', label: 'First Rifle' },
+              { value: 'O2R', label: 'Second Rifle' },
+              { value: 'O3R', label: 'Third Rifle' },
+              { value: 'O4R', label: 'Fourth Rifle' },
+              { value: 'E', label: 'Early Rifle' },
+              { value: 'L', label: 'Late Rifle' },
+              { value: 'Other', label: 'Other' },
+              { value: 'Any', label: 'Any' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={`deer-season-${value}`}
+                  checked={seasonWeapons.includes(value)}
+                  onChange={(e) => {
+                    if (value === 'Any') {
+                      setSeasonWeapons(e.target.checked ? ['Any'] : []);
+                    } else {
+                      const newSeasons = e.target.checked
+                        ? [...seasonWeapons.filter(s => s !== 'Any'), value]
+                        : seasonWeapons.filter(s => s !== value);
+                      setSeasonWeapons(newSeasons.length === 0 ? ['Any'] : newSeasons);
+                    }
+                  }}
+                  className="rounded"
+                />
+                <Label htmlFor={`deer-season-${value}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <Button 
-          variant="outline" 
-          className="w-full"
-          onClick={() => {
-            setUnitSearch('');
-            setSexFilter('all');
-            setWeaponFilter('all');
-            setMinPublicLand('');
-            setMaxDrawLevel('');
-          }}
-        >
-          Clear Filters
-        </Button>
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="deer-no-apps"
+            checked={showNoApplicants}
+            onChange={(e) => setShowNoApplicants(e.target.checked)}
+            className="rounded"
+          />
+          <Label htmlFor="deer-no-apps" className="cursor-pointer">Show tags with no applicants?</Label>
+        </div>
+
+        <Button variant="outline" className="w-full" onClick={() => {
+          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
+          setHunterClass('all'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants(true);
+        }}>Clear Filters</Button>
       </aside>
 
-      {/* Main Table */}
       <main className="flex-1 overflow-auto">
         <div className="mb-4 flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">{sortedData.length} tags match your criteria</p>
+          <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
         </div>
 
@@ -228,16 +341,10 @@ export function DeerDrawTable() {
             <thead className="sticky top-0 bg-secondary z-10">
               <tr>
                 {visibleColumns.map((col) => (
-                  <th
-                    key={col}
-                    className="border border-border p-2 text-left cursor-pointer hover:bg-secondary-hover"
-                    onClick={() => handleSort(col)}
-                  >
+                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-secondary-hover" onClick={() => handleSort(col)}>
                     <div className="flex items-center gap-1">
                       {headerLabels[col] || col}
-                      {sortColumn === col && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
+                      {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
                     </div>
                   </th>
                 ))}
@@ -260,22 +367,12 @@ export function DeerDrawTable() {
                             <div className="flex items-center gap-2">
                               <span>{isExpanded ? '▼' : '▶'}</span>
                               {pageNum ? (
-                                <a
-                                  href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-primary hover:underline"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
+                                <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
                                   {huntCode}
                                 </a>
-                              ) : (
-                                huntCode
-                              )}
+                              ) : huntCode}
                             </div>
-                          ) : (
-                            row[col] || ''
-                          )}
+                          ) : (row[col] || '')}
                         </td>
                       ))}
                     </tr>
@@ -321,20 +418,8 @@ export function DeerDrawTable() {
         </div>
 
         <div className="mt-4 flex justify-center gap-2">
-          <Button
-            variant="outline"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Next
-          </Button>
+          <Button variant="outline" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
+          <Button variant="outline" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
         </div>
       </main>
     </div>

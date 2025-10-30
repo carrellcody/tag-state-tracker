@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -20,9 +20,21 @@ export function AntelopeDrawTable() {
   
   const [unitSearch, setUnitSearch] = useState('');
   const [sexFilter, setSexFilter] = useState('all');
-  const [weaponFilter, setWeaponFilter] = useState('all');
+  const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [maxDrawLevel, setMaxDrawLevel] = useState('');
+  const [hunterClass, setHunterClass] = useState('all');
+  const [ploFilter, setPloFilter] = useState('all');
+  const [rfwFilter, setRfwFilter] = useState('all');
+  const [minPoints, setMinPoints] = useState(0);
+  const [maxPoints, setMaxPoints] = useState(20);
+  const [showNoApplicants, setShowNoApplicants] = useState(true);
+
+  // Auto-hide RFW for non-residents
+  useEffect(() => {
+    if (hunterClass === 'A_NR' || hunterClass === 'Y_NR') {
+      setRfwFilter('none');
+    }
+  }, [hunterClass]);
 
   const huntCodeMap = useMemo(() => {
     const map: Record<string, string> = {};
@@ -44,12 +56,45 @@ export function AntelopeDrawTable() {
     return data.filter((row: any) => {
       if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
       if (sexFilter !== 'all' && row.Sex !== sexFilter) return false;
-      if (weaponFilter !== 'all' && row.Weapon !== weaponFilter) return false;
+      
+      // Season/Weapon filter (checkboxes) - Antelope version
+      if (!seasonWeapons.includes('Any')) {
+        const sw = row.SeasonWeapon || '';
+        const matchesFilter = seasonWeapons.some(filter => {
+          if (filter === 'A') return sw.includes('A');
+          if (filter === 'M') return sw.includes('M');
+          if (filter === 'R') return sw.includes('R');
+          if (filter === 'Other') {
+            return !sw.includes('A') && !sw.includes('M') && !sw.includes('R');
+          }
+          return false;
+        });
+        if (!matchesFilter) return false;
+      }
+      
       if (minPublicLand && parseFloat(row.Public_Percent || 0) < parseFloat(minPublicLand)) return false;
-      if (maxDrawLevel && parseFloat(row.Drawn_out_level || 99) > parseFloat(maxDrawLevel)) return false;
+      
+      // Hunter Class filter
+      if (hunterClass !== 'all' && row.Class !== hunterClass) return false;
+      
+      // PLO filter
+      if (ploFilter === 'only' && row.PLO !== 'Yes') return false;
+      if (ploFilter === 'none' && row.PLO === 'Yes') return false;
+      
+      // RFW filter
+      if (rfwFilter === 'only' && row.RFW !== 'Yes') return false;
+      if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
+      
+      // Points sliders
+      const dol = parseFloat(row.Drawn_out_level || 0);
+      if (dol < minPoints || dol > maxPoints) return false;
+      
+      // No applicants filter
+      if (!showNoApplicants && row.NoApps === 'Yes') return false;
+      
       return true;
     });
-  }, [data, unitSearch, sexFilter, weaponFilter, minPublicLand, maxDrawLevel]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, minPublicLand, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -122,9 +167,86 @@ export function AntelopeDrawTable() {
         </div>
 
         <div className="space-y-2">
-          <Label>Max Draw Level</Label>
-          <Input type="number" placeholder="e.g. 3" value={maxDrawLevel} onChange={(e) => setMaxDrawLevel(e.target.value)} />
+          <Label>Minimum Preference Points: {minPoints}</Label>
+          <input type="range" min="0" max="20" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
         </div>
+
+        <div className="space-y-2">
+          <Label>Maximum Preference Points: {maxPoints}</Label>
+          <input type="range" min="0" max="20" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Hunter Class</Label>
+          <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="ant-class-all" />
+              <Label htmlFor="ant-class-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_R" id="ant-class-ar" />
+              <Label htmlFor="ant-class-ar">Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_NR" id="ant-class-anr" />
+              <Label htmlFor="ant-class-anr">Non-Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_R" id="ant-class-yr" />
+              <Label htmlFor="ant-class-yr">Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_NR" id="ant-class-ynr" />
+              <Label htmlFor="ant-class-ynr">Non-Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_U" id="ant-class-lu" />
+              <Label htmlFor="ant-class-lu">Landowner Unrestricted</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_R" id="ant-class-lr" />
+              <Label htmlFor="ant-class-lr">Landowner Restricted</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        <div className="space-y-2">
+          <Label>PLO Tags</Label>
+          <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="ant-plo-all" />
+              <Label htmlFor="ant-plo-all">Show all tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="only" id="ant-plo-only" />
+              <Label htmlFor="ant-plo-only">Show only PLO tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="ant-plo-none" />
+              <Label htmlFor="ant-plo-none">Don't show PLO tags</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {hunterClass !== 'A_NR' && hunterClass !== 'Y_NR' && (
+          <div className="space-y-2">
+            <Label>RFW Tags</Label>
+            <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="ant-rfw-all" />
+                <Label htmlFor="ant-rfw-all">Show all tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="only" id="ant-rfw-only" />
+                <Label htmlFor="ant-rfw-only">Show only RFW tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="ant-rfw-none" />
+                <Label htmlFor="ant-rfw-none">Don't show RFW tags</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>Sex</Label>
@@ -141,33 +263,60 @@ export function AntelopeDrawTable() {
               <RadioGroupItem value="Male" id="ant-sex-male" />
               <Label htmlFor="ant-sex-male">Male</Label>
             </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Female" id="ant-sex-female" />
+              <Label htmlFor="ant-sex-female">Female</Label>
+            </div>
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
-          <Label>Weapon</Label>
-          <RadioGroup value={weaponFilter} onValueChange={setWeaponFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="ant-weapon-all" />
-              <Label htmlFor="ant-weapon-all">All</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Rifle" id="ant-weapon-rifle" />
-              <Label htmlFor="ant-weapon-rifle">Rifle</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Muzzleloader" id="ant-weapon-muzz" />
-              <Label htmlFor="ant-weapon-muzz">Muzzleloader</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery" id="ant-weapon-arch" />
-              <Label htmlFor="ant-weapon-arch">Archery</Label>
-            </div>
-          </RadioGroup>
+          <Label>Weapon/Season</Label>
+          <div className="space-y-1">
+            {[
+              { value: 'A', label: 'Archery' },
+              { value: 'M', label: 'Muzzleloader' },
+              { value: 'R', label: 'Rifle' },
+              { value: 'Other', label: 'Other' },
+              { value: 'Any', label: 'Any' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={`ant-season-${value}`}
+                  checked={seasonWeapons.includes(value)}
+                  onChange={(e) => {
+                    if (value === 'Any') {
+                      setSeasonWeapons(e.target.checked ? ['Any'] : []);
+                    } else {
+                      const newSeasons = e.target.checked
+                        ? [...seasonWeapons.filter(s => s !== 'Any'), value]
+                        : seasonWeapons.filter(s => s !== value);
+                      setSeasonWeapons(newSeasons.length === 0 ? ['Any'] : newSeasons);
+                    }
+                  }}
+                  className="rounded"
+                />
+                <Label htmlFor={`ant-season-${value}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="ant-no-apps"
+            checked={showNoApplicants}
+            onChange={(e) => setShowNoApplicants(e.target.checked)}
+            className="rounded"
+          />
+          <Label htmlFor="ant-no-apps" className="cursor-pointer">Show tags with no applicants?</Label>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setSexFilter('all'); setWeaponFilter('all'); setMinPublicLand(''); setMaxDrawLevel('');
+          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
+          setHunterClass('all'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants(true);
         }}>Clear Filters</Button>
       </aside>
 
