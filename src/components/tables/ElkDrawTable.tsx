@@ -172,9 +172,86 @@ export function ElkDrawTable() {
         </div>
 
         <div className="space-y-2">
-          <Label>Max Draw Level</Label>
-          <Input type="number" placeholder="e.g. 5" value={maxDrawLevel} onChange={(e) => setMaxDrawLevel(e.target.value)} />
+          <Label>Minimum Preference Points: {minPoints}</Label>
+          <input type="range" min="0" max="20" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
         </div>
+
+        <div className="space-y-2">
+          <Label>Maximum Preference Points: {maxPoints}</Label>
+          <input type="range" min="0" max="20" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
+        </div>
+
+        <div className="space-y-2">
+          <Label>Hunter Class</Label>
+          <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="elk-class-all" />
+              <Label htmlFor="elk-class-all">All</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_R" id="elk-class-ar" />
+              <Label htmlFor="elk-class-ar">Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="A_NR" id="elk-class-anr" />
+              <Label htmlFor="elk-class-anr">Non-Resident Adult</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_R" id="elk-class-yr" />
+              <Label htmlFor="elk-class-yr">Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Y_NR" id="elk-class-ynr" />
+              <Label htmlFor="elk-class-ynr">Non-Resident Youth</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_U" id="elk-class-lu" />
+              <Label htmlFor="elk-class-lu">Landowner Unrestricted</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="L_R" id="elk-class-lr" />
+              <Label htmlFor="elk-class-lr">Landowner Restricted</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        <div className="space-y-2">
+          <Label>PLO Tags</Label>
+          <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="elk-plo-all" />
+              <Label htmlFor="elk-plo-all">Show all tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="only" id="elk-plo-only" />
+              <Label htmlFor="elk-plo-only">Show only PLO tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="elk-plo-none" />
+              <Label htmlFor="elk-plo-none">Don't show PLO tags</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {hunterClass !== 'A_NR' && hunterClass !== 'Y_NR' && (
+          <div className="space-y-2">
+            <Label>RFW Tags</Label>
+            <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="elk-rfw-all" />
+                <Label htmlFor="elk-rfw-all">Show all tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="only" id="elk-rfw-only" />
+                <Label htmlFor="elk-rfw-only">Show only RFW tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="elk-rfw-none" />
+                <Label htmlFor="elk-rfw-none">Don't show RFW tags</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>Sex</Label>
@@ -191,33 +268,65 @@ export function ElkDrawTable() {
               <RadioGroupItem value="Male" id="elk-sex-male" />
               <Label htmlFor="elk-sex-male">Male</Label>
             </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="Female" id="elk-sex-female" />
+              <Label htmlFor="elk-sex-female">Female</Label>
+            </div>
           </RadioGroup>
         </div>
 
         <div className="space-y-2">
-          <Label>Weapon</Label>
-          <RadioGroup value={weaponFilter} onValueChange={setWeaponFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="elk-weapon-all" />
-              <Label htmlFor="elk-weapon-all">All</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Rifle" id="elk-weapon-rifle" />
-              <Label htmlFor="elk-weapon-rifle">Rifle</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Muzzleloader" id="elk-weapon-muzz" />
-              <Label htmlFor="elk-weapon-muzz">Muzzleloader</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery" id="elk-weapon-arch" />
-              <Label htmlFor="elk-weapon-arch">Archery</Label>
-            </div>
-          </RadioGroup>
+          <Label>Weapon/Season</Label>
+          <div className="space-y-1">
+            {[
+              { value: 'A', label: 'Archery' },
+              { value: 'M', label: 'Muzzleloader' },
+              { value: 'O1R', label: 'First Rifle' },
+              { value: 'O2R', label: 'Second Rifle' },
+              { value: 'O3R', label: 'Third Rifle' },
+              { value: 'O4R', label: 'Fourth Rifle' },
+              { value: 'E', label: 'Early Rifle' },
+              { value: 'L', label: 'Late Rifle' },
+              { value: 'Other', label: 'Other' },
+              { value: 'Any', label: 'Any' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={`elk-season-${value}`}
+                  checked={seasonWeapons.includes(value)}
+                  onChange={(e) => {
+                    if (value === 'Any') {
+                      setSeasonWeapons(e.target.checked ? ['Any'] : []);
+                    } else {
+                      const newSeasons = e.target.checked
+                        ? [...seasonWeapons.filter(s => s !== 'Any'), value]
+                        : seasonWeapons.filter(s => s !== value);
+                      setSeasonWeapons(newSeasons.length === 0 ? ['Any'] : newSeasons);
+                    }
+                  }}
+                  className="rounded"
+                />
+                <Label htmlFor={`elk-season-${value}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="elk-no-apps"
+            checked={showNoApplicants}
+            onChange={(e) => setShowNoApplicants(e.target.checked)}
+            className="rounded"
+          />
+          <Label htmlFor="elk-no-apps" className="cursor-pointer">Show tags with no applicants?</Label>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setSexFilter('all'); setWeaponFilter('all'); setMinPublicLand(''); setMaxDrawLevel('');
+          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
+          setHunterClass('all'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants(true);
         }}>Clear Filters</Button>
       </aside>
 
