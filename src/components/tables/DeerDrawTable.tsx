@@ -55,7 +55,11 @@ export function DeerDrawTable() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
-      if (sexFilter !== 'all' && row.Sex !== sexFilter) return false;
+      
+      if (sexFilter !== 'all') {
+        const sexMap: Record<string, string> = { 'Either': 'E', 'Male': 'M', 'Female': 'F' };
+        if (row.Sex !== sexMap[sexFilter]) return false;
+      }
       
       // Season/Weapon filter (checkboxes)
       if (!seasonWeapons.includes('Any')) {
