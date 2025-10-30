@@ -27,7 +27,7 @@ export function AntelopeDrawTable() {
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(20);
-  const [showNoApplicants, setShowNoApplicants] = useState('yes');
+  const [showNoApplicants, setShowNoApplicants] = useState('no');
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -315,7 +315,7 @@ export function AntelopeDrawTable() {
 
         <Button variant="outline" className="w-full" onClick={() => {
           setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
-          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('yes');
+          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('no');
         }}>Clear Filters</Button>
       </aside>
 
@@ -392,7 +392,15 @@ export function AntelopeDrawTable() {
                                 if (!harvestRow) return null;
                                 return (
                                   <tr key={unit}>
-                                    <td className="border p-1">{harvestRow.Unit}</td>
+                                    <td className="border p-1">
+                                      {harvestRow.onx ? (
+                                        <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                          {harvestRow.Unit}
+                                        </a>
+                                      ) : (
+                                        harvestRow.Unit
+                                      )}
+                                    </td>
                                     <td className="border p-1">{harvestRow.Bucks}</td>
                                     <td className="border p-1">{harvestRow.Antlerless}</td>
                                     <td className="border p-1">{harvestRow['Total Hunters']}</td>

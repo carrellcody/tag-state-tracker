@@ -48,6 +48,7 @@ export function ElkHarvestTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (row.Category === 'NA') return false;
       if (unitSearch && !row.Unit?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
       if (categoryFilter !== 'all' && row.Category !== categoryFilter) return false;
       if (minSuccessRate && parseFloat(row['Percent Success'] || 0) < parseFloat(minSuccessRate)) return false;
@@ -181,7 +182,15 @@ export function ElkHarvestTable() {
               {paginatedData.map((row: any, idx: number) => (
                 <tr key={idx} className="hover:bg-accent">
                   {visibleColumns.map((col) => (
-                    <td key={col} className="border border-border p-2">{row[col] || ''}</td>
+                    <td key={col} className="border border-border p-2">
+                      {col === 'Unit' && row.onx ? (
+                        <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                          {row[col] || ''}
+                        </a>
+                      ) : (
+                        row[col] || ''
+                      )}
+                    </td>
                   ))}
                 </tr>
               ))}
