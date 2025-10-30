@@ -54,7 +54,10 @@ export function ElkDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
-      if (unitSearch && !row['Valid GMUs']?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
+      if (unitSearch) {
+        const units = String(row['Valid GMUs'] || '').split(',').map(u => u.trim());
+        if (!units.some(unit => unit === unitSearch)) return false;
+      }
       
       if (sexFilter !== 'all') {
         const sexMap: Record<string, string> = { 'Either': 'E', 'Male': 'M', 'Female': 'F' };
