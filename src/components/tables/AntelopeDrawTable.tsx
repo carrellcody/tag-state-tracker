@@ -21,7 +21,6 @@ export function AntelopeDrawTable() {
   const [unitSearch, setUnitSearch] = useState('');
   const [sexFilter, setSexFilter] = useState('all');
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
-  const [minPublicLand, setMinPublicLand] = useState('');
   const [hunterClass, setHunterClass] = useState('A_R');
   const [ploFilter, setPloFilter] = useState('all');
   const [rfwFilter, setRfwFilter] = useState('all');
@@ -79,8 +78,6 @@ export function AntelopeDrawTable() {
         if (!matchesFilter) return false;
       }
       
-      if (minPublicLand && parseFloat(row.Public_Percent || 0) < parseFloat(minPublicLand)) return false;
-      
       // Hunter Class filter
       if (hunterClass !== 'all' && row.Class !== hunterClass) return false;
       
@@ -101,7 +98,7 @@ export function AntelopeDrawTable() {
       
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, minPublicLand, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -166,11 +163,6 @@ export function AntelopeDrawTable() {
         <div className="space-y-2">
           <Label>Search Units</Label>
           <Input placeholder="e.g. 3" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
-        </div>
-
-        <div className="space-y-2">
-          <Label>Min Public Land %</Label>
-          <Input type="number" placeholder="e.g. 50" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
         </div>
 
         <div className="space-y-2">
@@ -321,7 +313,7 @@ export function AntelopeDrawTable() {
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); setMinPublicLand(''); 
+          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); 
           setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('no');
         }}>Clear Filters</Button>
       </aside>
