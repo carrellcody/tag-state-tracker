@@ -54,8 +54,9 @@ export function AntelopeDrawTable() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (unitSearch) {
+        const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
         const units = String(row['Valid GMUs'] || '').split(',').map(u => u.trim());
-        if (!units.some(unit => unit === unitSearch)) return false;
+        if (!searchTerms.some(term => units.some(unit => unit === term))) return false;
       }
       
       if (sexFilter !== 'all') {
@@ -162,7 +163,7 @@ export function AntelopeDrawTable() {
         
         <div className="space-y-2">
           <Label>Search Units</Label>
-          <Input placeholder="e.g. 3" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
+          <Input placeholder="e.g. 3, 5, 10" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
         </div>
 
         <div className="space-y-2">
@@ -344,12 +345,7 @@ export function AntelopeDrawTable() {
                 const huntCode = row.Tag;
                 const pageNum = huntCodeMap[huntCode];
                 const pdfUrl = "https://cpw.widen.net/s/abcdefghi/postdrawrecapreport_antelope-25";
-                const harvestUnits = String(row.harvestunit || '').split(',').map(u => {
-                  const trimmed = u.trim();
-                  // Extract unit number (first part before space)
-                  const unitNum = trimmed.split(' ')[0];
-                  return unitNum;
-                }).filter(Boolean);
+                const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
 
                 return (
                   <>

@@ -1,7 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { useState } from "react";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,12 +21,33 @@ export default function Layout({ children }: LayoutProps) {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/deer", label: "Deer" },
-    { to: "/elk", label: "Elk" },
-    { to: "/antelope", label: "Antelope" },
-    { to: "/otc-elk", label: "OTC Elk" },
     { to: "/learn", label: "Learn the Draw" },
-    { to: "/about", label: "About" },
+    { to: "/about", label: "About Tag-Season" },
+  ];
+
+  const speciesMenus = [
+    {
+      label: "Deer",
+      items: [
+        { to: "/deer", label: "Draw Stats" },
+        { to: "/deer-harvest", label: "Harvest Stats" },
+      ],
+    },
+    {
+      label: "Elk",
+      items: [
+        { to: "/elk", label: "Draw Stats" },
+        { to: "/elk-harvest", label: "Harvest Stats" },
+        { to: "/otc-elk", label: "OTC Stats" },
+      ],
+    },
+    {
+      label: "Antelope",
+      items: [
+        { to: "/antelope", label: "Draw Stats" },
+        { to: "/antelope-harvest", label: "Harvest Stats" },
+      ],
+    },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -38,17 +67,46 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <Link key={link.to} to={link.to}>
-                  <Button
-                    variant={isActive(link.to) ? "default" : "ghost"}
-                    size="sm"
-                    className="font-medium"
-                  >
-                    {link.label}
-                  </Button>
-                </Link>
-              ))}
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {speciesMenus.map((menu) => (
+                    <NavigationMenuItem key={menu.label}>
+                      <NavigationMenuTrigger className="font-medium">
+                        {menu.label}
+                      </NavigationMenuTrigger>
+                      <NavigationMenuContent>
+                        <ul className="w-48 p-2">
+                          {menu.items.map((item) => (
+                            <li key={item.to}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  to={item.to}
+                                  className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                                >
+                                  {item.label}
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    </NavigationMenuItem>
+                  ))}
+                  {navLinks.map((link) => (
+                    <NavigationMenuItem key={link.to}>
+                      <Link to={link.to}>
+                        <Button
+                          variant={isActive(link.to) ? "default" : "ghost"}
+                          size="sm"
+                          className="font-medium"
+                        >
+                          {link.label}
+                        </Button>
+                      </Link>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
             </nav>
 
             {/* Auth Button */}
@@ -77,6 +135,26 @@ export default function Layout({ children }: LayoutProps) {
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
+              {speciesMenus.map((menu) => (
+                <div key={menu.label} className="space-y-1">
+                  <div className="px-3 py-2 font-semibold text-sm">{menu.label}</div>
+                  {menu.items.map((item) => (
+                    <Link
+                      key={item.to}
+                      to={item.to}
+                      onClick={() => setMobileMenuOpen(false)}
+                    >
+                      <Button
+                        variant={isActive(item.to) ? "default" : "ghost"}
+                        className="w-full justify-start pl-6"
+                        size="sm"
+                      >
+                        {item.label}
+                      </Button>
+                    </Link>
+                  ))}
+                </div>
+              ))}
               {navLinks.map((link) => (
                 <Link
                   key={link.to}

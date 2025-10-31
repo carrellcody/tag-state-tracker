@@ -16,7 +16,7 @@ export function AntelopeHarvestTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   
   const [unitSearch, setUnitSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [categoryFilter, setCategoryFilter] = useState('All manners of take');
   const [showMoreCategories, setShowMoreCategories] = useState(false);
 
   const visibleCategories = [
@@ -47,8 +47,11 @@ export function AntelopeHarvestTable() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (row.Category === 'NA') return false;
-      if (unitSearch && !row.Unit?.toLowerCase().includes(unitSearch.toLowerCase())) return false;
-      if (categoryFilter !== 'all' && row.Category !== categoryFilter) return false;
+      if (unitSearch) {
+        const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
+        if (!searchTerms.some(term => row.Unit?.toLowerCase().includes(term.toLowerCase()))) return false;
+      }
+      if (categoryFilter && row.Category !== categoryFilter) return false;
       if (minSuccessRate && parseFloat(row['Percent Success'] || 0) < parseFloat(minSuccessRate)) return false;
       if (minPublicLand && parseFloat(row.percent_public || 0) < parseFloat(minPublicLand)) return false;
       return true;
@@ -114,7 +117,7 @@ export function AntelopeHarvestTable() {
         
         <div className="space-y-2">
           <Label>Search Units</Label>
-          <Input placeholder="e.g. 3" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
+          <Input placeholder="e.g. 3, 10, 5" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
         </div>
 
         <div className="space-y-2">
@@ -130,10 +133,6 @@ export function AntelopeHarvestTable() {
         <div className="space-y-2">
           <Label>Category</Label>
           <RadioGroup value={categoryFilter} onValueChange={setCategoryFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="ant-cat-all" />
-              <Label htmlFor="ant-cat-all">All</Label>
-            </div>
             {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
               <div key={idx} className="flex items-center space-x-2">
                 <RadioGroupItem value={cat} id={`ant-cat-${idx}`} />
@@ -152,7 +151,7 @@ export function AntelopeHarvestTable() {
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setCategoryFilter('all'); setMinSuccessRate(''); setMinPublicLand('');
+          setUnitSearch(''); setCategoryFilter('All manners of take'); setMinSuccessRate(''); setMinPublicLand('');
         }}>Clear Filters</Button>
       </aside>
 

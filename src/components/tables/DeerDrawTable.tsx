@@ -54,8 +54,9 @@ export function DeerDrawTable() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (unitSearch) {
+        const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
         const units = String(row['Valid GMUs'] || '').split(',').map(u => u.trim());
-        if (!units.some(unit => unit === unitSearch)) return false;
+        if (!searchTerms.some(term => units.some(unit => unit === term))) return false;
       }
       
       if (sexFilter !== 'all') {
@@ -167,7 +168,7 @@ export function DeerDrawTable() {
         
         <div className="space-y-2">
           <Label>Search Units</Label>
-          <Input placeholder="e.g. 201" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
+          <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
         </div>
 
         <div className="space-y-2">
@@ -354,12 +355,7 @@ export function DeerDrawTable() {
                 const huntCode = row.Tag;
                 const pageNum = huntCodeMap[huntCode];
                 const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
-                const harvestUnits = String(row.harvestunit || '').split(',').map(u => {
-                  const trimmed = u.trim();
-                  // Extract unit number (first part before space)
-                  const unitNum = trimmed.split(' ')[0];
-                  return unitNum;
-                }).filter(Boolean);
+                const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
 
                 return (
                   <>

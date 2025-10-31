@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Target, TrendingUp, MapPin, FileText } from "lucide-react";
 
 export default function About() {
   return (
@@ -19,35 +20,58 @@ export default function About() {
         </CardContent>
       </Card>
 
-      <Card className="shadow-medium mb-8">
-        <CardHeader>
-          <CardTitle>What We Offer</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-3">
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Draw Statistics</h3>
+      <div className="mb-8">
+        <h2 className="text-3xl font-bold mb-6">What We Offer</h2>
+        <div className="grid md:grid-cols-2 gap-6">
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <Target className="h-10 w-10 text-primary mb-2" />
+              <CardTitle>Draw Statistics</CardTitle>
+            </CardHeader>
+            <CardContent>
               <p className="text-muted-foreground">
-                Comprehensive draw odds for deer, elk, and antelope across all Colorado Game Management Units (GMUs). Filter by hunter class, preference points, weapon type, and more.
+                Detailed draw odds for 2025 season across all Colorado units
               </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Harvest Data</h3>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <TrendingUp className="h-10 w-10 text-accent mb-2" />
+              <CardTitle>Harvest Data</CardTitle>
+            </CardHeader>
+            <CardContent>
               <p className="text-muted-foreground">
-                Historical harvest statistics including success rates, hunter density, and public land access percentages to help you evaluate hunting quality.
+                2024 harvest statistics including success rates and hunter density
               </p>
-            </div>
-            
-            <div>
-              <h3 className="font-semibold text-lg mb-2">Advanced Filtering</h3>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <MapPin className="h-10 w-10 text-secondary mb-2" />
+              <CardTitle>Unit Information</CardTitle>
+            </CardHeader>
+            <CardContent>
               <p className="text-muted-foreground">
-                Powerful search and filter tools to narrow down units based on your specific criteria and hunting preferences.
+                Public land percentages, unit sizes, and geographic data
               </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <FileText className="h-10 w-10 text-primary mb-2" />
+              <CardTitle>Advanced Filters</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Filter by preference points, weapon type, season, and more
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
 
       <Card className="shadow-medium">
         <CardHeader>

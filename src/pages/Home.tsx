@@ -9,18 +9,29 @@ export default function Home() {
       {/* Hero Section */}
       <section className="gradient-primary py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-6">
-            Colorado Big Game Draw & Harvest Stats
+          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-2">
+            Tag Season
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8 max-w-3xl mx-auto">
-            Explore comprehensive draw odds and harvest statistics for Colorado deer, elk, and antelope hunting
+          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8">
+            Colorado
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <Link to="/deer">
-              <Button size="lg" variant="secondary" className="font-semibold">
-                Explore Draw Odds
-              </Button>
-            </Link>
+            <Button 
+              size="lg" 
+              variant="secondary" 
+              className="font-semibold"
+              onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Explore Draw Odds
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline" 
+              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+              onClick={() => document.getElementById('harvest-stats')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              Explore Harvest Stats
+            </Button>
             <Link to="/learn">
               <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
                 Learn the Draw Process
@@ -30,63 +41,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="py-16 px-4">
-        <div className="container mx-auto">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
-            <Card className="shadow-subtle hover:shadow-medium transition-shadow">
-              <CardHeader>
-                <Target className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Draw Statistics</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Detailed draw odds for 2025 season across all Colorado units
-                </CardDescription>
-              </CardContent>
-            </Card>
-            
-            <Card className="shadow-subtle hover:shadow-medium transition-shadow">
-              <CardHeader>
-                <TrendingUp className="h-10 w-10 text-accent mb-2" />
-                <CardTitle>Harvest Data</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  2024 harvest statistics including success rates and hunter density
-                </CardDescription>
-              </CardContent>
-            </Card>
-            
-            <Card className="shadow-subtle hover:shadow-medium transition-shadow">
-              <CardHeader>
-                <MapPin className="h-10 w-10 text-secondary mb-2" />
-                <CardTitle>Unit Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Public land percentages, unit sizes, and geographic data
-                </CardDescription>
-              </CardContent>
-            </Card>
-            
-            <Card className="shadow-subtle hover:shadow-medium transition-shadow">
-              <CardHeader>
-                <FileText className="h-10 w-10 text-primary mb-2" />
-                <CardTitle>Advanced Filters</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>
-                  Filter by preference points, weapon type, season, and more
-                </CardDescription>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
       {/* Draw Statistics Section */}
-      <section className="py-12 px-4 bg-muted/30">
+      <section id="draw-stats" className="py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Draw Statistics 2025</h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
@@ -121,7 +77,7 @@ export default function Home() {
       </section>
 
       {/* Harvest Statistics Section */}
-      <section className="py-12 px-4">
+      <section id="harvest-stats" className="py-12 px-4">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold mb-8 text-center">Harvest Statistics 2024</h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
