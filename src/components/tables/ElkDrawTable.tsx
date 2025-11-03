@@ -19,7 +19,7 @@ export function ElkDrawTable() {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   
   const [unitSearch, setUnitSearch] = useState('');
-  const [sexFilter, setSexFilter] = useState('all');
+  const [sexFilter, setSexFilter] = useState<string[]>(['All']);
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [hunterClass, setHunterClass] = useState('A_R');
   const [ploFilter, setPloFilter] = useState('all');
@@ -59,9 +59,10 @@ export function ElkDrawTable() {
         if (!searchTerms.some(term => units.some(unit => unit === term))) return false;
       }
       
-      if (sexFilter !== 'all') {
+      if (!sexFilter.includes('All')) {
         const sexMap: Record<string, string> = { 'Either': 'E', 'Male': 'M', 'Female': 'F' };
-        if (row.Sex !== sexMap[sexFilter]) return false;
+        const matchesSex = sexFilter.some(filter => row.Sex === sexMap[filter]);
+        if (!matchesSex) return false;
       }
       
       // Season/Weapon filter (checkboxes)
@@ -153,9 +154,9 @@ export function ElkDrawTable() {
   const headerLabels: Record<string, string> = {
     "Tag": "Hunt Code",
     "Valid GMUs": "Valid Units",
-    "Drawn_out_level": "Min Points",
-    "Chance_with_First_choice": "% 1st Choice",
-    "Chance_at_DOL": "% at Draw Level",
+    "Drawn_out_level": "Drawn out level (Minimum points required)",
+    "Chance_with_First_choice": "% chance with Maximum PP indicated",
+    "Chance_at_DOL": "% chance at drawn out level",
     "Sex": "Sex",
     "Weapon": "Weapon",
     "Notes": "Notes"
@@ -251,24 +252,34 @@ export function ElkDrawTable() {
 
         <div className="space-y-2">
           <Label>Sex</Label>
-          <RadioGroup value={sexFilter} onValueChange={setSexFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="elk-sex-all" />
-              <Label htmlFor="elk-sex-all">All</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Either" id="elk-sex-either" />
-              <Label htmlFor="elk-sex-either">Either</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Male" id="elk-sex-male" />
-              <Label htmlFor="elk-sex-male">Male</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Female" id="elk-sex-female" />
-              <Label htmlFor="elk-sex-female">Female</Label>
-            </div>
-          </RadioGroup>
+          <div className="space-y-1">
+            {[
+              { value: 'All', label: 'All' },
+              { value: 'Either', label: 'Either' },
+              { value: 'Male', label: 'Male' },
+              { value: 'Female', label: 'Female' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={`elk-sex-${value}`}
+                  checked={sexFilter.includes(value)}
+                  onChange={(e) => {
+                    if (value === 'All') {
+                      setSexFilter(e.target.checked ? ['All'] : []);
+                    } else {
+                      const newSex = e.target.checked
+                        ? [...sexFilter.filter(s => s !== 'All'), value]
+                        : sexFilter.filter(s => s !== value);
+                      setSexFilter(newSex.length === 0 ? ['All'] : newSex);
+                    }
+                  }}
+                  className="rounded"
+                />
+                <Label htmlFor={`elk-sex-${value}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -324,7 +335,7 @@ export function ElkDrawTable() {
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setSexFilter('all'); setSeasonWeapons(['Any']); 
+          setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
           setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('no');
         }}>Clear Filters</Button>
       </aside>
@@ -384,6 +395,7 @@ export function ElkDrawTable() {
                             <thead>
                               <tr className="bg-secondary">
                                 <th className="border p-1">Unit</th>
+                                <th className="border p-1">Harvest Category</th>
                                 <th className="border p-1">Bulls</th>
                                 <th className="border p-1">Antlerless</th>
                                 <th className="border p-1">Total Hunters</th>
@@ -406,6 +418,7 @@ export function ElkDrawTable() {
                                         harvestRow.Unit
                                       )}
                                     </td>
+                                    <td className="border p-1">{harvestRow.Category}</td>
                                     <td className="border p-1">{harvestRow.Bulls}</td>
                                     <td className="border p-1">{harvestRow['Total Antlerless Harvest']}</td>
                                     <td className="border p-1">{harvestRow['Total Hunters']}</td>
