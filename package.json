@@ -11,7 +11,6 @@
     "preview": "vite preview"
   },
   
-  "homepage": "https://carrell.github.io/tag-season/",
 
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
