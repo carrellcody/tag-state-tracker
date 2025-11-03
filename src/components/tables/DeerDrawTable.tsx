@@ -46,7 +46,7 @@ export function DeerDrawTable() {
   const harvestByUnit = useMemo(() => {
     const map: Record<string, any> = {};
     harvestData.forEach((row: any) => {
-      if (row.Unit) map[row.Unit] = row;
+      if (row.harvestunit) map[row.harvestunit] = row;
     });
     return map;
   }, [harvestData]);
