@@ -69,6 +69,19 @@ export default function Layout({ children }: LayoutProps) {
             <nav className="hidden md:flex items-center space-x-1">
               <NavigationMenu>
                 <NavigationMenuList>
+                  {navLinks.map((link) => (
+                    <NavigationMenuItem key={link.to}>
+                      <Link to={link.to}>
+                        <Button
+                          variant={isActive(link.to) ? "default" : "ghost"}
+                          size="sm"
+                          className="font-medium"
+                        >
+                          {link.label}
+                        </Button>
+                      </Link>
+                    </NavigationMenuItem>
+                  ))}
                   {speciesMenus.map((menu) => (
                     <NavigationMenuItem key={menu.label}>
                       <NavigationMenuTrigger className="font-medium">
@@ -90,19 +103,6 @@ export default function Layout({ children }: LayoutProps) {
                           ))}
                         </ul>
                       </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  ))}
-                  {navLinks.map((link) => (
-                    <NavigationMenuItem key={link.to}>
-                      <Link to={link.to}>
-                        <Button
-                          variant={isActive(link.to) ? "default" : "ghost"}
-                          size="sm"
-                          className="font-medium"
-                        >
-                          {link.label}
-                        </Button>
-                      </Link>
                     </NavigationMenuItem>
                   ))}
                 </NavigationMenuList>
