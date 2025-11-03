@@ -22,16 +22,13 @@ export default function Home() {
               className="font-semibold"
               onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
             >
-              Explore Draw Odds
+              Explore Draw and Harvest Stats
             </Button>
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="bg-white/10 text-white border-white/20 hover:bg-white/20"
-              onClick={() => document.getElementById('harvest-stats')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Explore Harvest Stats
-            </Button>
+            <Link to="/about">
+              <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+                How to use Tag-Season
+              </Button>
+            </Link>
             <Link to="/learn">
               <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
                 Learn the Draw Process
