@@ -168,7 +168,7 @@ export function ElkHarvestTable() {
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (
-                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-secondary-hover" onClick={() => handleSort(col)}>
+                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                     <div className="flex items-center gap-1">
                       {headerLabels[col] || col}
                       {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}

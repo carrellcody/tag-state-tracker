@@ -200,7 +200,7 @@ export function DeerHarvestTable() {
                 {visibleColumns.map((col) => (
                   <th
                     key={col}
-                    className="border border-border p-2 text-left cursor-pointer hover:bg-secondary-hover"
+                    className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
                     onClick={() => handleSort(col)}
                   >
                     <div className="flex items-center gap-1">
