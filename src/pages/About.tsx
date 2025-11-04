@@ -45,10 +45,10 @@ export default function About() {
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
           <p>
-            Tag Season was created to help hunters make informed decisions about Colorado big game hunting opportunities. We aggregate and present official Colorado Parks & Wildlife statistics in an accessible, filterable format.
+            Tag Season exists to help hunters make informed decisions about their application strategy for big game draws across the west at an affordable price. 
           </p>
           <p>
-            Whether you're planning your first Colorado hunt or you're a seasoned hunter looking to optimize your preference point strategy, Tag Season provides the data you need to make smart decisions.
+            We started with Colorado, but have plans to expand across all western states, so stay tuned!
           </p>
         </CardContent>
       </Card>
