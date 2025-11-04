@@ -347,7 +347,7 @@ export function ElkDrawTable() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-card">
+          <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (

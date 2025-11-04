@@ -103,22 +103,35 @@ export function OTCElkTable() {
     "Hunters Density Per Public Sq. Mile": "Hunter Density/Square Mile (x1000)"
   };
 
-  // Calculate min/max for hunter density color scaling
+  // Calculate percentile-based min/max for hunter density color scaling
   const densityValues = sortedData
     .map((row: any) => parseFloat(row['Hunters Density Per Public Sq. Mile'] || 0))
-    .filter((val: number) => !isNaN(val) && val > 0);
-  const minDensity = Math.min(...densityValues);
-  const maxDensity = Math.max(...densityValues);
+    .filter((val: number) => !isNaN(val) && val > 0)
+    .sort((a, b) => a - b);
+  
+  const getPercentile = (arr: number[], percentile: number) => {
+    const index = Math.floor(arr.length * percentile);
+    return arr[index] || 0;
+  };
+  
+  const p10 = getPercentile(densityValues, 0.10);
+  const p90 = getPercentile(densityValues, 0.90);
 
   const getDensityColor = (value: string | number) => {
     const numValue = parseFloat(String(value || 0));
     if (isNaN(numValue) || densityValues.length === 0) return '';
     
-    // Normalize value between 0 and 1
-    const normalized = (numValue - minDensity) / (maxDensity - minDensity);
+    let normalized;
+    if (numValue <= p10) {
+      normalized = 0; // Greenest
+    } else if (numValue >= p90) {
+      normalized = 1; // Reddest
+    } else {
+      // Scale within the middle 80%
+      normalized = (numValue - p10) / (p90 - p10);
+    }
     
     // Green (low) to Red (high) using pastel colors
-    // Green: hsl(120, 60%, 85%) to Red: hsl(0, 60%, 85%)
     const hue = 120 - (normalized * 120); // 120 = green, 0 = red
     return `hsl(${hue}, 60%, 85%)`;
   };
@@ -200,7 +213,7 @@ export function OTCElkTable() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-card">
+          <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (
