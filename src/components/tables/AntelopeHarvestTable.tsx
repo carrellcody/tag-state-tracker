@@ -97,7 +97,7 @@ export function AntelopeHarvestTable() {
   if (loading) return <div className="p-8 text-center">Loading antelope harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Hunters Density Per Sq. Mile"];
+  const visibleColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Category": "Category",
@@ -107,7 +107,8 @@ export function AntelopeHarvestTable() {
     "Total Hunters": "Hunters",
     "Percent Success": "Success %",
     "percent_public": "Public %",
-    "Hunters Density Per Sq. Mile": "Hunters/Sq Mi"
+    "Acres Public": "Public Acres",
+    "Hunters Density Per Public Sq. Mile": "Hunters/Public Sq. Mile"
   };
 
   return (
@@ -155,14 +156,14 @@ export function AntelopeHarvestTable() {
         }}>Clear Filters</Button>
       </aside>
 
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4 flex justify-between items-center">
           <p className="text-sm text-muted-foreground">{sortedData.length} units match</p>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-card relative">
+        <div className="overflow-auto flex-1">
+          <table className="w-full border-collapse bg-card">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (

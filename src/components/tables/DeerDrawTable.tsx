@@ -25,7 +25,7 @@ export function DeerDrawTable() {
   const [ploFilter, setPloFilter] = useState('all');
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
-  const [maxPoints, setMaxPoints] = useState(20);
+  const [maxPoints, setMaxPoints] = useState(32);
   const [showNoApplicants, setShowNoApplicants] = useState('no');
 
   // Auto-hide RFW for non-residents
@@ -174,12 +174,12 @@ export function DeerDrawTable() {
 
         <div className="space-y-2">
           <Label>Minimum Preference Points: {minPoints}</Label>
-          <input type="range" min="0" max="20" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
+          <input type="range" min="0" max="32" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
         </div>
 
         <div className="space-y-2">
           <Label>Maximum Preference Points: {maxPoints}</Label>
-          <input type="range" min="0" max="20" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
+          <input type="range" min="0" max="32" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
         </div>
 
         <div className="space-y-2">
@@ -336,18 +336,18 @@ export function DeerDrawTable() {
 
         <Button variant="outline" className="w-full" onClick={() => {
           setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
-          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(20); setShowNoApplicants('no');
+          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no');
         }}>Clear Filters</Button>
       </aside>
 
-      <main className="flex-1 overflow-auto">
+      <main className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4 flex justify-between items-center">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full border-collapse bg-card relative">
+        <div className="overflow-auto flex-1">
+          <table className="w-full border-collapse bg-card">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (
