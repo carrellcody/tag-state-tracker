@@ -87,8 +87,8 @@ export default function Layout({ children }: LayoutProps) {
                       <NavigationMenuTrigger className="font-medium">
                         {menu.label}
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul className="w-48 p-2">
+                      <NavigationMenuContent className="!left-0">
+                        <ul className="w-48 p-2 bg-popover z-50">
                           {menu.items.map((item) => (
                             <li key={item.to}>
                               <NavigationMenuLink asChild>
