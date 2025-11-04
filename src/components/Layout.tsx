@@ -66,7 +66,8 @@ export default function Layout({ children }: LayoutProps) {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center space-x-1">
+            <nav className="hidden md:flex items-center space-x-2">
+              {/* Primary links */}
               <NavigationMenu>
                 <NavigationMenuList>
                   {navLinks.map((link) => (
@@ -82,8 +83,14 @@ export default function Layout({ children }: LayoutProps) {
                       </Link>
                     </NavigationMenuItem>
                   ))}
-                  {speciesMenus.map((menu) => (
-                    <NavigationMenuItem key={menu.label}>
+                </NavigationMenuList>
+              </NavigationMenu>
+
+              {/* Species menus - separate roots so each dropdown anchors under its own trigger */}
+              {speciesMenus.map((menu) => (
+                <NavigationMenu key={menu.label}>
+                  <NavigationMenuList>
+                    <NavigationMenuItem>
                       <NavigationMenuTrigger className="font-medium">
                         {menu.label}
                       </NavigationMenuTrigger>
@@ -104,9 +111,9 @@ export default function Layout({ children }: LayoutProps) {
                         </ul>
                       </NavigationMenuContent>
                     </NavigationMenuItem>
-                  ))}
-                </NavigationMenuList>
-              </NavigationMenu>
+                  </NavigationMenuList>
+                </NavigationMenu>
+              ))}
             </nav>
 
             {/* Auth Button */}
