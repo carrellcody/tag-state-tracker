@@ -28,6 +28,7 @@ export function ElkDrawTable() {
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(32);
   const [showNoApplicants, setShowNoApplicants] = useState('no');
+  const [listFilter, setListFilter] = useState<string[]>(['Any']);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
@@ -128,9 +129,16 @@ export function ElkDrawTable() {
       // No applicants filter
       if (showNoApplicants === 'no' && row.NoApps === 'Yes') return false;
       
+      // List filter
+      if (!listFilter.includes('Any')) {
+        const list = row.List || '';
+        const matchesList = listFilter.some(filter => list === filter);
+        if (!matchesList) return false;
+      }
+      
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, showFavoritesOnly, favorites]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -175,9 +183,10 @@ export function ElkDrawTable() {
   if (loading) return <div className="p-8 text-center">Loading elk draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Tag", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
+  const visibleColumns = ["Tag", "List", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
   const headerLabels: Record<string, string> = {
     "Tag": "Hunt Code",
+    "List": "List",
     "Valid GMUs": "Valid Units",
     "Drawn_out_level": "Drawn out level (Minimum points required)",
     "Chance_with_First_choice": "% chance with Maximum PP indicated",
@@ -370,9 +379,41 @@ export function ElkDrawTable() {
           </RadioGroup>
         </div>
 
+        <div className="space-y-2">
+          <Label>List</Label>
+          <div className="space-y-1">
+            {[
+              { value: 'Any', label: 'Any' },
+              { value: 'A', label: 'A' },
+              { value: 'B', label: 'B' },
+              { value: 'C', label: 'C' }
+            ].map(({ value, label }) => (
+              <div key={value} className="flex items-center space-x-2">
+                <input
+                  type="checkbox"
+                  id={`elk-list-${value}`}
+                  checked={listFilter.includes(value)}
+                  onChange={(e) => {
+                    if (value === 'Any') {
+                      setListFilter(e.target.checked ? ['Any'] : []);
+                    } else {
+                      const newList = e.target.checked
+                        ? [...listFilter.filter(l => l !== 'Any'), value]
+                        : listFilter.filter(l => l !== value);
+                      setListFilter(newList.length === 0 ? ['Any'] : newList);
+                    }
+                  }}
+                  className="rounded"
+                />
+                <Label htmlFor={`elk-list-${value}`} className="cursor-pointer">{label}</Label>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <Button variant="outline" className="w-full" onClick={() => {
           setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
-          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no');
+          setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no'); setListFilter(['Any']);
         }}>Clear Filters</Button>
       </aside>
 
