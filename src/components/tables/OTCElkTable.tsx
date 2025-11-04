@@ -25,8 +25,8 @@ export function OTCElkTable() {
       // Only show OTC units
       if (!row.OTC) return false;
       
-      // Filter by OTC season
-      if (row.OTC !== otcSeason) return false;
+      // Filter by OTC season - check if the season is present in the OTC value
+      if (!row.OTC || !String(row.OTC).includes(otcSeason)) return false;
       
       // Unit search
       if (unitSearch) {
