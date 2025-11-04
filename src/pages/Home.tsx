@@ -19,18 +19,18 @@ export default function Home() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold"
+              className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base"
               onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Explore Draw and Harvest Stats
             </Button>
             <Link to="/about">
-              <Button size="lg" variant="outline" className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold">
+              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base">
                 How to use Tag-Season
               </Button>
             </Link>
             <Link to="/learn">
-              <Button size="lg" variant="outline" className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold">
+              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base">
                 Learn the Draw Process
               </Button>
             </Link>
