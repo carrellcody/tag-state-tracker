@@ -18,19 +18,19 @@ export default function Home() {
           <div className="flex flex-wrap gap-4 justify-center">
             <Button 
               size="lg" 
-              variant="secondary" 
-              className="font-semibold"
+              variant="outline" 
+              className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold"
               onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Explore Draw and Harvest Stats
             </Button>
             <Link to="/about">
-              <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+              <Button size="lg" variant="outline" className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold">
                 How to use Tag-Season
               </Button>
             </Link>
             <Link to="/learn">
-              <Button size="lg" variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20">
+              <Button size="lg" variant="outline" className="bg-primary/90 text-primary-foreground border-primary hover:bg-secondary hover:text-secondary-foreground font-semibold">
                 Learn the Draw Process
               </Button>
             </Link>
