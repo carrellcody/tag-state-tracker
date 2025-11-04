@@ -338,7 +338,7 @@ export function AntelopeDrawTable() {
 
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-card">
-            <thead className="sticky top-0 bg-secondary z-10">
+            <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {visibleColumns.map((col) => (
                   <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-secondary-hover" onClick={() => handleSort(col)}>
