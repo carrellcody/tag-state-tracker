@@ -32,7 +32,7 @@ export function OTCElkTable() {
       if (unitSearch) {
         const searchUnits = unitSearch.split(',').map(u => u.trim().toLowerCase());
         const unitStr = String(row.Unit || '').toLowerCase();
-        if (!searchUnits.some(u => unitStr.includes(u))) return false;
+        if (!searchUnits.some(u => unitStr === u)) return false;
       }
       
       // Minimum success rate
