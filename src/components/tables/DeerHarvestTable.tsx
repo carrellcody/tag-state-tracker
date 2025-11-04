@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
 const ROWS_PER_PAGE = 100;
 
@@ -18,6 +19,30 @@ export function DeerHarvestTable() {
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All manners of take');
   const [showMoreCategories, setShowMoreCategories] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('deerHarvestFavorites');
+    if (saved) setFavorites(new Set(JSON.parse(saved)));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('deerHarvestFavorites', JSON.stringify(Array.from(favorites)));
+  }, [favorites]);
+
+  const toggleFavorite = (unit: string, category: string) => {
+    const key = `${unit}-${category}`;
+    setFavorites(prev => {
+      const newFavs = new Set(prev);
+      if (newFavs.has(key)) {
+        newFavs.delete(key);
+      } else {
+        newFavs.add(key);
+      }
+      return newFavs;
+    });
+  };
 
   const visibleCategories = [
     "All manners of take",
@@ -49,6 +74,10 @@ export function DeerHarvestTable() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (row.Category === 'NA') return false;
+      if (showFavoritesOnly) {
+        const key = `${row.Unit}-${row.Category}`;
+        if (!favorites.has(key)) return false;
+      }
       if (unitSearch) {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
         if (!searchTerms.some(term => row.Unit?.toLowerCase().includes(term.toLowerCase()))) {
@@ -66,7 +95,7 @@ export function DeerHarvestTable() {
       }
       return true;
     });
-  }, [data, unitSearch, categoryFilter, minSuccessRate, minPublicLand]);
+  }, [data, unitSearch, categoryFilter, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -155,6 +184,17 @@ export function DeerHarvestTable() {
         </div>
 
         <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Show Favorites Only</Label>
+            <Switch
+              checked={showFavoritesOnly}
+              onCheckedChange={setShowFavoritesOnly}
+              disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <Label>Category</Label>
           <RadioGroup value={categoryFilter} onValueChange={setCategoryFilter}>
             {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
@@ -198,6 +238,7 @@ export function DeerHarvestTable() {
           <table className="w-full border-collapse bg-card">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
+                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                 {visibleColumns.map((col) => (
                   <th
                     key={col}
@@ -215,9 +256,18 @@ export function DeerHarvestTable() {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((row: any, idx: number) => (
-                <tr key={idx} className="hover:bg-accent">
-                  {visibleColumns.map((col) => (
+              {paginatedData.map((row: any, idx: number) => {
+                const favKey = `${row.Unit}-${row.Category}`;
+                const isFavorited = favorites.has(favKey);
+                return (
+                  <tr key={idx} className="hover:bg-accent">
+                    <td className="border border-border p-2 text-center">
+                      <Star
+                        className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
+                        onClick={() => toggleFavorite(row.Unit, row.Category)}
+                      />
+                    </td>
+                    {visibleColumns.map((col) => (
                     <td key={col} className="border border-border p-2">
                       {col === 'Unit' && row.onx ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
@@ -227,9 +277,10 @@ export function DeerHarvestTable() {
                         row[col] || ''
                       )}
                     </td>
-                  ))}
-                </tr>
-              ))}
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

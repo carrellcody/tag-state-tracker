@@ -4,7 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
 const ROWS_PER_PAGE = 100;
 
@@ -27,6 +28,29 @@ export function AntelopeDrawTable() {
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(32);
   const [showNoApplicants, setShowNoApplicants] = useState('no');
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('antelopeDrawFavorites');
+    if (saved) setFavorites(new Set(JSON.parse(saved)));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('antelopeDrawFavorites', JSON.stringify(Array.from(favorites)));
+  }, [favorites]);
+
+  const toggleFavorite = (tag: string) => {
+    setFavorites(prev => {
+      const newFavs = new Set(prev);
+      if (newFavs.has(tag)) {
+        newFavs.delete(tag);
+      } else {
+        newFavs.add(tag);
+      }
+      return newFavs;
+    });
+  };
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -53,6 +77,7 @@ export function AntelopeDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
         const units = String(row['Valid GMUs'] || '').split(',').map(u => u.trim());
@@ -100,7 +125,7 @@ export function AntelopeDrawTable() {
       
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -162,6 +187,17 @@ export function AntelopeDrawTable() {
       <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
         <h3 className="font-semibold text-lg">Filters</h3>
         
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Show Favorites Only</Label>
+            <Switch
+              checked={showFavoritesOnly}
+              onCheckedChange={setShowFavoritesOnly}
+              disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
         <div className="space-y-2">
           <Label>Search Units</Label>
           <Input placeholder="e.g. 3, 5, 10" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
@@ -340,6 +376,7 @@ export function AntelopeDrawTable() {
           <table className="w-full border-collapse bg-card">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
+                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                 {visibleColumns.map((col) => (
                   <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                     <div className="flex items-center gap-1">
@@ -354,6 +391,7 @@ export function AntelopeDrawTable() {
               {paginatedData.map((row: any, idx: number) => {
                 const isExpanded = expandedRow === idx;
                 const huntCode = row.Tag;
+                const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
                 const pdfUrl = "https://cpw.widen.net/s/abcdefghi/postdrawrecapreport_antelope-25";
                 const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
@@ -361,6 +399,12 @@ export function AntelopeDrawTable() {
                 return (
                   <>
                     <tr key={idx} className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
+                      <td className="border border-border p-2 text-center" onClick={(e) => e.stopPropagation()}>
+                        <Star
+                          className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
+                          onClick={() => toggleFavorite(huntCode)}
+                        />
+                      </td>
                       {visibleColumns.map((col) => {
                         let cellValue = row[col] || '';
                         

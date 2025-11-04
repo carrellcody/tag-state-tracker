@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
 const ROWS_PER_PAGE = 100;
 
@@ -19,11 +20,40 @@ export function OTCElkTable() {
   const [unitSearch, setUnitSearch] = useState('');
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('otcElkFavorites');
+    if (saved) setFavorites(new Set(JSON.parse(saved)));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('otcElkFavorites', JSON.stringify(Array.from(favorites)));
+  }, [favorites]);
+
+  const toggleFavorite = (unit: string) => {
+    const key = `${unit}-${otcSeason}`;
+    setFavorites(prev => {
+      const newFavs = new Set(prev);
+      if (newFavs.has(key)) {
+        newFavs.delete(key);
+      } else {
+        newFavs.add(key);
+      }
+      return newFavs;
+    });
+  };
 
   const filteredData = useMemo(() => {
     return harvestData.filter((row: any) => {
       // Only show OTC units
       if (!row.OTC) return false;
+      
+      if (showFavoritesOnly) {
+        const key = `${row.Unit}-${otcSeason}`;
+        if (!favorites.has(key)) return false;
+      }
       
       // Filter by OTC season - check if the season is present in the OTC value
       if (!row.OTC || !String(row.OTC).includes(otcSeason)) return false;
@@ -47,7 +77,7 @@ export function OTCElkTable() {
       
       return true;
     });
-  }, [harvestData, otcSeason, unitSearch, minSuccessRate, minPublicLand]);
+  }, [harvestData, otcSeason, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -142,6 +172,17 @@ export function OTCElkTable() {
         <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Show Favorites Only</Label>
+            <Switch
+              checked={showFavoritesOnly}
+              onCheckedChange={setShowFavoritesOnly}
+              disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <Label>OTC Season</Label>
           <RadioGroup value={otcSeason} onValueChange={setOtcSeason}>
             <div className="flex items-center space-x-2">
@@ -216,6 +257,7 @@ export function OTCElkTable() {
           <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
+                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                 {visibleColumns.map((col) => (
                   <th
                     key={col}
@@ -233,9 +275,18 @@ export function OTCElkTable() {
               </tr>
             </thead>
             <tbody>
-              {paginatedData.map((row: any, idx: number) => (
-                <tr key={idx} className="hover:bg-accent">
-                  {visibleColumns.map((col) => (
+              {paginatedData.map((row: any, idx: number) => {
+                const favKey = `${row.Unit}-${otcSeason}`;
+                const isFavorited = favorites.has(favKey);
+                return (
+                  <tr key={idx} className="hover:bg-accent">
+                    <td className="border border-border p-2 text-center">
+                      <Star
+                        className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
+                        onClick={() => toggleFavorite(row.Unit)}
+                      />
+                    </td>
+                    {visibleColumns.map((col) => (
                     <td 
                       key={col} 
                       className="border border-border p-2"
@@ -249,9 +300,10 @@ export function OTCElkTable() {
                         row[col] || ''
                       )}
                     </td>
-                  ))}
-                </tr>
-              ))}
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
