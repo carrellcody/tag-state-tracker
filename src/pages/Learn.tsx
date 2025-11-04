@@ -127,12 +127,12 @@ export default function Learn() {
           <ul className="space-y-2 text-muted-foreground">
             <li>
               <a
-                href="https://cpw.state.co.us/hunting"
+                href="https://cpw.state.co.us/hunting/big-game"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-primary hover:underline"
               >
-                Colorado Parks & Wildlife - Hunting
+                Colorado Parks & Wildlife - Big Game Information
               </a>
             </li>
             <li>
