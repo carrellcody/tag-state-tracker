@@ -191,6 +191,9 @@ export default function Layout({ children }: LayoutProps) {
               <Link to="/about" className="hover:text-foreground transition-colors">
                 About
               </Link>
+              <Link to="/about#contact" className="hover:text-foreground transition-colors">
+                Contact
+              </Link>
               <a
                 href="https://cpw.state.co.us"
                 target="_blank"
