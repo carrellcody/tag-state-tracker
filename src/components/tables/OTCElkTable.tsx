@@ -91,14 +91,36 @@ export function OTCElkTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Bulls", "Total Antlerless Harvest", "Total Hunters", "Percent Success", "percent_public"];
+  const visibleColumns = ["Unit", "Bulls", "Total Antlerless Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density per public square mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Bulls": "Bulls",
     "Total Antlerless Harvest": "Antlerless",
     "Total Hunters": "Total Hunters",
     "Percent Success": "Success %",
-    "percent_public": "Public %"
+    "percent_public": "Public %",
+    "Acres Public": "Public Acres",
+    "Hunters Density per public square mile": "Hunter Density/Square Mile (x1000)"
+  };
+
+  // Calculate min/max for hunter density color scaling
+  const densityValues = sortedData
+    .map((row: any) => parseFloat(row['Hunters Density per public square mile'] || 0))
+    .filter((val: number) => !isNaN(val) && val > 0);
+  const minDensity = Math.min(...densityValues);
+  const maxDensity = Math.max(...densityValues);
+
+  const getDensityColor = (value: string | number) => {
+    const numValue = parseFloat(String(value || 0));
+    if (isNaN(numValue) || densityValues.length === 0) return '';
+    
+    // Normalize value between 0 and 1
+    const normalized = (numValue - minDensity) / (maxDensity - minDensity);
+    
+    // Green (low) to Red (high) using pastel colors
+    // Green: hsl(120, 60%, 85%) to Red: hsl(0, 60%, 85%)
+    const hue = 120 - (normalized * 120); // 120 = green, 0 = red
+    return `hsl(${hue}, 60%, 85%)`;
   };
 
   return (
@@ -201,7 +223,11 @@ export function OTCElkTable() {
               {paginatedData.map((row: any, idx: number) => (
                 <tr key={idx} className="hover:bg-accent">
                   {visibleColumns.map((col) => (
-                    <td key={col} className="border border-border p-2">
+                    <td 
+                      key={col} 
+                      className="border border-border p-2"
+                      style={col === 'Hunters Density per public square mile' ? { backgroundColor: getDensityColor(row[col]) } : {}}
+                    >
                       {row[col] || ''}
                     </td>
                   ))}
