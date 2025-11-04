@@ -371,22 +371,38 @@ export function ElkDrawTable() {
                 return (
                   <>
                     <tr key={idx} className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
-                      {visibleColumns.map((col) => (
-                        <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
-                          {col === 'Tag' ? (
-                            <div className="flex items-center gap-2">
-                              <span>{isExpanded ? '▼' : '▶'}</span>
-                              {pageNum ? (
-                                <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
-                                  {huntCode}
-                                </a>
-                              ) : huntCode}
-                            </div>
-                          ) : (col === 'Valid GMUs' || col === 'Notes') ? (
-                            <span title={row[col] || ''}>{row[col] || ''}</span>
-                          ) : (row[col] || '')}
-                        </td>
-                      ))}
+                      {visibleColumns.map((col) => {
+                        let cellValue = row[col] || '';
+                        
+                        // Dynamic calculation for Chance_with_First_choice based on maxPoints
+                        if (col === 'Chance_with_First_choice') {
+                          const dol = parseFloat(row.Drawn_out_level || 0);
+                          if (maxPoints > dol) {
+                            cellValue = '100%';
+                          } else if (maxPoints < dol) {
+                            cellValue = '0%';
+                          } else {
+                            cellValue = row.Chance_at_DOL || '';
+                          }
+                        }
+                        
+                        return (
+                          <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
+                            {col === 'Tag' ? (
+                              <div className="flex items-center gap-2">
+                                <span>{isExpanded ? '▼' : '▶'}</span>
+                                {pageNum ? (
+                                  <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                    {huntCode}
+                                  </a>
+                                ) : huntCode}
+                              </div>
+                            ) : (col === 'Valid GMUs' || col === 'Notes') ? (
+                              <span title={row[col] || ''}>{row[col] || ''}</span>
+                            ) : cellValue}
+                          </td>
+                        );
+                      })}
                     </tr>
                     {isExpanded && harvestUnits.length > 0 && (
                       <tr>
