@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, User, LogOut, CreditCard } from "lucide-react";
 import { useState } from "react";
 import {
   NavigationMenu,
@@ -10,6 +10,15 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -18,6 +27,7 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -116,13 +126,39 @@ export default function Layout({ children }: LayoutProps) {
               ))}
             </nav>
 
-            {/* Auth Button */}
+            {/* Auth Button / User Menu */}
             <div className="hidden md:flex items-center space-x-2">
-              <Link to="/auth">
-                <Button variant="secondary" size="sm">
-                  Sign In
-                </Button>
-              </Link>
+              {user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="secondary" size="sm">
+                      <User className="h-4 w-4 mr-2" />
+                      Account
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/subscription" className="cursor-pointer">
+                        <CreditCard className="h-4 w-4 mr-2" />
+                        Subscription
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={signOut} className="cursor-pointer">
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link to="/auth">
+                  <Button variant="secondary" size="sm">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -176,11 +212,29 @@ export default function Layout({ children }: LayoutProps) {
                   </Button>
                 </Link>
               ))}
-              <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="secondary" className="w-full">
-                  Sign In
-                </Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/subscription" onClick={() => setMobileMenuOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start">
+                      <CreditCard className="h-4 w-4 mr-2" />
+                      Subscription
+                    </Button>
+                  </Link>
+                  <Button variant="secondary" className="w-full" onClick={() => {
+                    setMobileMenuOpen(false);
+                    signOut();
+                  }}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="secondary" className="w-full">
+                    Sign In
+                  </Button>
+                </Link>
+              )}
             </nav>
           )}
         </div>

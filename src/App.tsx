@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -16,6 +17,7 @@ import ElkHarvest from "./pages/ElkHarvest";
 import AntelopeDraw from "./pages/AntelopeDraw";
 import AntelopeHarvest from "./pages/AntelopeHarvest";
 import OTCElk from "./pages/OTCElk";
+import Subscription from "./pages/Subscription";
 
 const queryClient = new QueryClient();
 
@@ -25,25 +27,28 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/learn" element={<Learn />} />
-            <Route path="/auth" element={<Auth />} />
-            
-            <Route path="/deer" element={<DeerDraw />} />
-            <Route path="/deer-harvest" element={<DeerHarvest />} />
-            <Route path="/elk" element={<ElkDraw />} />
-            <Route path="/elk-harvest" element={<ElkHarvest />} />
-            <Route path="/antelope" element={<AntelopeDraw />} />
-            <Route path="/antelope-harvest" element={<AntelopeHarvest />} />
-            <Route path="/otc-elk" element={<OTCElk />} />
-            
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </Layout>
+        <AuthProvider>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/learn" element={<Learn />} />
+              <Route path="/auth" element={<Auth />} />
+              <Route path="/subscription" element={<Subscription />} />
+              
+              <Route path="/deer" element={<DeerDraw />} />
+              <Route path="/deer-harvest" element={<DeerHarvest />} />
+              <Route path="/elk" element={<ElkDraw />} />
+              <Route path="/elk-harvest" element={<ElkHarvest />} />
+              <Route path="/antelope" element={<AntelopeDraw />} />
+              <Route path="/antelope-harvest" element={<AntelopeHarvest />} />
+              <Route path="/otc-elk" element={<OTCElk />} />
+              
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </Layout>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
