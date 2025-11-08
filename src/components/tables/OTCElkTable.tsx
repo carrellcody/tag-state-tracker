@@ -154,7 +154,7 @@ export function OTCElkTable() {
     "Percent Success": "Success %",
     "percent_public": "Public %",
     "Acres Public": "Public Acres",
-    "Hunters Density Per Public Sq. Mile": "Hunter Density/Square Mile (x1000)"
+    "Hunters Density Per Public Sq. Mile": "Hunter Density/Public Sq. Mile (x1000)"
   };
 
   // Calculate percentile-based min/max for hunter density color scaling
