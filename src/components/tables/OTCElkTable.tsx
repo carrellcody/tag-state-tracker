@@ -2,12 +2,24 @@ import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
 const ROWS_PER_PAGE = 100;
+
+const seasonOptions = [
+  { value: 'Archery Either Sex', label: 'Archery Either Sex (Resident Only)' },
+  { value: 'Archery Antlerless', label: 'Archery Antlerless (Resident Only)' },
+  { value: 'Second Season Antlered', label: 'Rifle Antlered Second Season' },
+  { value: 'Third Season Antlered', label: 'Rifle Antlered Third Season' },
+  { value: 'Plains Either Sex OTC', label: 'Archery Either Sex - Plains Units (Res and Non-Res)' },
+  { value: 'Plains Antlerless OTC', label: 'Archery Antlerless - Plains Units (Res and Non-Res)' },
+  { value: 'Second Season Antlered - Private Land Only', label: 'Rifle Second Season Antlered - Private Land Only' },
+  { value: 'Third Season Antlered - Private Land Only', label: 'Rifle Third Season Antlered - Private Land Only' },
+  { value: 'Plains OTC Rifle Either Sex', label: 'Rifle Either Sex - Plains Units' },
+];
 
 export function OTCElkTable() {
   const { data: harvestData, loading, error } = useCsvData('/data/elkHarvest25.csv');
@@ -16,7 +28,7 @@ export function OTCElkTable() {
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   
-  const [otcSeason, setOtcSeason] = useState('Archery Either Sex');
+  const [selectedSeasons, setSelectedSeasons] = useState<string[]>(['Archery Either Sex']);
   const [unitSearch, setUnitSearch] = useState('');
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
@@ -33,7 +45,7 @@ export function OTCElkTable() {
   }, [favorites]);
 
   const toggleFavorite = (unit: string) => {
-    const key = `${unit}-${otcSeason}`;
+    const key = `${unit}-${selectedSeasons.join(',')}`;
     setFavorites(prev => {
       const newFavs = new Set(prev);
       if (newFavs.has(key)) {
@@ -45,18 +57,30 @@ export function OTCElkTable() {
     });
   };
 
+  const toggleSeason = (season: string) => {
+    setSelectedSeasons(prev => {
+      if (prev.includes(season)) {
+        return prev.filter(s => s !== season);
+      } else {
+        return [...prev, season];
+      }
+    });
+  };
+
   const filteredData = useMemo(() => {
     return harvestData.filter((row: any) => {
       // Only show OTC units
       if (!row.OTC) return false;
       
       if (showFavoritesOnly) {
-        const key = `${row.Unit}-${otcSeason}`;
+        const key = `${row.Unit}-${selectedSeasons.join(',')}`;
         if (!favorites.has(key)) return false;
       }
       
-      // Filter by OTC season - check if the season is present in the OTC value
-      if (!row.OTC || !String(row.OTC).includes(otcSeason)) return false;
+      // Filter by OTC season - check if any selected season is present in the OTC value
+      if (selectedSeasons.length === 0) return false;
+      const otcValue = String(row.OTC);
+      if (!selectedSeasons.some(season => otcValue.includes(season))) return false;
       
       // Unit search
       if (unitSearch) {
@@ -77,7 +101,7 @@ export function OTCElkTable() {
       
       return true;
     });
-  }, [harvestData, otcSeason, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
+  }, [harvestData, selectedSeasons, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -184,24 +208,20 @@ export function OTCElkTable() {
 
         <div className="space-y-2">
           <Label>OTC Season</Label>
-          <RadioGroup value={otcSeason} onValueChange={setOtcSeason}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery Either Sex" id="otc-archery-either" />
-              <Label htmlFor="otc-archery-either">Archery Either Sex (Resident Only)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Archery Antlerless" id="otc-archery-antlerless" />
-              <Label htmlFor="otc-archery-antlerless">Archery Antlerless (Resident Only)</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Second Season Antlered" id="otc-second" />
-              <Label htmlFor="otc-second">Second Season Antlered</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="Third Season Antlered" id="otc-third" />
-              <Label htmlFor="otc-third">Third Season Antlered</Label>
-            </div>
-          </RadioGroup>
+          <div className="space-y-2">
+            {seasonOptions.map((option) => (
+              <div key={option.value} className="flex items-center space-x-2">
+                <Checkbox
+                  id={`season-${option.value}`}
+                  checked={selectedSeasons.includes(option.value)}
+                  onCheckedChange={() => toggleSeason(option.value)}
+                />
+                <Label htmlFor={`season-${option.value}`} className="cursor-pointer">
+                  {option.label}
+                </Label>
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -240,7 +260,7 @@ export function OTCElkTable() {
             setUnitSearch('');
             setMinSuccessRate('');
             setMinPublicLand('');
-            setOtcSeason('Archery Either Sex');
+            setSelectedSeasons(['Archery Either Sex']);
           }}
         >
           Clear Filters
@@ -276,7 +296,7 @@ export function OTCElkTable() {
             </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
-                const favKey = `${row.Unit}-${otcSeason}`;
+                const favKey = `${row.Unit}-${selectedSeasons.join(',')}`;
                 const isFavorited = favorites.has(favKey);
                 return (
                   <tr key={idx} className="hover:bg-accent">
