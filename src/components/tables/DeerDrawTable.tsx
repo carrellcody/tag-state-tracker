@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -13,6 +14,7 @@ export function DeerDrawTable() {
   const { data, loading, error } = useCsvData('/data/FullDeer25Final.csv');
   const { data: harvestData } = useCsvData('/data/DeerHarvest25.csv');
   const { data: codePages } = useCsvData('/data/deer25code_pages.csv');
+  const { favorites, toggleFavorite } = useFavorites('deer_draw');
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -29,29 +31,7 @@ export function DeerDrawTable() {
   const [maxPoints, setMaxPoints] = useState(32);
   const [showNoApplicants, setShowNoApplicants] = useState('no');
   const [listFilter, setListFilter] = useState<string[]>(['Any']);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('deerDrawFavorites');
-    if (saved) setFavorites(new Set(JSON.parse(saved)));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('deerDrawFavorites', JSON.stringify(Array.from(favorites)));
-  }, [favorites]);
-
-  const toggleFavorite = (tag: string) => {
-    setFavorites(prev => {
-      const newFavs = new Set(prev);
-      if (newFavs.has(tag)) {
-        newFavs.delete(tag);
-      } else {
-        newFavs.add(tag);
-      }
-      return newFavs;
-    });
-  };
 
   // Auto-hide RFW for non-residents
   useEffect(() => {

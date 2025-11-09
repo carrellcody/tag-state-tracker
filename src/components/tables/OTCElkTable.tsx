@@ -1,5 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -23,6 +24,7 @@ const seasonOptions = [
 
 export function OTCElkTable() {
   const { data: harvestData, loading, error } = useCsvData('/data/elkHarvest25.csv');
+  const { favorites, toggleFavorite: toggleFavoriteRaw } = useFavorites('otc_elk');
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -32,29 +34,11 @@ export function OTCElkTable() {
   const [unitSearch, setUnitSearch] = useState('');
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-
-  useEffect(() => {
-    const saved = localStorage.getItem('otcElkFavorites');
-    if (saved) setFavorites(new Set(JSON.parse(saved)));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('otcElkFavorites', JSON.stringify(Array.from(favorites)));
-  }, [favorites]);
 
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${selectedSeasons.join(',')}`;
-    setFavorites(prev => {
-      const newFavs = new Set(prev);
-      if (newFavs.has(key)) {
-        newFavs.delete(key);
-      } else {
-        newFavs.add(key);
-      }
-      return newFavs;
-    });
+    toggleFavoriteRaw(key);
   };
 
   const toggleSeason = (season: string) => {

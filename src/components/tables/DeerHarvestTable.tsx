@@ -1,5 +1,6 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -11,6 +12,7 @@ const ROWS_PER_PAGE = 100;
 
 export function DeerHarvestTable() {
   const { data, loading, error } = useCsvData('/data/DeerHarvest25.csv');
+  const { favorites, toggleFavorite } = useFavorites('deer_harvest');
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -19,29 +21,11 @@ export function DeerHarvestTable() {
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All manners of take');
   const [showMoreCategories, setShowMoreCategories] = useState(false);
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem('deerHarvestFavorites');
-    if (saved) setFavorites(new Set(JSON.parse(saved)));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('deerHarvestFavorites', JSON.stringify(Array.from(favorites)));
-  }, [favorites]);
-
-  const toggleFavorite = (unit: string, category: string) => {
+  const handleToggleFavorite = (unit: string, category: string) => {
     const key = `${unit}-${category}`;
-    setFavorites(prev => {
-      const newFavs = new Set(prev);
-      if (newFavs.has(key)) {
-        newFavs.delete(key);
-      } else {
-        newFavs.add(key);
-      }
-      return newFavs;
-    });
+    toggleFavorite(key);
   };
 
   const visibleCategories = [
@@ -264,7 +248,7 @@ export function DeerHarvestTable() {
                     <td className="border border-border p-2 text-center">
                       <Star
                         className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
-                        onClick={() => toggleFavorite(row.Unit, row.Category)}
+                        onClick={() => handleToggleFavorite(row.Unit, row.Category)}
                       />
                     </td>
                     {visibleColumns.map((col) => (
