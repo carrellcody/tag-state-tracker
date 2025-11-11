@@ -1,10 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
-
 export default function Learn() {
-  return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+  return <div className="container mx-auto px-4 py-12 max-w-4xl">
       <h1 className="text-4xl font-bold mb-4 text-center">Learn the Colorado Big Game Draw</h1>
       <p className="text-xl text-muted-foreground text-center mb-12">
         Understanding how Colorado's preference point system and draw process works
@@ -23,9 +21,7 @@ export default function Learn() {
             <CardTitle>What is the Colorado Big Game Draw?</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              Colorado uses a preference point system combined with a weighted draw to allocate limited hunting licenses for deer, elk, antelope, and other big game species. Not all units and seasons require a draw - some tags are available over-the-counter (OTC).
-            </p>
+            <p>Colorado uses a preference point system  to allocate limited hunting licenses for deer, elk, and antelope. Other species such as sheep, moose and mountain goats use a weighted point system. Currently, taggout is  game species. Not all units and seasons require a draw - some elk and antelope tags are available over-the-counter (OTC) without having to go through the draw.</p>
             <p>
               The draw system ensures fair distribution of limited tags while giving hunters who have been applying longer a better chance of drawing.
             </p>
@@ -126,28 +122,17 @@ export default function Learn() {
           <h3 className="font-semibold text-lg mb-3">Additional Resources</h3>
           <ul className="space-y-2 text-muted-foreground">
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Colorado Parks & Wildlife - Big Game Information
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 2025 Big Game Brochure (Official Rules)
               </a>
             </li>
           </ul>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
