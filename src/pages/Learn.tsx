@@ -18,7 +18,7 @@ export default function Learn() {
       <div className="space-y-8">
         <Card className="shadow-medium">
           <CardHeader>
-            <CardTitle>What is the Colorado Big Game Draw?</CardTitle>
+            <CardTitle>Colorado Big Game Draw System</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
             <p>Colorado uses a preference point system  to allocate limited hunting licenses for deer, elk, and antelope. Other species such as sheep, moose and mountain goats use a weighted point system, but currently Taggout is not set up to analyze draws other than Deer , Elk and Antelope. 
