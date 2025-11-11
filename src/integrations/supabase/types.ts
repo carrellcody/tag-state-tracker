@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      data_versions: {
+        Row: {
+          created_at: string
+          data_type: string
+          id: string
+          last_updated: string
+          notification_sent: boolean
+          species: string
+          version_hash: string
+        }
+        Insert: {
+          created_at?: string
+          data_type: string
+          id?: string
+          last_updated?: string
+          notification_sent?: boolean
+          species: string
+          version_hash: string
+        }
+        Update: {
+          created_at?: string
+          data_type?: string
+          id?: string
+          last_updated?: string
+          notification_sent?: boolean
+          species?: string
+          version_hash?: string
+        }
+        Relationships: []
+      }
+      draw_reminders: {
+        Row: {
+          created_at: string
+          draw_date: string
+          hunt_code: string
+          id: string
+          reminder_sent: boolean
+          species: string
+        }
+        Insert: {
+          created_at?: string
+          draw_date: string
+          hunt_code: string
+          id?: string
+          reminder_sent?: boolean
+          species: string
+        }
+        Update: {
+          created_at?: string
+          draw_date?: string
+          hunt_code?: string
+          id?: string
+          reminder_sent?: boolean
+          species?: string
+        }
+        Relationships: []
+      }
+      email_preferences: {
+        Row: {
+          created_at: string
+          draw_reminders: boolean
+          id: string
+          new_data_alerts: boolean
+          reminder_days_before: number
+          species: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          draw_reminders?: boolean
+          id?: string
+          new_data_alerts?: boolean
+          reminder_days_before?: number
+          species: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          draw_reminders?: boolean
+          id?: string
+          new_data_alerts?: boolean
+          reminder_days_before?: number
+          species?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
