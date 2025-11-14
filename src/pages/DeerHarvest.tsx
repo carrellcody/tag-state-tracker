@@ -2,18 +2,20 @@ import { DeerHarvestTable } from '@/components/tables/DeerHarvestTable';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { getTierFromProductId, canAccessDeer } from '@/utils/subscriptionTiers';
 
 export default function DeerHarvest() {
   const { subscriptionStatus } = useAuth();
   const navigate = useNavigate();
+  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
 
   useEffect(() => {
-    if (!subscriptionStatus?.subscribed) {
+    if (!canAccessDeer(currentTier)) {
       navigate('/subscription');
     }
-  }, [subscriptionStatus, navigate]);
+  }, [currentTier, navigate]);
 
-  if (!subscriptionStatus?.subscribed) {
+  if (!canAccessDeer(currentTier)) {
     return null;
   }
 

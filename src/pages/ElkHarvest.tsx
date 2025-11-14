@@ -2,18 +2,20 @@ import { ElkHarvestTable } from '@/components/tables/ElkHarvestTable';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
+import { getTierFromProductId, canAccessElk } from '@/utils/subscriptionTiers';
 
 export default function ElkHarvest() {
   const { subscriptionStatus } = useAuth();
   const navigate = useNavigate();
+  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
 
   useEffect(() => {
-    if (!subscriptionStatus?.subscribed) {
+    if (!canAccessElk(currentTier)) {
       navigate('/subscription');
     }
-  }, [subscriptionStatus, navigate]);
+  }, [currentTier, navigate]);
 
-  if (!subscriptionStatus?.subscribed) {
+  if (!canAccessElk(currentTier)) {
     return null;
   }
 
