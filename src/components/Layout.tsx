@@ -28,6 +28,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
+import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -49,7 +50,7 @@ export default function Layout({ children }: LayoutProps) {
   const speciesMenus = [
     {
       label: "Deer",
-      requiresSubscription: true,
+      type: "deer" as const,
       items: [
         { to: "/deer", label: "Draw Stats" },
         { to: "/deer-harvest", label: "Harvest Stats" },
@@ -57,7 +58,7 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       label: "Elk",
-      requiresSubscription: true,
+      type: "elk" as const,
       items: [
         { to: "/elk", label: "Draw Stats" },
         { to: "/elk-harvest", label: "Harvest Stats" },
@@ -66,7 +67,7 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       label: "Antelope",
-      requiresSubscription: false,
+      type: "antelope" as const,
       items: [
         { to: "/antelope", label: "Draw Stats" },
         { to: "/antelope-harvest", label: "Harvest Stats" },
@@ -74,7 +75,9 @@ export default function Layout({ children }: LayoutProps) {
     },
   ];
 
-  const isSubscribed = subscriptionStatus?.subscribed || false;
+  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasElkAccess = canAccessElk(currentTier);
+  const hasDeerAccess = canAccessDeer(currentTier);
 
   const handleRestrictedClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -119,7 +122,10 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Species menus - separate roots so each dropdown anchors under its own trigger */}
               {speciesMenus.map((menu) => {
-                const isRestricted = menu.requiresSubscription && !isSubscribed;
+                const isRestricted = 
+                  (menu.type === 'elk' && !hasElkAccess) ||
+                  (menu.type === 'deer' && !hasDeerAccess);
+                
                 return (
                   <NavigationMenu key={menu.label}>
                     <NavigationMenuList>
@@ -215,7 +221,10 @@ export default function Layout({ children }: LayoutProps) {
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
               {speciesMenus.map((menu) => {
-                const isRestricted = menu.requiresSubscription && !isSubscribed;
+                const isRestricted = 
+                  (menu.type === 'elk' && !hasElkAccess) ||
+                  (menu.type === 'deer' && !hasDeerAccess);
+                
                 return (
                   <div key={menu.label} className="space-y-1">
                     <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? 'opacity-50' : ''}`}>

@@ -4,59 +4,17 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, Loader2, Tag } from 'lucide-react';
+import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-
-const SUBSCRIPTION_TIERS = {
-  elk: {
-    name: 'Elk Pro',
-    price_id: 'price_1STOJWGlYFqs6eXAjlpQ5ANm',
-    product_id: 'prod_TQEnyUNVgFVpfW',
-    price: '$10/year',
-    features: ['Elk Draw Statistics', 'Elk Harvest Data', 'OTC Elk Units']
-  },
-  deer: {
-    name: 'Deer Pro',
-    price_id: 'price_1STOIIGlYFqs6eXAW1BsNzCv',
-    product_id: 'prod_TQElNH8VaW9Mv1',
-    price: '$10/year',
-    features: ['Deer Draw Statistics', 'Deer Harvest Data']
-  },
-  full: {
-    name: 'Full Pro',
-    price_id: 'price_1STOHIGlYFqs6eXAouMJSACQ',
-    product_id: 'prod_TQEkp6iEC7tmTK',
-    price: '$15/year',
-    features: ['All Elk Features', 'All Deer Features', 'Antelope Draw & Harvest']
-  }
-};
+import { SUBSCRIPTION_TIERS } from '@/utils/subscriptionTiers';
 
 export default function Subscription() {
   const { user, session, subscriptionStatus, checkSubscription } = useAuth();
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
-  const [activeCoupons, setActiveCoupons] = useState<any[]>([]);
-  const [couponsLoading, setCouponsLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchActiveCoupons();
-  }, []);
-
-  const fetchActiveCoupons = async () => {
-    try {
-      const { data, error } = await supabase.functions.invoke('list-active-coupons');
-      if (error) throw error;
-      setActiveCoupons(data?.coupons || []);
-    } catch (error) {
-      console.error('Error fetching coupons:', error);
-    } finally {
-      setCouponsLoading(false);
-    }
-  };
 
   const handleCheckout = async (priceId: string) => {
     if (!session) {
@@ -337,47 +295,6 @@ export default function Subscription() {
                 Refresh Status
               </Button>
             </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Tag className="h-5 w-5" />
-              Active Promo Codes
-            </CardTitle>
-            <CardDescription>Use these codes at checkout to get a discount</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {couponsLoading ? (
-              <div className="flex items-center justify-center py-4">
-                <Loader2 className="h-6 w-6 animate-spin" />
-              </div>
-            ) : activeCoupons.length > 0 ? (
-              <div className="space-y-3">
-                {activeCoupons.map((coupon) => (
-                  <Alert key={coupon.id}>
-                    <AlertDescription className="flex items-center justify-between">
-                      <div>
-                        <span className="font-mono font-bold text-lg">{coupon.code}</span>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {coupon.percent_off 
-                            ? `${coupon.percent_off}% off` 
-                            : `$${(coupon.amount_off / 100).toFixed(2)} off`}
-                          {coupon.duration === 'forever' && ' forever'}
-                          {coupon.duration === 'repeating' && ` for ${coupon.duration_in_months} months`}
-                        </p>
-                      </div>
-                      <Badge variant="secondary">Active</Badge>
-                    </AlertDescription>
-                  </Alert>
-                ))}
-              </div>
-            ) : (
-              <p className="text-sm text-muted-foreground text-center py-4">
-                No active promo codes at this time
-              </p>
-            )}
           </CardContent>
         </Card>
       </div>
