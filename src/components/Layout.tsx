@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, CreditCard } from "lucide-react";
 import { useState } from "react";
@@ -18,6 +18,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 
 interface LayoutProps {
@@ -26,8 +35,10 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, signOut } = useAuth();
+  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
+  const { user, signOut, subscriptionStatus } = useAuth();
 
   const navLinks = [
     { to: "/", label: "Home" },
@@ -38,6 +49,7 @@ export default function Layout({ children }: LayoutProps) {
   const speciesMenus = [
     {
       label: "Deer",
+      requiresSubscription: true,
       items: [
         { to: "/deer", label: "Draw Stats" },
         { to: "/deer-harvest", label: "Harvest Stats" },
@@ -45,6 +57,7 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       label: "Elk",
+      requiresSubscription: true,
       items: [
         { to: "/elk", label: "Draw Stats" },
         { to: "/elk-harvest", label: "Harvest Stats" },
@@ -53,12 +66,20 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       label: "Antelope",
+      requiresSubscription: false,
       items: [
         { to: "/antelope", label: "Draw Stats" },
         { to: "/antelope-harvest", label: "Harvest Stats" },
       ],
     },
   ];
+
+  const isSubscribed = subscriptionStatus?.subscribed || false;
+
+  const handleRestrictedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowSubscriptionDialog(true);
+  };
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -97,33 +118,48 @@ export default function Layout({ children }: LayoutProps) {
               </NavigationMenu>
 
               {/* Species menus - separate roots so each dropdown anchors under its own trigger */}
-              {speciesMenus.map((menu) => (
-                <NavigationMenu key={menu.label}>
-                  <NavigationMenuList>
-                    <NavigationMenuItem>
-                      <NavigationMenuTrigger className="font-medium">
-                        {menu.label}
-                      </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <ul className="w-48 p-2 bg-popover">
-                          {menu.items.map((item) => (
-                            <li key={item.to}>
-                              <NavigationMenuLink asChild>
-                                <Link
-                                  to={item.to}
-                                  className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                                >
-                                  {item.label}
-                                </Link>
-                              </NavigationMenuLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </NavigationMenuContent>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-                </NavigationMenu>
-              ))}
+              {speciesMenus.map((menu) => {
+                const isRestricted = menu.requiresSubscription && !isSubscribed;
+                return (
+                  <NavigationMenu key={menu.label}>
+                    <NavigationMenuList>
+                      <NavigationMenuItem>
+                        <NavigationMenuTrigger 
+                          className={`font-medium ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                          disabled={isRestricted}
+                        >
+                          {menu.label}
+                        </NavigationMenuTrigger>
+                        <NavigationMenuContent>
+                          <ul className="w-48 p-2 bg-popover">
+                            {menu.items.map((item) => (
+                              <li key={item.to}>
+                                <NavigationMenuLink asChild>
+                                  {isRestricted ? (
+                                    <button
+                                      onClick={handleRestrictedClick}
+                                      className="block w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-50 cursor-not-allowed"
+                                    >
+                                      {item.label}
+                                    </button>
+                                  ) : (
+                                    <Link
+                                      to={item.to}
+                                      className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                                    >
+                                      {item.label}
+                                    </Link>
+                                  )}
+                                </NavigationMenuLink>
+                              </li>
+                            ))}
+                          </ul>
+                        </NavigationMenuContent>
+                      </NavigationMenuItem>
+                    </NavigationMenuList>
+                  </NavigationMenu>
+                );
+              })}
             </nav>
 
             {/* Auth Button / User Menu */}
@@ -178,26 +214,50 @@ export default function Layout({ children }: LayoutProps) {
           {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
-              {speciesMenus.map((menu) => (
-                <div key={menu.label} className="space-y-1">
-                  <div className="px-3 py-2 font-semibold text-sm">{menu.label}</div>
-                  {menu.items.map((item) => (
-                    <Link
-                      key={item.to}
-                      to={item.to}
-                      onClick={() => setMobileMenuOpen(false)}
-                    >
-                      <Button
-                        variant={isActive(item.to) ? "default" : "ghost"}
-                        className="w-full justify-start pl-6"
-                        size="sm"
-                      >
-                        {item.label}
-                      </Button>
-                    </Link>
-                  ))}
-                </div>
-              ))}
+              {speciesMenus.map((menu) => {
+                const isRestricted = menu.requiresSubscription && !isSubscribed;
+                return (
+                  <div key={menu.label} className="space-y-1">
+                    <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? 'opacity-50' : ''}`}>
+                      {menu.label}
+                    </div>
+                    {menu.items.map((item) => (
+                      isRestricted ? (
+                        <button
+                          key={item.to}
+                          onClick={(e) => {
+                            setMobileMenuOpen(false);
+                            handleRestrictedClick(e);
+                          }}
+                          className="w-full"
+                        >
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start pl-6 opacity-50 cursor-not-allowed"
+                            size="sm"
+                          >
+                            {item.label}
+                          </Button>
+                        </button>
+                      ) : (
+                        <Link
+                          key={item.to}
+                          to={item.to}
+                          onClick={() => setMobileMenuOpen(false)}
+                        >
+                          <Button
+                            variant={isActive(item.to) ? "default" : "ghost"}
+                            className="w-full justify-start pl-6"
+                            size="sm"
+                          >
+                            {item.label}
+                          </Button>
+                        </Link>
+                      )
+                    ))}
+                  </div>
+                );
+              })}
               {navLinks.map((link) => (
                 <Link
                   key={link.to}
@@ -267,6 +327,26 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </footer>
+
+      {/* Subscription Dialog */}
+      <AlertDialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Premium Feature</AlertDialogTitle>
+            <AlertDialogDescription>
+              Subscribe to the Pro plan for $15 to view Elk and Deer tags!
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={() => {
+              setShowSubscriptionDialog(false);
+              navigate('/subscription');
+            }}>
+              View Subscription Plans
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

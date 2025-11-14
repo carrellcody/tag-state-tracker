@@ -1,6 +1,22 @@
 import { ElkDrawTable } from '@/components/tables/ElkDrawTable';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 export default function ElkDraw() {
+  const { subscriptionStatus } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!subscriptionStatus?.subscribed) {
+      navigate('/subscription');
+    }
+  }, [subscriptionStatus, navigate]);
+
+  if (!subscriptionStatus?.subscribed) {
+    return null;
+  }
+
   return (
     <div className="container mx-auto py-6 h-[calc(100vh-8rem)]">
       <div className="mb-4">
