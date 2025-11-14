@@ -9,7 +9,29 @@ import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
-const PRO_PRODUCT_ID = 'prod_TO4Xo6KLQDFEn4';
+const SUBSCRIPTION_TIERS = {
+  elk: {
+    name: 'Elk Pro',
+    price_id: 'price_1STOJWGlYFqs6eXAjlpQ5ANm',
+    product_id: 'prod_TQEnyUNVgFVpfW',
+    price: '$15/year',
+    features: ['Elk Draw Statistics', 'Elk Harvest Data', 'OTC Elk Units']
+  },
+  deer: {
+    name: 'Deer Pro',
+    price_id: 'price_1STOIIGlYFqs6eXAW1BsNzCv',
+    product_id: 'prod_TQElNH8VaW9Mv1',
+    price: '$15/year',
+    features: ['Deer Draw Statistics', 'Deer Harvest Data']
+  },
+  full: {
+    name: 'Full Pro',
+    price_id: 'price_1STOHIGlYFqs6eXAouMJSACQ',
+    product_id: 'prod_TQEkp6iEC7tmTK',
+    price: '$25/year',
+    features: ['All Elk Features', 'All Deer Features', 'Antelope Draw & Harvest']
+  }
+};
 
 export default function Subscription() {
   const { user, session, subscriptionStatus, checkSubscription } = useAuth();
@@ -36,7 +58,7 @@ export default function Subscription() {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = async (priceId: string) => {
     if (!session) {
       navigate('/auth');
       return;
@@ -48,6 +70,7 @@ export default function Subscription() {
         headers: {
           Authorization: `Bearer ${session.access_token}`,
         },
+        body: { price_id: priceId },
       });
 
       if (error) throw error;
@@ -99,7 +122,13 @@ export default function Subscription() {
     }
   };
 
-  const isSubscribed = subscriptionStatus?.subscribed && subscriptionStatus?.product_id === PRO_PRODUCT_ID;
+  const getUserTier = () => {
+    if (!subscriptionStatus?.subscribed) return null;
+    const productId = subscriptionStatus.product_id;
+    return Object.entries(SUBSCRIPTION_TIERS).find(([_, tier]) => tier.product_id === productId)?.[0];
+  };
+
+  const currentTier = getUserTier();
 
   if (!user) {
     return (
@@ -127,86 +156,165 @@ export default function Subscription() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Free</CardTitle>
-              <CardDescription>Basic access to hunt data</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">$0</div>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>View hunt data</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Basic filters</span>
-                </li>
-              </ul>
-            </CardContent>
-          </Card>
-
-          <Card className={isSubscribed ? "border-primary" : ""}>
+        <div className="grid md:grid-cols-3 gap-6">
+          {/* Elk Pro */}
+          <Card className={currentTier === 'elk' ? "border-primary" : ""}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>Pro</CardTitle>
-                {isSubscribed && <Badge>Your Plan</Badge>}
+                <CardTitle>{SUBSCRIPTION_TIERS.elk.name}</CardTitle>
+                {currentTier === 'elk' && <Badge>Your Plan</Badge>}
               </div>
-              <CardDescription>Full access to all features</CardDescription>
+              <CardDescription>Elk hunting data access</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">
-                $15<span className="text-lg font-normal text-muted-foreground">/year</span>
-              </div>
+              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.elk.price}</div>
               <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Everything in Free</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Advanced filters</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Export data</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5 text-green-600" />
-                  <span>Priority support</span>
-                </li>
+                {SUBSCRIPTION_TIERS.elk.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
               </ul>
-              {!isSubscribed ? (
-                <Button onClick={handleCheckout} disabled={loading} className="w-full">
-                  {loading ? (
+              
+              {currentTier === 'elk' ? (
+                <Button 
+                  onClick={handleManageSubscription}
+                  disabled={portalLoading}
+                  className="w-full"
+                >
+                  {portalLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Loading...
                     </>
                   ) : (
-                    'Subscribe to Pro'
+                    'Manage Subscription'
                   )}
                 </Button>
               ) : (
-                <div className="space-y-2">
-                  <Button onClick={handleManageSubscription} disabled={portalLoading} variant="outline" className="w-full">
-                    {portalLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Loading...
-                      </>
-                    ) : (
-                      'Manage Subscription'
-                    )}
-                  </Button>
-                  {subscriptionStatus?.subscription_end && (
-                    <p className="text-sm text-muted-foreground text-center">
-                      Renews on {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
-                    </p>
+                <Button 
+                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.elk.price_id)}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Subscribe Now'
                   )}
-                </div>
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Deer Pro */}
+          <Card className={currentTier === 'deer' ? "border-primary" : ""}>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>{SUBSCRIPTION_TIERS.deer.name}</CardTitle>
+                {currentTier === 'deer' && <Badge>Your Plan</Badge>}
+              </div>
+              <CardDescription>Deer hunting data access</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.deer.price}</div>
+              <ul className="space-y-2">
+                {SUBSCRIPTION_TIERS.deer.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              {currentTier === 'deer' ? (
+                <Button 
+                  onClick={handleManageSubscription}
+                  disabled={portalLoading}
+                  className="w-full"
+                >
+                  {portalLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    'Manage Subscription'
+                  )}
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.deer.price_id)}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Subscribe Now'
+                  )}
+                </Button>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Full Pro */}
+          <Card className={currentTier === 'full' ? "border-primary" : ""}>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle>{SUBSCRIPTION_TIERS.full.name}</CardTitle>
+                {currentTier === 'full' && <Badge>Your Plan</Badge>}
+              </div>
+              <CardDescription>Complete hunting data access</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.full.price}</div>
+              <ul className="space-y-2">
+                {SUBSCRIPTION_TIERS.full.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-5 w-5 text-green-600" />
+                    <span>{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              {currentTier === 'full' ? (
+                <Button 
+                  onClick={handleManageSubscription}
+                  disabled={portalLoading}
+                  className="w-full"
+                >
+                  {portalLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Loading...
+                    </>
+                  ) : (
+                    'Manage Subscription'
+                  )}
+                </Button>
+              ) : (
+                <Button 
+                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.full.price_id)}
+                  disabled={loading}
+                  className="w-full"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Subscribe Now'
+                  )}
+                </Button>
               )}
             </CardContent>
           </Card>
@@ -220,8 +328,8 @@ export default function Subscription() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">
-                  Current Plan: <Badge variant={isSubscribed ? "default" : "secondary"}>
-                    {isSubscribed ? "Pro" : "Free"}
+                  Current Plan: <Badge variant={currentTier ? "default" : "secondary"}>
+                    {currentTier ? SUBSCRIPTION_TIERS[currentTier as keyof typeof SUBSCRIPTION_TIERS].name : "Free"}
                   </Badge>
                 </p>
               </div>
