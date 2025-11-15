@@ -49,8 +49,7 @@ Not all units and seasons require a draw - some elk and antelope tags are availa
             <CardTitle>Draw Process Timeline</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              <strong>Early Spring (March-April):</strong> Application period opens. Research units, check draw odds from previous years, and submit your applications.
+            <p>2026 dates will be revealed soon. Stay tuned for draw dates and              <strong>Early Spring (March-April):</strong> Application period opens. Research units, check draw odds from previous years, and submit your applications.
             </p>
             <p>
               <strong>Late Spring (May-June):</strong> The draw takes place. Results are typically released in late May or early June.
