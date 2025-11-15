@@ -81,12 +81,12 @@ export default function Subscription() {
   };
 
   const getUserTier = () => {
-    if (!subscriptionStatus?.subscribed) return null;
+    if (!subscriptionStatus?.subscribed) return 'free';
     const productId = subscriptionStatus.product_id;
-    return Object.entries(SUBSCRIPTION_TIERS).find(([_, tier]) => tier.product_id === productId)?.[0];
+    return Object.entries(SUBSCRIPTION_TIERS).find(([_, tier]) => tier.product_id === productId)?.[0] || 'free';
   };
 
-  const currentTier = getUserTier();
+  const currentTier = getUserTier() as 'pro' | 'free';
 
   if (!user) {
     return (
@@ -114,20 +114,20 @@ export default function Subscription() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {/* Elk Pro */}
-          <Card className={currentTier === 'elk' ? "border-primary" : ""}>
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {/* Free Plan */}
+          <Card className={currentTier === 'free' ? "border-primary" : ""}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>{SUBSCRIPTION_TIERS.elk.name}</CardTitle>
-                {currentTier === 'elk' && <Badge>Your Plan</Badge>}
+                <CardTitle>{SUBSCRIPTION_TIERS.free.name}</CardTitle>
+                {currentTier === 'free' && <Badge>Your Plan</Badge>}
               </div>
-              <CardDescription>Elk hunting data access</CardDescription>
+              <CardDescription>Basic access to antelope data</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.elk.price}</div>
+              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.free.price}</div>
               <ul className="space-y-2">
-                {SUBSCRIPTION_TIERS.elk.features.map((feature) => (
+                {SUBSCRIPTION_TIERS.free.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600" />
                     <span>{feature}</span>
@@ -135,107 +135,27 @@ export default function Subscription() {
                 ))}
               </ul>
               
-              {currentTier === 'elk' ? (
-                <Button 
-                  onClick={handleManageSubscription}
-                  disabled={portalLoading}
-                  className="w-full"
-                >
-                  {portalLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    'Manage Subscription'
-                  )}
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.elk.price_id)}
-                  disabled={loading}
-                  className="w-full"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Subscribe Now'
-                  )}
+              {currentTier === 'free' && (
+                <Button variant="outline" className="w-full" disabled>
+                  Current Plan
                 </Button>
               )}
             </CardContent>
           </Card>
 
-          {/* Deer Pro */}
-          <Card className={currentTier === 'deer' ? "border-primary" : ""}>
+          {/* Pro Plan */}
+          <Card className={currentTier === 'pro' ? "border-primary" : ""}>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle>{SUBSCRIPTION_TIERS.deer.name}</CardTitle>
-                {currentTier === 'deer' && <Badge>Your Plan</Badge>}
-              </div>
-              <CardDescription>Deer hunting data access</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.deer.price}</div>
-              <ul className="space-y-2">
-                {SUBSCRIPTION_TIERS.deer.features.map((feature) => (
-                  <li key={feature} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-5 w-5 text-green-600" />
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              
-              {currentTier === 'deer' ? (
-                <Button 
-                  onClick={handleManageSubscription}
-                  disabled={portalLoading}
-                  className="w-full"
-                >
-                  {portalLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading...
-                    </>
-                  ) : (
-                    'Manage Subscription'
-                  )}
-                </Button>
-              ) : (
-                <Button 
-                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.deer.price_id)}
-                  disabled={loading}
-                  className="w-full"
-                >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Subscribe Now'
-                  )}
-                </Button>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Full Pro */}
-          <Card className={currentTier === 'full' ? "border-primary" : ""}>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle>{SUBSCRIPTION_TIERS.full.name}</CardTitle>
-                {currentTier === 'full' && <Badge>Your Plan</Badge>}
+                <CardTitle>{SUBSCRIPTION_TIERS.pro.name}</CardTitle>
+                {currentTier === 'pro' && <Badge>Your Plan</Badge>}
               </div>
               <CardDescription>Complete hunting data access</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.full.price}</div>
+              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.pro.price}</div>
               <ul className="space-y-2">
-                {SUBSCRIPTION_TIERS.full.features.map((feature) => (
+                {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2">
                     <CheckCircle2 className="h-5 w-5 text-green-600" />
                     <span>{feature}</span>
@@ -243,7 +163,7 @@ export default function Subscription() {
                 ))}
               </ul>
               
-              {currentTier === 'full' ? (
+              {currentTier === 'pro' ? (
                 <Button 
                   onClick={handleManageSubscription}
                   disabled={portalLoading}
@@ -260,7 +180,7 @@ export default function Subscription() {
                 </Button>
               ) : (
                 <Button 
-                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.full.price_id)}
+                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.pro.price_id!)}
                   disabled={loading}
                   className="w-full"
                 >
@@ -286,8 +206,8 @@ export default function Subscription() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="font-medium">
-                  Current Plan: <Badge variant={currentTier ? "default" : "secondary"}>
-                    {currentTier ? SUBSCRIPTION_TIERS[currentTier as keyof typeof SUBSCRIPTION_TIERS].name : "Free"}
+                  Current Plan: <Badge variant={currentTier === 'pro' ? "default" : "secondary"}>
+                    {SUBSCRIPTION_TIERS[currentTier].name}
                   </Badge>
                 </p>
               </div>
