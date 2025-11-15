@@ -16,40 +16,17 @@ export default function Subscription() {
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleCheckout = async (priceId: string) => {
+  const handleCheckout = () => {
     if (!session) {
       navigate('/auth');
       return;
     }
 
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: { price_id: priceId },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-        toast({
-          title: "Checkout opened",
-          description: "Complete your purchase in the new tab",
-        });
-      }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create checkout session",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
+    toast({
+      title: "Checkout opened",
+      description: "Complete your purchase in the new tab",
+    });
   };
 
   const handleManageSubscription = async () => {
@@ -180,18 +157,10 @@ export default function Subscription() {
                 </Button>
               ) : (
                 <Button 
-                  onClick={() => handleCheckout(SUBSCRIPTION_TIERS.pro.price_id!)}
-                  disabled={loading}
+                  onClick={handleCheckout}
                   className="w-full"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Processing...
-                    </>
-                  ) : (
-                    'Subscribe Now'
-                  )}
+                  Subscribe Now
                 </Button>
               )}
             </CardContent>
