@@ -33,9 +33,9 @@ Not all units and seasons require a draw - some elk and antelope tags are availa
             <CardTitle>Preference Points</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p>How do you get preference points? Once preference point can be accumulated each year you apply for a draw license but don't draw a tag (For example, if you apply for a tag that requires more preference points than you currently have). You can also simply specify that you would like to purchase a preference point. The application for preference points is due the same time that the draw application is due (Typically early April).<strong>How do you get preference points?</strong> Once preference point can be accumulated each year you apply for a draw license but don't draw a tag (For example, if you apply for a tag that requires more preference points than you currently have). You can also simply specify that you would like to purchase a preference point. The application for preference points is due the same time that the draw application is due (Typically early April). 
+          <p><strong>How do you get preference points?</strong> Once preference point can be accumulated each year you apply for a draw license but don't draw a tag (For example, if you apply for a tag that requires more preference points than you currently have). You can also simply specify that you would like to purchase a preference point. The application for preference points is due the same time that the draw application is due (Typically early April). 
           </p>
-            <p>How do they work? The more points you have, the more tags become available to draw. For example, assume that there are 100 tags available for a unit and 90 hunters apply who have 2 preference points, 20 hunters apply with 1 preference point, and 500 hunters apply with 0 preference points. In this scenario all 90 of the 2 preference point applicants will receive a tag, meaning that there are 10 remaining tags. Therefore 10 of the 20 who applied with 1 point will receive a tag, and this is determined by a random lottery-style draw. Finally, none of the 0 point applicants will receive a tag.<strong>How do they work?</strong>The more points you have, the more tags become available to draw. For example, assume that there are 100 tags available for a unit and 90 hunters apply who have 2 preference points, 20 hunters apply with 1 preference point, and 500 hunters apply with 0 preference points. In this scenario all 90 of the 2 preference point applicants will receive a tag, meaning that there are 10 remaining tags. Therefore 10 of the 20 who applied with 1 point will receive a tag, and this is determined by a random lottery-style draw. Finally, none of the 0 point applicants will receive a tag.
+            <p><strong>How do they work?</strong>The more points you have, the more tags become available to draw. For example, assume that there are 100 tags available for a unit and 90 hunters apply who have 2 preference points, 20 hunters apply with 1 preference point, and 500 hunters apply with 0 preference points. In this scenario all 90 of the 2 preference point applicants will receive a tag, meaning that there are 10 remaining tags. Therefore 10 of the 20 who applied with 1 point will receive a tag, and this is determined by a random lottery-style draw. Finally, none of the 0 point applicants will receive a tag.
             </p>
             <div className="mt-6 flex justify-center">
               <img src={preferencePointsDistribution} alt="Preference points distribution diagram showing how tags are allocated based on point levels" className="w-full max-w-3xl rounded-lg border border-border" />
@@ -46,20 +46,10 @@ Not all units and seasons require a draw - some elk and antelope tags are availa
 
         <Card className="shadow-medium">
           <CardHeader>
-            <CardTitle>Draw Process Timeline</CardTitle>
+            <CardTitle>Draw Dates and Deadlines</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>2026 dates will be revealed soon. Stay tuned for draw dates and              <strong>Early Spring (March-April):</strong> Application period opens. Research units, check draw odds from previous years, and submit your applications.
-            </p>
-            <p>
-              <strong>Late Spring (May-June):</strong> The draw takes place. Results are typically released in late May or early June.
-            </p>
-            <p>
-              <strong>Summer:</strong> Successful applicants receive their licenses. Plan your hunt, scout your unit, and prepare.
-            </p>
-            <p>
-              <strong>Fall:</strong> Hunting seasons run from late August through November depending on species and weapon type.
-            </p>
+            <p>2026 dates will be revealed once the Big Game Brochure is published. The draw typically opens in early February and closes in early April </p>>          
           </CardContent>
         </Card>
 
