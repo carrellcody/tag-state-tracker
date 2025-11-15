@@ -1,46 +1,37 @@
 // Subscription tier definitions and access control
 export const SUBSCRIPTION_TIERS = {
-  elk: {
-    name: 'Elk Pro',
-    price_id: 'price_1STOJWGlYFqs6eXAjlpQ5ANm',
-    product_id: 'prod_TQEnyUNVgFVpfW',
-    price: '$10/year',
-    features: ['Elk Draw Statistics', 'Elk Harvest Data', 'OTC Elk Units']
-  },
-  deer: {
-    name: 'Deer Pro',
-    price_id: 'price_1STOIIGlYFqs6eXAW1BsNzCv',
-    product_id: 'prod_TQElNH8VaW9Mv1',
-    price: '$10/year',
-    features: ['Deer Draw Statistics', 'Deer Harvest Data']
-  },
-  full: {
-    name: 'Full Pro',
+  pro: {
+    name: 'Pro',
     price_id: 'price_1STOHIGlYFqs6eXAouMJSACQ',
     product_id: 'prod_TQEkp6iEC7tmTK',
     price: '$15/year',
-    features: ['All Elk Features', 'All Deer Features', 'Antelope Draw & Harvest']
+    features: ['Full access to Elk, Deer, and Antelope statistics']
+  },
+  free: {
+    name: 'Free Plan',
+    price_id: null,
+    product_id: null,
+    price: 'Free',
+    features: ['Antelope statistics and educational material']
   }
 };
 
-export type TierKey = 'elk' | 'deer' | 'full' | 'free';
+export type TierKey = 'pro' | 'free';
 
 export const getTierFromProductId = (productId: string | null): TierKey => {
   if (!productId) return 'free';
   
-  if (productId === SUBSCRIPTION_TIERS.elk.product_id) return 'elk';
-  if (productId === SUBSCRIPTION_TIERS.deer.product_id) return 'deer';
-  if (productId === SUBSCRIPTION_TIERS.full.product_id) return 'full';
+  if (productId === SUBSCRIPTION_TIERS.pro.product_id) return 'pro';
   
   return 'free';
 };
 
 export const canAccessElk = (tier: TierKey): boolean => {
-  return tier === 'elk' || tier === 'full';
+  return tier === 'pro';
 };
 
 export const canAccessDeer = (tier: TierKey): boolean => {
-  return tier === 'deer' || tier === 'full';
+  return tier === 'pro';
 };
 
 // Antelope is always accessible
