@@ -2,6 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
 import { Lock, Loader2 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -27,6 +28,7 @@ export default function Auth() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [stateResidency, setStateResidency] = useState("");
+  const [receiveEmails, setReceiveEmails] = useState(true);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -96,6 +98,7 @@ export default function Auth() {
               first_name: firstName,
               last_name: lastName,
               state_residency: stateResidency,
+              receive_emails: receiveEmails,
             }
           },
         });
@@ -210,6 +213,21 @@ export default function Auth() {
                   minLength={6}
                 />
               </div>
+
+              {!isLogin && (
+                <div className="flex items-center justify-between space-x-2 rounded-lg border border-border p-4">
+                  <div className="space-y-0.5 flex-1">
+                    <Label htmlFor="receive-emails" className="text-base font-normal cursor-pointer">
+                      Receive emails with draw deadline reminders, data update announcements, new feature availability, etc.?
+                    </Label>
+                  </div>
+                  <Switch
+                    id="receive-emails"
+                    checked={receiveEmails}
+                    onCheckedChange={setReceiveEmails}
+                  />
+                </div>
+              )}
 
               <Button type="submit" className="w-full" size="lg" disabled={loading}>
                 {loading ? (
