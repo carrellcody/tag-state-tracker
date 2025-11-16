@@ -19,6 +19,7 @@ import AntelopeDraw from "./pages/AntelopeDraw";
 import AntelopeHarvest from "./pages/AntelopeHarvest";
 import OTCElk from "./pages/OTCElk";
 import Subscription from "./pages/Subscription";
+import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
 
 const queryClient = new QueryClient();
@@ -37,6 +38,7 @@ const App = () => (
               <Route path="/learn" element={<Learn />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/subscription" element={<Subscription />} />
+              <Route path="/profile" element={<Profile />} />
               <Route path="/email-preferences" element={<EmailPreferences />} />
               
               <Route path="/deer" element={<DeerDraw />} />

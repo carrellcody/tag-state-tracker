@@ -130,7 +130,10 @@ export type Database = {
       }
       profiles: {
         Row: {
+          antelope_preference_points: number | null
           created_at: string
+          deer_preference_points: number | null
+          elk_preference_points: number | null
           email: string
           first_name: string | null
           id: string
@@ -144,7 +147,10 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          antelope_preference_points?: number | null
           created_at?: string
+          deer_preference_points?: number | null
+          elk_preference_points?: number | null
           email: string
           first_name?: string | null
           id: string
@@ -158,7 +164,10 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          antelope_preference_points?: number | null
           created_at?: string
+          deer_preference_points?: number | null
+          elk_preference_points?: number | null
           email?: string
           first_name?: string | null
           id?: string
