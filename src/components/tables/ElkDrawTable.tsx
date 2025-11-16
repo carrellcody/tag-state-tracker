@@ -1,6 +1,8 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { useFavorites } from '@/hooks/useFavorites';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -15,6 +17,7 @@ export function ElkDrawTable() {
   const { data: harvestData } = useCsvData('/data/elkHarvest25.csv');
   const { data: codePages } = useCsvData('/data/elk25code_pages.csv');
   const { favorites, toggleFavorite } = useFavorites('elk_draw');
+  const { user } = useAuth();
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -29,9 +32,38 @@ export function ElkDrawTable() {
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
   const [maxPoints, setMaxPoints] = useState(32);
+  const [userPreferencePoints, setUserPreferencePoints] = useState(0);
   const [showNoApplicants, setShowNoApplicants] = useState('no');
   const [listFilter, setListFilter] = useState<string[]>(['Any']);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  // Load user's elk preference points from profile
+  useEffect(() => {
+    const loadPreferencePoints = async () => {
+      if (!user) return;
+      
+      try {
+        const { data: profile, error } = await supabase
+          .from('profiles')
+          .select('elk_preference_points')
+          .eq('id', user.id)
+          .maybeSingle();
+
+        if (error) {
+          console.error('Error loading elk preference points:', error);
+          return;
+        }
+
+        if (profile) {
+          setUserPreferencePoints(profile.elk_preference_points || 0);
+        }
+      } catch (error) {
+        console.error('Error loading elk preference points:', error);
+      }
+    };
+
+    loadPreferencePoints();
+  }, [user]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -169,7 +201,7 @@ export function ElkDrawTable() {
     "List": "List",
     "Valid GMUs": "Valid Units",
     "Drawn_out_level": "Drawn out level (Minimum points required)",
-    "Chance_with_First_choice": "% chance with Maximum PP indicated",
+    "Chance_with_First_choice": "% chance with your preference points",
     "Chance_at_DOL": "% chance at drawn out level",
     "Sex": "Sex",
     "Weapon": "Weapon",
@@ -195,6 +227,19 @@ export function ElkDrawTable() {
         <div className="space-y-2">
           <Label>Search Units</Label>
           <Input placeholder="e.g. 10, 20, 5" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="elk-user-pp">Your Elk Preference Points</Label>
+          <Input
+            id="elk-user-pp"
+            type="number"
+            min="0"
+            max="32"
+            value={userPreferencePoints}
+            onChange={(e) => setUserPreferencePoints(Math.max(0, Math.min(32, parseInt(e.target.value) || 0)))}
+            placeholder="Enter your PP"
+          />
         </div>
 
         <div className="space-y-2">
@@ -439,12 +484,12 @@ export function ElkDrawTable() {
                       {visibleColumns.map((col) => {
                         let cellValue = row[col] || '';
                         
-                        // Dynamic calculation for Chance_with_First_choice based on maxPoints
+                        // Dynamic calculation for Chance_with_First_choice based on user's preference points
                         if (col === 'Chance_with_First_choice') {
                           const dol = parseFloat(row.Drawn_out_level || 0);
-                          if (maxPoints > dol) {
+                          if (userPreferencePoints > dol) {
                             cellValue = '100%';
-                          } else if (maxPoints < dol) {
+                          } else if (userPreferencePoints < dol) {
                             cellValue = '0%';
                           } else {
                             cellValue = row.Chance_at_DOL || '';
