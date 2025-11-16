@@ -94,21 +94,8 @@ Secondary Draw typically opens in mid June and closes at the end of June (These 
         </Card>
 
         <Card className="shadow-medium">
-          <CardHeader>
-            <CardTitle>Using Tag Season to Plan Your Hunt</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              Tag Season aggregates draw odds and harvest statistics to help you make informed decisions:
-            </p>
-            <ul className="list-disc pl-6 space-y-2">
-              <li>Filter units by your current preference points to see realistic options</li>
-              <li>Compare harvest success rates to gauge hunting quality</li>
-              <li>Check public land percentages to ensure access</li>
-              <li>Review hunter density to find less crowded units</li>
-              <li>Track historical draw odds to predict future trends</li>
-            </ul>
-          </CardContent>
+          
+          
         </Card>
 
         <div className="bg-muted/50 p-6 rounded-lg border border-border">
