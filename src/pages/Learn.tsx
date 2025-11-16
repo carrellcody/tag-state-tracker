@@ -22,7 +22,7 @@ export default function Learn() {
             <CardTitle>Colorado Big Game Draw System</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>Colorado uses a preference point system  to allocate limited hunting licenses for deer, elk, and antelope. Other species such as sheep, moose and mountain goats use a weighted point system, but currently Taggout is not set up to analyze draws other than Deer , Elk and Antelope. 
+            <p>Colorado uses a preference point system  to allocate limited hunting licenses for deer, elk, and antelope. Other species such as sheep, moose and mountain goats use a weighted point system, but currently Taggout is not set up to analyze draws other than Deer , Elk and Antelope. 
 Not all units and seasons require a draw - some elk and antelope tags are available over-the-counter (OTC) without having to go through the draw.</p>
             
           </CardContent>
@@ -49,7 +49,7 @@ Not all units and seasons require a draw - some elk and antelope tags are availa
             <CardTitle>Draw Dates and Deadlines</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>2026 dates will be revealed once the Big Game Brochure is published. The draw typically opens in early February and closes in early April </p>>          
+            <p>2026 dates will be revealed once the Big Game Brochure is published. The draw typically opens in early February and closes in early April.</p>
           </CardContent>
         </Card>
 
