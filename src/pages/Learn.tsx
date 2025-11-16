@@ -61,20 +61,17 @@ Secondary Draw typically opens in mid June and closes at the end of June (These 
 
         <Card className="shadow-medium">
           <CardHeader>
-            <CardTitle>Application Strategy</CardTitle>
+            <CardTitle>Tag "List" Designation</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              <strong>First Choice:</strong> Your first choice should be the unit you most want to hunt. This is your primary application and typically has the best chance of drawing.
+              <strong>List A:</strong> You can only get ONE List A license
             </p>
             <p>
-              <strong>Second Choice:</strong> Choose a unit with better odds as a backup. If you don't draw your first choice, you'll be entered in the second choice draw.
+              <strong>List B:</strong> If a hunt is List B, you can get up to TWO licenses: one List A license and one List B license, or two List B licenses (e.g. A+B or B+B)
             </p>
             <p>
-              <strong>Weighted vs. Preference-Only Units:</strong> Some premium units are "preference point only" meaning all tags go to the applicants with the most points. Most units use the weighted system where you still have a chance even with fewer points.
-            </p>
-            <p>
-              <strong>Building Points:</strong> Many hunters build points for several years before applying for premium units with low draw odds. Use Tag Season's filters to find which units match your current point level.
+              <strong>List C:</strong> If a hunt is List C, you can get ANY number of List C licenses, as well as one List A license and one List B license, or two List B licenses (e.g. A+B+C+C+C, etc. or B+B+C+C+C, etc.)
             </p>
           </CardContent>
         </Card>
