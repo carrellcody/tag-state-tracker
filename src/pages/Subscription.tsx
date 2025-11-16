@@ -186,7 +186,7 @@ export default function Subscription() {
               <div>
                 <p className="font-medium">
                   Current Plan: <Badge variant={currentTier === 'pro' ? "default" : "secondary"}>
-                    {SUBSCRIPTION_TIERS[currentTier].name}
+                    {currentTier === 'loading' ? 'Checking...' : SUBSCRIPTION_TIERS[currentTier].name}
                   </Badge>
                 </p>
               </div>
