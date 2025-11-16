@@ -58,12 +58,13 @@ export default function Subscription() {
   };
 
   const getUserTier = () => {
+    if (subscriptionStatus === null) return 'loading';
     if (!subscriptionStatus?.subscribed) return 'free';
     const productId = subscriptionStatus.product_id;
     return Object.entries(SUBSCRIPTION_TIERS).find(([_, tier]) => tier.product_id === productId)?.[0] || 'free';
   };
 
-  const currentTier = getUserTier() as 'pro' | 'free';
+  const currentTier = getUserTier() as 'pro' | 'free' | 'loading';
 
   if (!user) {
     return (
@@ -97,7 +98,9 @@ export default function Subscription() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{SUBSCRIPTION_TIERS.free.name}</CardTitle>
-                {currentTier === 'free' && <Badge>Your Plan</Badge>}
+                {currentTier === 'loading' ? (
+                  <Badge variant="outline">Checking...</Badge>
+                ) : currentTier === 'free' && <Badge>Your Plan</Badge>}
               </div>
               <CardDescription>Basic access to antelope data</CardDescription>
             </CardHeader>
@@ -125,7 +128,9 @@ export default function Subscription() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle>{SUBSCRIPTION_TIERS.pro.name}</CardTitle>
-                {currentTier === 'pro' && <Badge>Your Plan</Badge>}
+                {currentTier === 'loading' ? (
+                  <Badge variant="outline">Checking...</Badge>
+                ) : currentTier === 'pro' && <Badge>Your Plan</Badge>}
               </div>
               <CardDescription>Complete hunting data access</CardDescription>
             </CardHeader>
@@ -140,7 +145,12 @@ export default function Subscription() {
                 ))}
               </ul>
               
-              {currentTier === 'pro' ? (
+              {currentTier === 'loading' ? (
+                <Button disabled className="w-full">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  Checking subscription...
+                </Button>
+              ) : currentTier === 'pro' ? (
                 <Button 
                   onClick={handleManageSubscription}
                   disabled={portalLoading}
