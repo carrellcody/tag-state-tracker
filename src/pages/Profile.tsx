@@ -258,6 +258,23 @@ export default function Profile() {
                 onChange={(e) => setAntelopePoints(Math.max(0, parseInt(e.target.value) || 0))}
               />
             </div>
+            <Button
+              onClick={handleSaveProfile}
+              disabled={saveLoading}
+              className="w-full"
+            >
+              {saveLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="mr-2 h-4 w-4" />
+                  Save Preference Points
+                </>
+              )}
+            </Button>
           </CardContent>
         </Card>
 
