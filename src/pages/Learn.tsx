@@ -49,7 +49,13 @@ Not all units and seasons require a draw - some elk and antelope tags are availa
             <CardTitle>Draw Dates and Deadlines</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>2026 dates will be revealed once the Big Game Brochure is published. The draw typically opens in early February and closes in early April.</p>
+            <p>2026 dates will be revealed once the Big Game Brochure is published. The draw typically opens in early March and closes in early April.
+Draw results are typically posted in late May.
+Secondary Draw typically opens in mid June and closes at the end of June (These are leftover tags that were either not drawn in the primary draw                                                  
+
+
+
+          </p>
           </CardContent>
         </Card>
 
