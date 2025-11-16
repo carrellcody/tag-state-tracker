@@ -136,6 +136,7 @@ export type Database = {
           id: string
           last_name: string | null
           product_id: string | null
+          receive_emails: boolean
           state_residency: string | null
           stripe_customer_id: string | null
           subscription_end: string | null
@@ -149,6 +150,7 @@ export type Database = {
           id: string
           last_name?: string | null
           product_id?: string | null
+          receive_emails?: boolean
           state_residency?: string | null
           stripe_customer_id?: string | null
           subscription_end?: string | null
@@ -162,6 +164,7 @@ export type Database = {
           id?: string
           last_name?: string | null
           product_id?: string | null
+          receive_emails?: boolean
           state_residency?: string | null
           stripe_customer_id?: string | null
           subscription_end?: string | null
