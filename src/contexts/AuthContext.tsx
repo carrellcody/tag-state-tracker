@@ -73,35 +73,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Instantly load subscription status from DB to avoid flicker
         if (session?.user) {
-          console.log('[AUTH-CHANGE] Loading subscription from DB for user:', session.user.id);
-          const { data: profile, error: profileError } = await supabase
-            .from('profiles')
-            .select('subscription_status, product_id, subscription_end')
-            .eq('id', session.user.id)
-            .maybeSingle();
-          
-          if (profileError) {
-            console.error('[AUTH-CHANGE] Error loading profile:', profileError);
-          } else if (profile) {
-            console.log('[AUTH-CHANGE] Profile loaded from DB:', profile);
-            setSubscriptionStatus({
-              subscribed: profile.subscription_status === 'active',
-              product_id: profile.product_id,
-              subscription_end: profile.subscription_end,
-            });
-          } else {
-            console.log('[AUTH-CHANGE] No profile found in DB');
-          }
-          
-          // Then refresh from Stripe
-          setTimeout(() => {
-            checkSubscription();
+          const userId = session.user.id;
+          // Defer all async work to avoid deadlocks in the auth callback
+          setTimeout(async () => {
+            try {
+              console.log('[AUTH-CHANGE] Loading subscription from DB for user:', userId);
+              const { data: profile, error: profileError } = await supabase
+                .from('profiles')
+                .select('subscription_status, product_id, subscription_end')
+                .eq('id', userId)
+                .maybeSingle();
+              
+              if (profileError) {
+                console.error('[AUTH-CHANGE] Error loading profile:', profileError);
+              } else if (profile) {
+                console.log('[AUTH-CHANGE] Profile loaded from DB:', profile);
+                setSubscriptionStatus({
+                  subscribed: profile.subscription_status === 'active',
+                  product_id: profile.product_id,
+                  subscription_end: profile.subscription_end,
+                });
+              } else {
+                console.log('[AUTH-CHANGE] No profile found in DB');
+              }
+              
+              // Then refresh from Stripe
+              await checkSubscription();
+            } catch (e) {
+              console.error('[AUTH-CHANGE] Deferred work failed:', e);
+            }
           }, 0);
         } else {
           setSubscriptionStatus(null);
@@ -166,33 +171,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signOut = async () => {
+    console.log('Starting sign out process...');
     try {
-      console.log('Starting sign out process...');
-      const { error } = await supabase.auth.signOut();
-      
-      if (error) {
-        console.error('Supabase sign out error:', error);
-        throw error;
-      }
-      
-      console.log('Sign out successful, clearing state...');
+      // Race sign out with a timeout to avoid hanging
+      const timeout = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('Sign out timed out')), 3000)
+      );
+      await Promise.race([
+        supabase.auth.signOut(),
+        timeout,
+      ]);
+
+      console.log('Sign out successful (or forced), clearing state...');
+    } catch (error) {
+      console.error('Supabase sign out error:', error);
+      // proceed anyway
+    } finally {
       setUser(null);
       setSession(null);
       setSubscriptionStatus(null);
-      
-      toast({
-        title: "Signed out successfully",
-      });
-      
+
+      toast({ title: 'Signed out successfully' });
       // Force reload to clear any cached state
       window.location.href = '/';
-    } catch (error) {
-      console.error('Error signing out:', error);
-      toast({
-        title: "Error signing out",
-        description: error instanceof Error ? error.message : "Please try again",
-        variant: "destructive",
-      });
     }
   };
 
