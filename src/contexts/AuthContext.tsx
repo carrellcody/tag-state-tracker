@@ -34,20 +34,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const accessToken = currentSession?.access_token;
       
       if (!accessToken) {
+        console.log('[CHECK-SUB] No access token, user not authenticated');
         setSubscriptionStatus(null);
         return;
       }
 
+      console.log('[CHECK-SUB] Invoking check-subscription function...');
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       });
 
-      if (error) throw error;
+      if (error) {
+        console.error('[CHECK-SUB] Edge function error:', error);
+        // Don't clear the status on error - keep the DB-loaded value
+        toast({
+          title: "Subscription check failed",
+          description: "Using cached subscription status",
+          variant: "default",
+        });
+        return;
+      }
+      
+      console.log('[CHECK-SUB] Success, updating status:', data);
       setSubscriptionStatus(data);
     } catch (error) {
-      console.error('Error checking subscription:', error);
+      console.error('[CHECK-SUB] Exception:', error);
+      // Don't clear the status on error - keep the DB-loaded value
+      toast({
+        title: "Subscription check failed",
+        description: error instanceof Error ? error.message : "Using cached subscription status",
+        variant: "default",
+      });
     }
   };
 
@@ -60,18 +79,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         // Instantly load subscription status from DB to avoid flicker
         if (session?.user) {
-          const { data: profile } = await supabase
+          console.log('[AUTH-CHANGE] Loading subscription from DB for user:', session.user.id);
+          const { data: profile, error: profileError } = await supabase
             .from('profiles')
             .select('subscription_status, product_id, subscription_end')
             .eq('id', session.user.id)
             .maybeSingle();
           
-          if (profile) {
+          if (profileError) {
+            console.error('[AUTH-CHANGE] Error loading profile:', profileError);
+          } else if (profile) {
+            console.log('[AUTH-CHANGE] Profile loaded from DB:', profile);
             setSubscriptionStatus({
               subscribed: profile.subscription_status === 'active',
               product_id: profile.product_id,
               subscription_end: profile.subscription_end,
             });
+          } else {
+            console.log('[AUTH-CHANGE] No profile found in DB');
           }
           
           // Then refresh from Stripe
@@ -93,18 +118,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (session?.user) {
         // Instantly load subscription status from DB
-        const { data: profile } = await supabase
+        console.log('[AUTH-INIT] Loading subscription from DB for user:', session.user.id);
+        const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('subscription_status, product_id, subscription_end')
           .eq('id', session.user.id)
           .maybeSingle();
         
-        if (profile) {
+        if (profileError) {
+          console.error('[AUTH-INIT] Error loading profile:', profileError);
+        } else if (profile) {
+          console.log('[AUTH-INIT] Profile loaded from DB:', profile);
           setSubscriptionStatus({
             subscribed: profile.subscription_status === 'active',
             product_id: profile.product_id,
             subscription_end: profile.subscription_end,
           });
+        } else {
+          console.log('[AUTH-INIT] No profile found in DB');
         }
         
         // Then refresh from Stripe
