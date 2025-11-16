@@ -135,8 +135,10 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
+          product_id: string | null
           state_residency: string | null
           stripe_customer_id: string | null
+          subscription_end: string | null
           subscription_status: string
           updated_at: string
         }
@@ -146,8 +148,10 @@ export type Database = {
           first_name?: string | null
           id: string
           last_name?: string | null
+          product_id?: string | null
           state_residency?: string | null
           stripe_customer_id?: string | null
+          subscription_end?: string | null
           subscription_status?: string
           updated_at?: string
         }
@@ -157,8 +161,10 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
+          product_id?: string | null
           state_residency?: string | null
           stripe_customer_id?: string | null
+          subscription_end?: string | null
           subscription_status?: string
           updated_at?: string
         }

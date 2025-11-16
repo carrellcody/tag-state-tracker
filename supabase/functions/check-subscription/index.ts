@@ -52,7 +52,11 @@ serve(async (req) => {
       // Update profile
       await supabaseClient
         .from('profiles')
-        .update({ subscription_status: 'inactive' })
+        .update({ 
+          subscription_status: 'inactive',
+          product_id: null,
+          subscription_end: null
+        })
         .eq('id', user.id);
       
       return new Response(JSON.stringify({ subscribed: false }), {
@@ -92,7 +96,11 @@ serve(async (req) => {
       // Update profile
       await supabaseClient
         .from('profiles')
-        .update({ subscription_status: 'active' })
+        .update({ 
+          subscription_status: 'active',
+          product_id: productId,
+          subscription_end: subscriptionEnd
+        })
         .eq('id', user.id);
     } else {
       logStep("No active subscription found");
@@ -100,7 +108,11 @@ serve(async (req) => {
       // Update profile
       await supabaseClient
         .from('profiles')
-        .update({ subscription_status: 'inactive' })
+        .update({ 
+          subscription_status: 'inactive',
+          product_id: null,
+          subscription_end: null
+        })
         .eq('id', user.id);
     }
 
