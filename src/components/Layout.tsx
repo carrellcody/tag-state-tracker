@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X, User, LogOut, CreditCard } from "lucide-react";
+import { Menu, X, User, LogOut, UserCircle } from "lucide-react";
 import { useState } from "react";
 import {
   NavigationMenu,
@@ -182,9 +182,9 @@ export default function Layout({ children }: LayoutProps) {
                     <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/subscription" className="cursor-pointer">
-                        <CreditCard className="h-4 w-4 mr-2" />
-                        Subscription
+                      <Link to="/profile" className="cursor-pointer">
+                        <UserCircle className="h-4 w-4 mr-2" />
+                        Profile
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
@@ -283,10 +283,10 @@ export default function Layout({ children }: LayoutProps) {
               ))}
               {user ? (
                 <>
-                  <Link to="/subscription" onClick={() => setMobileMenuOpen(false)}>
+                  <Link to="/profile" onClick={() => setMobileMenuOpen(false)}>
                     <Button variant="ghost" className="w-full justify-start">
-                      <CreditCard className="h-4 w-4 mr-2" />
-                      Subscription
+                      <UserCircle className="h-4 w-4 mr-2" />
+                      Profile
                     </Button>
                   </Link>
                   <Button variant="secondary" className="w-full" onClick={() => {
