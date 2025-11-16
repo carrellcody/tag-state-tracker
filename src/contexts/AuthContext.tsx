@@ -28,12 +28,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const { toast } = useToast();
 
   const checkSubscription = async () => {
-    if (!session) return;
-    
     try {
+      // Always fetch fresh session to avoid stale closures
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const accessToken = currentSession?.access_token;
+      
+      if (!accessToken) {
+        setSubscriptionStatus(null);
+        return;
+      }
+
       const { data, error } = await supabase.functions.invoke('check-subscription', {
         headers: {
-          Authorization: `Bearer ${session.access_token}`,
+          Authorization: `Bearer ${accessToken}`,
         },
       });
 
@@ -47,12 +54,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
-        // Check subscription after auth state changes
+        // Instantly load subscription status from DB to avoid flicker
         if (session?.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('subscription_status, product_id, subscription_end')
+            .eq('id', session.user.id)
+            .maybeSingle();
+          
+          if (profile) {
+            setSubscriptionStatus({
+              subscribed: profile.subscription_status === 'active',
+              product_id: profile.product_id,
+              subscription_end: profile.subscription_end,
+            });
+          }
+          
+          // Then refresh from Stripe
           setTimeout(() => {
             checkSubscription();
           }, 0);
@@ -65,11 +87,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
+        // Instantly load subscription status from DB
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('subscription_status, product_id, subscription_end')
+          .eq('id', session.user.id)
+          .maybeSingle();
+        
+        if (profile) {
+          setSubscriptionStatus({
+            subscribed: profile.subscription_status === 'active',
+            product_id: profile.product_id,
+            subscription_end: profile.subscription_end,
+          });
+        }
+        
+        // Then refresh from Stripe
         setTimeout(() => {
           checkSubscription();
         }, 0);
@@ -80,14 +118,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // Auto-refresh subscription status every 60 seconds
     const interval = setInterval(() => {
-      if (session) {
-        checkSubscription();
-      }
+      checkSubscription();
     }, 60000);
+
+    // Refresh when window regains focus
+    const onFocus = () => {
+      checkSubscription();
+    };
+    window.addEventListener('focus', onFocus);
 
     return () => {
       subscription.unsubscribe();
       clearInterval(interval);
+      window.removeEventListener('focus', onFocus);
     };
   }, []);
 
