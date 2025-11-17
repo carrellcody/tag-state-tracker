@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
-const ROWS_PER_PAGE = 100;
+const ROWS_PER_PAGE = 50;
 
 export function DeerDrawTable() {
   const { data, loading, error } = useCsvData('/data/FullDeer25Final.csv');
@@ -447,7 +447,13 @@ export function DeerDrawTable() {
       <main className="flex-1 overflow-hidden flex flex-col">
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
-          <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
+              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+            </div>
+          </div>
         </div>
 
         <div className="overflow-auto flex-1">
@@ -565,11 +571,6 @@ export function DeerDrawTable() {
               })}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-4 flex flex-col sm:flex-row justify-center gap-2">
-          <Button variant="outline" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
-          <Button variant="outline" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
         </div>
       </main>
     </div>

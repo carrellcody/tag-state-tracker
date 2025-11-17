@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
 
-const ROWS_PER_PAGE = 100;
+const ROWS_PER_PAGE = 50;
 
 const seasonOptions = [
   { value: 'Archery Either Sex', label: 'Archery Either Sex (Resident Only)' },
@@ -254,7 +254,13 @@ export function OTCElkTable() {
       <main className="flex-1 overflow-auto">
         <div className="mb-4 flex justify-between items-center">
           <p className="text-sm text-muted-foreground">{sortedData.length} OTC units match your criteria</p>
-          <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
+          <div className="flex items-center gap-4">
+            <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
+              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+            </div>
+          </div>
         </div>
 
         <div className="overflow-x-auto">
@@ -310,23 +316,6 @@ export function OTCElkTable() {
               })}
             </tbody>
           </table>
-        </div>
-
-        <div className="mt-4 flex justify-center gap-2">
-          <Button
-            variant="outline"
-            disabled={currentPage === 1}
-            onClick={() => setCurrentPage(p => p - 1)}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            disabled={currentPage === totalPages}
-            onClick={() => setCurrentPage(p => p + 1)}
-          >
-            Next
-          </Button>
         </div>
       </main>
     </div>
