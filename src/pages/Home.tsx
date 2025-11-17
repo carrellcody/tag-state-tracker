@@ -7,30 +7,30 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="gradient-primary py-20 px-4">
+      <section className="gradient-primary py-12 sm:py-16 md:py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground mb-2">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-2">
             Tag Season
           </h1>
-          <p className="text-xl md:text-2xl text-primary-foreground/90 mb-8">
+          <p className="text-lg sm:text-xl md:text-2xl text-primary-foreground/90 mb-6 sm:mb-8">
             Colorado
           </p>
-          <div className="flex flex-wrap gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center max-w-3xl mx-auto">
             <Button 
               size="lg" 
               variant="outline" 
-              className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base"
+              className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full sm:w-auto"
               onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Explore Draw and Harvest Stats
             </Button>
-            <Link to="/about">
-              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base">
+            <Link to="/about" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full">
                 How to use Tag-Season
               </Button>
             </Link>
-            <Link to="/learn">
-              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-14 px-8 text-base">
+            <Link to="/learn" className="w-full sm:w-auto">
+              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full">
                 Learn the Draw Process
               </Button>
             </Link>
@@ -39,12 +39,12 @@ export default function Home() {
       </section>
 
       {/* Statistics Section */}
-      <section id="draw-stats" className="py-12 px-4 bg-muted/30">
+      <section id="draw-stats" className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-8">
+          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
             {/* Draw Statistics */}
             <div>
-              <h2 className="text-3xl font-bold mb-8 text-center">Draw Statistics 2025</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Draw Statistics 2025</h2>
               <div className="flex flex-col items-center gap-4">
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Link to="/deer">
@@ -76,7 +76,7 @@ export default function Home() {
 
             {/* Harvest Statistics */}
             <div>
-              <h2 className="text-3xl font-bold mb-8 text-center">Harvest Statistics 2024</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Harvest Statistics 2024</h2>
               <div className="flex flex-col items-center gap-4">
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Link to="/deer-harvest">
@@ -110,9 +110,9 @@ export default function Home() {
       </section>
 
       {/* Colorado Resources */}
-      <section className="py-12 px-4 bg-muted/30">
+      <section className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center">Colorado Parks & Wildlife Resources</h2>
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Colorado Parks & Wildlife Resources</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
             <a
               href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be"

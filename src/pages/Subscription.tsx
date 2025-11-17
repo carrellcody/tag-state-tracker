@@ -138,16 +138,16 @@ export default function Subscription() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className="container mx-auto py-6 sm:py-8 px-2 sm:px-4">
+      <div className="max-w-4xl mx-auto space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Subscription Plans</h1>
-          <p className="text-muted-foreground mt-2">
+          <h1 className="text-2xl sm:text-3xl font-bold">Subscription Plans</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2">
             Choose the plan that works best for you
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-4 sm:gap-6 max-w-3xl mx-auto">
           {/* Free Plan */}
           <Card className={currentTier === 'free' ? "border-primary" : ""}>
             <CardHeader>
