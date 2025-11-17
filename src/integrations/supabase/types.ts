@@ -139,6 +139,8 @@ export type Database = {
           id: string
           last_name: string | null
           product_id: string | null
+          promo_code_applied_at: string | null
+          promo_code_used: string | null
           receive_emails: boolean
           state_residency: string | null
           stripe_customer_id: string | null
@@ -156,6 +158,8 @@ export type Database = {
           id: string
           last_name?: string | null
           product_id?: string | null
+          promo_code_applied_at?: string | null
+          promo_code_used?: string | null
           receive_emails?: boolean
           state_residency?: string | null
           stripe_customer_id?: string | null
@@ -173,6 +177,8 @@ export type Database = {
           id?: string
           last_name?: string | null
           product_id?: string | null
+          promo_code_applied_at?: string | null
+          promo_code_used?: string | null
           receive_emails?: boolean
           state_residency?: string | null
           stripe_customer_id?: string | null

@@ -13,20 +13,73 @@ export default function Subscription() {
   const { user, session, subscriptionStatus, checkSubscription } = useAuth();
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
+  const [promoCode, setPromoCode] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleCheckout = () => {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get('session_id');
+    const success = params.get('success');
+
+    if (success === 'true' && sessionId && session) {
+      updatePromoCode(sessionId);
+      // Clean up URL
+      window.history.replaceState({}, '', '/subscription');
+    }
+  }, [session]);
+
+  const updatePromoCode = async (sessionId: string) => {
+    try {
+      await supabase.functions.invoke('update-promo-code', {
+        body: { session_id: sessionId },
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+      });
+      checkSubscription();
+    } catch (error) {
+      console.error('Error updating promo code:', error);
+    }
+  };
+
+  const handleCheckout = async () => {
     if (!session) {
       navigate('/auth');
       return;
     }
 
-    window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
-    toast({
-      title: "Checkout opened",
-      description: "Complete your purchase in the new tab",
-    });
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { 
+          price_id: SUBSCRIPTION_TIERS.pro.price_id,
+          promo_code: promoCode || undefined,
+        },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.open(data.url, '_blank');
+        toast({
+          title: "Checkout opened",
+          description: "Complete your purchase in the new tab",
+        });
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast({
+        title: "Error",
+        description: "Failed to create checkout session",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleManageSubscription = async () => {
@@ -166,12 +219,29 @@ export default function Subscription() {
                   )}
                 </Button>
               ) : (
-                <Button 
-                  onClick={handleCheckout}
-                  className="w-full"
-                >
-                  Subscribe Now
-                </Button>
+                <div className="space-y-3">
+                  <input
+                    type="text"
+                    placeholder="Promo code (optional)"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
+                  />
+                  <Button 
+                    onClick={handleCheckout}
+                    disabled={loading}
+                    className="w-full"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Loading...
+                      </>
+                    ) : (
+                      'Subscribe Now'
+                    )}
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
