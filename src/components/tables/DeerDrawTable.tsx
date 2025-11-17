@@ -56,7 +56,9 @@ export function DeerDrawTable() {
         }
 
         if (profile) {
-          setUserPreferencePoints(profile.deer_preference_points || 0);
+          const points = profile.deer_preference_points || 0;
+          setUserPreferencePoints(points);
+          setMaxPoints(points);
         }
       } catch (error) {
         console.error('Error loading deer preference points:', error);
