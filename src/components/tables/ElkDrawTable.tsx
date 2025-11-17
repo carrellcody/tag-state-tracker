@@ -391,20 +391,6 @@ export function ElkDrawTable() {
         </div>
 
         <div className="space-y-2">
-          <Label>Show tags with no applicants?</Label>
-          <RadioGroup value={showNoApplicants} onValueChange={setShowNoApplicants}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="yes" id="elk-no-apps-yes" />
-              <Label htmlFor="elk-no-apps-yes">Yes</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="no" id="elk-no-apps-no" />
-              <Label htmlFor="elk-no-apps-no">No</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        <div className="space-y-2">
           <Label>List</Label>
           <div className="space-y-1">
             {[
@@ -434,6 +420,20 @@ export function ElkDrawTable() {
               </div>
             ))}
           </div>
+        </div>
+
+        <div className="space-y-2">
+          <Label>Show tags with no applicants?</Label>
+          <RadioGroup value={showNoApplicants} onValueChange={setShowNoApplicants}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="yes" id="elk-no-apps-yes" />
+              <Label htmlFor="elk-no-apps-yes">Yes</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="no" id="elk-no-apps-no" />
+              <Label htmlFor="elk-no-apps-no">No</Label>
+            </div>
+          </RadioGroup>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
