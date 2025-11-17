@@ -7,24 +7,39 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }).max(100),
   email: z.string().trim().email({ message: "Invalid email address" }).max(255),
+  subject: z.string().min(1, { message: "Subject is required" }),
   message: z.string().trim().min(1, { message: "Message is required" }).max(1000),
 });
 
 export default function About() {
   const { toast } = useToast();
+  const location = useLocation();
+  
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: "",
       email: "",
+      subject: "General Question",
       message: "",
     },
   });
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const subjectParam = params.get('subject');
+    if (subjectParam === 'Advertising') {
+      form.setValue('subject', 'Advertising');
+    }
+  }, [location.search, form]);
 
   const onSubmit = (data: z.infer<typeof contactSchema>) => {
     console.log("Contact form submitted:", data);
@@ -149,6 +164,29 @@ export default function About() {
                     <FormControl>
                       <Input type="email" placeholder="your@email.com" {...field} />
                     </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="subject"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Subject</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a subject" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="General Question">General Question</SelectItem>
+                        <SelectItem value="Report a bug">Report a bug</SelectItem>
+                        <SelectItem value="Advertising">Advertising</SelectItem>
+                        <SelectItem value="Other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
                     <FormMessage />
                   </FormItem>
                 )}

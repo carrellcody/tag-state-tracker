@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getTierFromProductId, canAccessDeer } from '@/utils/subscriptionTiers';
+import { AdvertiseBox } from '@/components/AdvertiseBox';
 export default function DeerDraw() {
   const {
     subscriptionStatus

@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getTierFromProductId, canAccessElk } from '@/utils/subscriptionTiers';
+import { AdvertiseBox } from '@/components/AdvertiseBox';
 
 export default function ElkHarvest() {
   const { subscriptionStatus } = useAuth();
@@ -21,6 +22,7 @@ export default function ElkHarvest() {
 
   return (
     <div className="container mx-auto py-6 h-[calc(100vh-8rem)]">
+      <AdvertiseBox />
       <div className="mb-4">
         <h1 className="text-3xl font-bold mb-2">Elk Harvest Statistics</h1>
         <p className="text-muted-foreground">

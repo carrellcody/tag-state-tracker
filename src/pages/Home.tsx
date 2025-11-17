@@ -2,10 +2,16 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp, MapPin, FileText } from "lucide-react";
+import { AdvertiseBox } from "@/components/AdvertiseBox";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      {/* Advertise Box */}
+      <div className="container mx-auto px-4 pt-6">
+        <AdvertiseBox />
+      </div>
+      
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-20 px-4">
         <div className="container mx-auto text-center">
