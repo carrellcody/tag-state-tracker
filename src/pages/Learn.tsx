@@ -3,9 +3,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
 import preferencePointsDistribution from "@/assets/preference-points-distribution.png";
 export default function Learn() {
-  return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-4 text-center">Learn the Colorado Big Game Draw</h1>
+  return <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <h1 className="text-4xl font-bold mb-4 text-center">Colorado Big Game Draw</h1>
       <p className="text-xl text-muted-foreground text-center mb-12">
         Understanding how Colorado's preference point system and draw process works
       </p>
@@ -55,11 +54,7 @@ export default function Learn() {
               by a random lottery-style draw. Finally, none of the 0 point applicants will receive a tag.
             </p>
             <div className="mt-6 flex justify-center">
-              <img
-                src={preferencePointsDistribution}
-                alt="Preference points distribution diagram showing how tags are allocated based on point levels"
-                className="w-full max-w-3xl rounded-lg border border-border"
-              />
+              <img src={preferencePointsDistribution} alt="Preference points distribution diagram showing how tags are allocated based on point levels" className="w-full max-w-3xl rounded-lg border border-border" />
             </div>
           </CardContent>
         </Card>
@@ -123,108 +118,57 @@ export default function Learn() {
           <h3 className="font-semibold text-lg mb-3">Additional Resources</h3>
           <ul className="space-y-2 text-muted-foreground">
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Colorado Parks & Wildlife - Big Game Information
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 2025 Big Game Brochure (Official Rules)
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/elk/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/elk/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Elk Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/deer/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/deer/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Deer Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/pronghorn/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/pronghorn/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Pronghorn Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/bear/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/bear/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Bear Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/moose/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/moose/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Moose Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/bighorn-sheep/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/bighorn-sheep/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Bighorn Sheep Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/mountain-goat/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/mountain-goat/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Mountain Goat Statistics
               </a>
             </li>
             <li>
-              <a
-                href="https://cpw.state.co.us/hunting/big-game/mountain-lion/statistics"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary hover:underline"
-              >
+              <a href="https://cpw.state.co.us/hunting/big-game/mountain-lion/statistics" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                 Mountain Lion Statistics
               </a>
             </li>
           </ul>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 }
