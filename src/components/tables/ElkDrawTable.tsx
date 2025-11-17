@@ -1,4 +1,4 @@
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Fragment } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useAuth } from '@/contexts/AuthContext';
@@ -476,8 +476,8 @@ export function ElkDrawTable() {
                 const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
 
                 return (
-                  <>
-                    <tr key={idx} className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
+                  <Fragment key={idx}>
+                    <tr className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
                       <td className="border border-border p-2 text-center" onClick={(e) => e.stopPropagation()}>
                         <Star
                           className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
@@ -561,7 +561,7 @@ export function ElkDrawTable() {
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 );
               })}
             </tbody>
