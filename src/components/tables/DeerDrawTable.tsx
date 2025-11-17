@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { TableWrapper } from './TableWrapper';
 
 const ROWS_PER_PAGE = 100;
 
@@ -443,13 +444,14 @@ export function DeerDrawTable() {
       </aside>
 
       <main className="flex-1 overflow-hidden flex flex-col">
-        <div className="mb-4 flex justify-between items-center">
+        <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
         </div>
 
-        <div className="overflow-auto flex-1">
-          <table className="w-full border-collapse bg-card">
+        <TableWrapper>
+          <div className="overflow-auto">
+            <table className="w-full border-collapse bg-card min-w-[800px]">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
@@ -564,8 +566,9 @@ export function DeerDrawTable() {
             </tbody>
           </table>
         </div>
+        </TableWrapper>
 
-        <div className="mt-4 flex justify-center gap-2">
+        <div className="mt-4 flex flex-col sm:flex-row justify-center gap-2">
           <Button variant="outline" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
           <Button variant="outline" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
         </div>

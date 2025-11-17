@@ -155,11 +155,11 @@ export default function Profile() {
 
   if (!user) {
     return (
-      <div className="container mx-auto py-8 px-4">
+      <div className="container mx-auto py-6 sm:py-8 px-2 sm:px-4">
         <Card>
           <CardHeader>
-            <CardTitle>Sign in Required</CardTitle>
-            <CardDescription>Please sign in to view your profile</CardDescription>
+            <CardTitle className="text-xl sm:text-2xl">Sign in Required</CardTitle>
+            <CardDescription className="text-sm sm:text-base">Please sign in to view your profile</CardDescription>
           </CardHeader>
         </Card>
       </div>
@@ -175,11 +175,11 @@ export default function Profile() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="max-w-2xl mx-auto space-y-6">
+    <div className="container mx-auto py-6 sm:py-8 px-2 sm:px-4">
+      <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-3xl font-bold">Profile Settings</h1>
-          <p className="text-muted-foreground mt-2">Manage your account preferences</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Profile Settings</h1>
+          <p className="text-sm sm:text-base text-muted-foreground mt-2">Manage your account preferences</p>
         </div>
 
         {/* Subscription Status */}

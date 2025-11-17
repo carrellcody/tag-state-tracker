@@ -7,6 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { TableWrapper } from './TableWrapper';
 
 const ROWS_PER_PAGE = 100;
 
