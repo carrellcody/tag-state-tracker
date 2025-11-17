@@ -24,12 +24,31 @@ export default function Profile() {
   const [elkPoints, setElkPoints] = useState(0);
   const [antelopePoints, setAntelopePoints] = useState(0);
   const [receiveEmails, setReceiveEmails] = useState(true);
+  const [promoData, setPromoData] = useState<{code: string | null, date: string | null}>({code: null, date: null});
 
   useEffect(() => {
     if (user) {
       setEmail(user.email || '');
       loadProfileData();
     }
+  }, [user]);
+
+  useEffect(() => {
+    const fetchPromo = async () => {
+      if (!user) return;
+      const { data } = await supabase
+        .from('profiles')
+        .select('promo_code_used, promo_code_applied_at')
+        .eq('id', user.id)
+        .single();
+      if (data) {
+        setPromoData({
+          code: data.promo_code_used,
+          date: data.promo_code_applied_at
+        });
+      }
+    };
+    fetchPromo();
   }, [user]);
 
   const loadProfileData = async () => {
@@ -232,26 +251,7 @@ export default function Profile() {
               <div className="space-y-2">
                 <Label>Applied Promo Code</Label>
                 <div className="p-3 border border-border rounded-md bg-muted/50">
-                  {(() => {
-                    const [promoData, setPromoData] = useState<{code: string | null, date: string | null}>({code: null, date: null});
-                    useEffect(() => {
-                      const fetchPromo = async () => {
-                        const { data } = await supabase
-                          .from('profiles')
-                          .select('promo_code_used, promo_code_applied_at')
-                          .eq('id', user.id)
-                          .single();
-                        if (data) {
-                          setPromoData({
-                            code: data.promo_code_used,
-                            date: data.promo_code_applied_at
-                          });
-                        }
-                      };
-                      fetchPromo();
-                    }, []);
-                    
-                    return promoData.code ? (
+                  {promoData.code ? (
                       <div>
                         <p className="font-medium">{promoData.code}</p>
                         {promoData.date && (
@@ -260,10 +260,9 @@ export default function Profile() {
                           </p>
                         )}
                       </div>
-                    ) : (
-                      <p className="text-muted-foreground">No promo code applied</p>
-                    );
-                  })()}
+                  ) : (
+                    <p className="text-muted-foreground">No promo code applied</p>
+                  )}
                 </div>
               </div>
             )}
