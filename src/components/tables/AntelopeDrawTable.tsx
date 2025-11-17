@@ -56,7 +56,9 @@ export function AntelopeDrawTable() {
         }
 
         if (profile) {
-          setUserPreferencePoints(profile.antelope_preference_points || 0);
+          const points = profile.antelope_preference_points || 0;
+          setUserPreferencePoints(points);
+          setMaxPoints(points);
         }
       } catch (error) {
         console.error('Error loading antelope preference points:', error);

@@ -56,7 +56,9 @@ export function ElkDrawTable() {
         }
 
         if (profile) {
-          setUserPreferencePoints(profile.elk_preference_points || 0);
+          const points = profile.elk_preference_points || 0;
+          setUserPreferencePoints(points);
+          setMaxPoints(points);
         }
       } catch (error) {
         console.error('Error loading elk preference points:', error);
