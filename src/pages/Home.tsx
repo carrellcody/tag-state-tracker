@@ -38,72 +38,75 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Draw Statistics Section */}
+      {/* Statistics Section */}
       <section id="draw-stats" className="py-12 px-4 bg-muted/30">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center">Draw Statistics 2025</h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Link to="/deer">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Deer</CardTitle>
-                  <CardDescription>Draw Odds 2025</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-            
-            <Link to="/elk">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Elk</CardTitle>
-                  <CardDescription>Draw Odds 2025</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-            
-            <Link to="/antelope">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Antelope</CardTitle>
-                  <CardDescription>Draw Odds 2025</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-          </div>
-        </div>
-      </section>
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Draw Statistics */}
+            <div>
+              <h2 className="text-3xl font-bold mb-8 text-center">Draw Statistics 2025</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <Link to="/deer">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Deer</CardTitle>
+                      <CardDescription>Draw Odds 2025</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+                
+                <Link to="/elk">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Elk</CardTitle>
+                      <CardDescription>Draw Odds 2025</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+                
+                <Link to="/antelope" className="col-span-2">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                      <CardDescription>Draw Odds 2025</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              </div>
+            </div>
 
-      {/* Harvest Statistics Section */}
-      <section id="harvest-stats" className="py-12 px-4">
-        <div className="container mx-auto">
-          <h2 className="text-3xl font-bold mb-8 text-center">Harvest Statistics 2024</h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Link to="/deer-harvest">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Deer</CardTitle>
-                  <CardDescription>Harvest Stats 2024</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-            
-            <Link to="/elk-harvest">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Elk</CardTitle>
-                  <CardDescription>Harvest Stats 2024</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
-            
-            <Link to="/antelope-harvest">
-              <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                <CardHeader className="text-center">
-                  <CardTitle className="text-2xl">Antelope</CardTitle>
-                  <CardDescription>Harvest Stats 2024</CardDescription>
-                </CardHeader>
-              </Card>
-            </Link>
+            {/* Harvest Statistics */}
+            <div>
+              <h2 className="text-3xl font-bold mb-8 text-center">Harvest Statistics 2024</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <Link to="/deer-harvest">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Deer</CardTitle>
+                      <CardDescription>Harvest Stats 2024</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+                
+                <Link to="/elk-harvest">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Elk</CardTitle>
+                      <CardDescription>Harvest Stats 2024</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+                
+                <Link to="/antelope-harvest" className="col-span-2">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                      <CardDescription>Harvest Stats 2024</CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
