@@ -101,9 +101,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               } else {
                 console.log('[AUTH-CHANGE] No profile found in DB');
               }
-              
-              // Then refresh from Stripe
-              await checkSubscription();
             } catch (e) {
               console.error('[AUTH-CHANGE] Deferred work failed:', e);
             }
@@ -142,31 +139,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           console.log('[AUTH-INIT] No profile found in DB');
         }
-        
-        // Then refresh from Stripe
-        setTimeout(() => {
-          checkSubscription();
-        }, 0);
       }
       
       setLoading(false);
     });
 
-    // Auto-refresh subscription status every 60 seconds
-    const interval = setInterval(() => {
-      checkSubscription();
-    }, 60000);
-
-    // Refresh when window regains focus
-    const onFocus = () => {
-      checkSubscription();
-    };
-    window.addEventListener('focus', onFocus);
-
     return () => {
       subscription.unsubscribe();
-      clearInterval(interval);
-      window.removeEventListener('focus', onFocus);
     };
   }, []);
 
