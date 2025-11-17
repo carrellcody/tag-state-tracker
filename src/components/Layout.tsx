@@ -43,7 +43,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const navLinks = [
     { to: "/", label: "Home" },
-    { to: "/learn", label: "Learn the Draw" },
+    { to: "/learn", label: "Learn" },
     { to: "/about", label: "About Tag-Season" },
   ];
 
@@ -94,9 +94,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex h-16 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">
-                Tag Season
-              </span>
+              <span className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">Tag Season</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -107,11 +105,7 @@ export default function Layout({ children }: LayoutProps) {
                   {navLinks.map((link) => (
                     <NavigationMenuItem key={link.to}>
                       <Link to={link.to}>
-                        <Button
-                          variant={isActive(link.to) ? "default" : "ghost"}
-                          size="sm"
-                          className="font-medium"
-                        >
+                        <Button variant={isActive(link.to) ? "default" : "ghost"} size="sm" className="font-medium">
                           {link.label}
                         </Button>
                       </Link>
@@ -122,16 +116,14 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Species menus - separate roots so each dropdown anchors under its own trigger */}
               {speciesMenus.map((menu) => {
-                const isRestricted = 
-                  (menu.type === 'elk' && !hasElkAccess) ||
-                  (menu.type === 'deer' && !hasDeerAccess);
-                
+                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
+
                 return (
                   <NavigationMenu key={menu.label}>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger 
-                          className={`font-medium ${isRestricted ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        <NavigationMenuTrigger
+                          className={`font-medium ${isRestricted ? "opacity-50 cursor-not-allowed" : ""}`}
                           disabled={isRestricted}
                         >
                           {menu.label}
@@ -209,11 +201,7 @@ export default function Layout({ children }: LayoutProps) {
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
             </button>
           </div>
 
@@ -221,16 +209,14 @@ export default function Layout({ children }: LayoutProps) {
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
               {speciesMenus.map((menu) => {
-                const isRestricted = 
-                  (menu.type === 'elk' && !hasElkAccess) ||
-                  (menu.type === 'deer' && !hasDeerAccess);
-                
+                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
+
                 return (
                   <div key={menu.label} className="space-y-1">
-                    <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? 'opacity-50' : ''}`}>
+                    <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? "opacity-50" : ""}`}>
                       {menu.label}
                     </div>
-                    {menu.items.map((item) => (
+                    {menu.items.map((item) =>
                       isRestricted ? (
                         <button
                           key={item.to}
@@ -249,11 +235,7 @@ export default function Layout({ children }: LayoutProps) {
                           </Button>
                         </button>
                       ) : (
-                        <Link
-                          key={item.to}
-                          to={item.to}
-                          onClick={() => setMobileMenuOpen(false)}
-                        >
+                        <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)}>
                           <Button
                             variant={isActive(item.to) ? "default" : "ghost"}
                             className="w-full justify-start pl-6"
@@ -262,21 +244,14 @@ export default function Layout({ children }: LayoutProps) {
                             {item.label}
                           </Button>
                         </Link>
-                      )
-                    ))}
+                      ),
+                    )}
                   </div>
                 );
               })}
               {navLinks.map((link) => (
-                <Link
-                  key={link.to}
-                  to={link.to}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Button
-                    variant={isActive(link.to) ? "default" : "ghost"}
-                    className="w-full justify-start"
-                  >
+                <Link key={link.to} to={link.to} onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant={isActive(link.to) ? "default" : "ghost"} className="w-full justify-start">
                     {link.label}
                   </Button>
                 </Link>
@@ -289,10 +264,14 @@ export default function Layout({ children }: LayoutProps) {
                       Profile
                     </Button>
                   </Link>
-                  <Button variant="secondary" className="w-full" onClick={() => {
-                    setMobileMenuOpen(false);
-                    signOut();
-                  }}>
+                  <Button
+                    variant="secondary"
+                    className="w-full"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      signOut();
+                    }}
+                  >
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
                   </Button>
@@ -347,10 +326,12 @@ export default function Layout({ children }: LayoutProps) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogAction onClick={() => {
-              setShowSubscriptionDialog(false);
-              navigate('/subscription');
-            }}>
+            <AlertDialogAction
+              onClick={() => {
+                setShowSubscriptionDialog(false);
+                navigate("/subscription");
+              }}
+            >
               View Subscription Plans
             </AlertDialogAction>
           </AlertDialogFooter>
