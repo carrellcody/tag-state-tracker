@@ -22,3 +22,6 @@ verify_jwt = false
 [functions.send-new-data-alert]
 verify_jwt = false
 
+[functions.update-promo-code]
+verify_jwt = true
+

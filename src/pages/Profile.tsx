@@ -39,7 +39,7 @@ export default function Profile() {
     try {
       const { data, error } = await supabase
         .from('profiles')
-        .select('deer_preference_points, elk_preference_points, antelope_preference_points, receive_emails')
+        .select('deer_preference_points, elk_preference_points, antelope_preference_points, receive_emails, promo_code_used, promo_code_applied_at')
         .eq('id', user.id)
         .single();
 
@@ -217,6 +217,55 @@ export default function Profile() {
               <p className="text-sm text-muted-foreground">
                 Renews on {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
               </p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Promo Code Section */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Promo Code</CardTitle>
+            <CardDescription>View your applied promotional code</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {user && (
+              <div className="space-y-2">
+                <Label>Applied Promo Code</Label>
+                <div className="p-3 border border-border rounded-md bg-muted/50">
+                  {(() => {
+                    const [promoData, setPromoData] = useState<{code: string | null, date: string | null}>({code: null, date: null});
+                    useEffect(() => {
+                      const fetchPromo = async () => {
+                        const { data } = await supabase
+                          .from('profiles')
+                          .select('promo_code_used, promo_code_applied_at')
+                          .eq('id', user.id)
+                          .single();
+                        if (data) {
+                          setPromoData({
+                            code: data.promo_code_used,
+                            date: data.promo_code_applied_at
+                          });
+                        }
+                      };
+                      fetchPromo();
+                    }, []);
+                    
+                    return promoData.code ? (
+                      <div>
+                        <p className="font-medium">{promoData.code}</p>
+                        {promoData.date && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Applied on {new Date(promoData.date).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    ) : (
+                      <p className="text-muted-foreground">No promo code applied</p>
+                    );
+                  })()}
+                </div>
+              </div>
             )}
           </CardContent>
         </Card>
