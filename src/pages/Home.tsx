@@ -45,30 +45,29 @@ export default function Home() {
             {/* Draw Statistics */}
             <div>
               <h2 className="text-3xl font-bold mb-8 text-center">Draw Statistics 2025</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <Link to="/deer">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Deer</CardTitle>
-                      <CardDescription>Draw Odds 2025</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </Link>
+              <div className="flex flex-col items-center gap-4">
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <Link to="/deer">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Deer</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                  
+                  <Link to="/elk">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Elk</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                </div>
                 
-                <Link to="/elk">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Elk</CardTitle>
-                      <CardDescription>Draw Odds 2025</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </Link>
-                
-                <Link to="/antelope" className="col-span-2">
+                <Link to="/antelope" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
                       <CardTitle className="text-2xl">Antelope</CardTitle>
-                      <CardDescription>Draw Odds 2025</CardDescription>
                     </CardHeader>
                   </Card>
                 </Link>
@@ -78,30 +77,29 @@ export default function Home() {
             {/* Harvest Statistics */}
             <div>
               <h2 className="text-3xl font-bold mb-8 text-center">Harvest Statistics 2024</h2>
-              <div className="grid grid-cols-2 gap-4">
-                <Link to="/deer-harvest">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Deer</CardTitle>
-                      <CardDescription>Harvest Stats 2024</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </Link>
+              <div className="flex flex-col items-center gap-4">
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <Link to="/deer-harvest">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Deer</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                  
+                  <Link to="/elk-harvest">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Elk</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                </div>
                 
-                <Link to="/elk-harvest">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Elk</CardTitle>
-                      <CardDescription>Harvest Stats 2024</CardDescription>
-                    </CardHeader>
-                  </Card>
-                </Link>
-                
-                <Link to="/antelope-harvest" className="col-span-2">
+                <Link to="/antelope-harvest" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
                       <CardTitle className="text-2xl">Antelope</CardTitle>
-                      <CardDescription>Harvest Stats 2024</CardDescription>
                     </CardHeader>
                   </Card>
                 </Link>
