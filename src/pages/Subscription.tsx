@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { CheckCircle2, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
@@ -220,13 +222,17 @@ export default function Subscription() {
                 </Button>
               ) : (
                 <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Promo code (optional)"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    className="w-full px-3 py-2 border border-border rounded-md bg-background text-foreground"
-                  />
+                  <div className="space-y-2">
+                    <Label htmlFor="promo-code" className="text-sm">Promo Code (Optional)</Label>
+                    <Input
+                      id="promo-code"
+                      type="text"
+                      placeholder="Enter promo code"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      className="w-full"
+                    />
+                  </div>
                   <Button 
                     onClick={handleCheckout}
                     disabled={loading}
