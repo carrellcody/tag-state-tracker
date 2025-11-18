@@ -11,7 +11,6 @@ import { SUBSCRIPTION_TIERS } from '@/utils/subscriptionTiers';
 
 export default function Subscription() {
   const { user, session, subscriptionStatus, checkSubscription } = useAuth();
-  const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -42,42 +41,23 @@ export default function Subscription() {
     }
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (!session) {
+      toast({
+        title: 'Authentication Required',
+        description: 'Please sign in to subscribe.',
+        variant: 'destructive',
+      });
       navigate('/auth');
       return;
     }
 
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('create-checkout', {
-        body: { 
-          price_id: SUBSCRIPTION_TIERS.pro.price_id,
-        },
-        headers: {
-          Authorization: `Bearer ${session.access_token}`,
-        },
-      });
-
-      if (error) throw error;
-
-      if (data?.url) {
-        window.open(data.url, '_blank');
-        toast({
-          title: "Checkout opened",
-          description: "Complete your purchase in the new tab",
-        });
-      }
-    } catch (error) {
-      console.error('Error creating checkout:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create checkout session",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
+    // Open the direct Stripe payment link
+    window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
+    toast({
+      title: "Checkout opened",
+      description: "Complete your purchase in the new tab",
+    });
   };
 
   const handleManageSubscription = async () => {
@@ -219,17 +199,9 @@ export default function Subscription() {
               ) : (
                 <Button 
                   onClick={handleCheckout}
-                  disabled={loading}
                   className="w-full"
                 >
-                  {loading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                      Loading...
-                    </>
-                  ) : (
-                    'Subscribe Now'
-                  )}
+                  Subscribe Now
                 </Button>
               )}
             </CardContent>
