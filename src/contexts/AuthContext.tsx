@@ -101,6 +101,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               } else {
                 console.log('[AUTH-CHANGE] No profile found in DB');
               }
+              
+              // Sync with Stripe after loading from DB
+              console.log('[AUTH-CHANGE] Syncing with Stripe...');
+              await checkSubscription();
             } catch (e) {
               console.error('[AUTH-CHANGE] Deferred work failed:', e);
             }
@@ -139,6 +143,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } else {
           console.log('[AUTH-INIT] No profile found in DB');
         }
+        
+        // Sync with Stripe after loading from DB
+        console.log('[AUTH-INIT] Syncing with Stripe...');
+        await checkSubscription();
       }
       
       setLoading(false);
