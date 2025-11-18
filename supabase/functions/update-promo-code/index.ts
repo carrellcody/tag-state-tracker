@@ -1,5 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
+import Stripe from "https://esm.sh/stripe@18.5.0";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
@@ -29,25 +29,33 @@ serve(async (req) => {
     if (!session_id) throw new Error("session_id is required");
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
-      apiVersion: "2024-06-20" 
+      apiVersion: "2025-08-27.basil" 
     });
 
-    // Retrieve the checkout session to get metadata
+    // Retrieve the checkout session to get metadata and customer
     const session = await stripe.checkout.sessions.retrieve(session_id);
     
-    // Verify the session belongs to this user
-    if (session.metadata?.user_id !== user.id) {
+    // Verify the session belongs to this user via metadata OR client_reference_id
+    const sessionUserId = session.metadata?.user_id || session.client_reference_id;
+    if (sessionUserId !== user.id) {
       throw new Error("Session does not belong to this user");
     }
 
-    // Only update if payment was successful and promo code exists
-    if (session.payment_status === "paid" && session.metadata?.promo_code) {
+    // Sync stripe_customer_id if payment was successful
+    if (session.payment_status === "paid" && session.customer) {
+      const updateData: any = {
+        stripe_customer_id: session.customer as string,
+      };
+
+      // Also update promo code if it exists
+      if (session.metadata?.promo_code) {
+        updateData.promo_code_used = session.metadata.promo_code;
+        updateData.promo_code_applied_at = new Date().toISOString();
+      }
+
       const { error } = await supabaseClient
         .from("profiles")
-        .update({
-          promo_code_used: session.metadata.promo_code,
-          promo_code_applied_at: new Date().toISOString(),
-        })
+        .update(updateData)
         .eq("id", user.id);
 
       if (error) throw error;
@@ -55,7 +63,8 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           success: true, 
-          promo_code: session.metadata.promo_code 
+          promo_code: session.metadata?.promo_code || null,
+          stripe_customer_id: session.customer
         }), 
         {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -65,7 +74,7 @@ serve(async (req) => {
     }
 
     return new Response(
-      JSON.stringify({ success: true, promo_code: null }), 
+      JSON.stringify({ success: true, promo_code: null, stripe_customer_id: null }), 
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
         status: 200,

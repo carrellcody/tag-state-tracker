@@ -49,6 +49,7 @@ serve(async (req) => {
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
+      client_reference_id: user.id, // Critical: links user regardless of email
       line_items: [
         {
           price: price_id,
@@ -56,8 +57,8 @@ serve(async (req) => {
         },
       ],
       mode: "subscription",
-      success_url: `${origin}/?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/?canceled=true`,
+      success_url: `${origin}/subscription?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/subscription?canceled=true`,
       metadata: {
         user_id: user.id,
       },

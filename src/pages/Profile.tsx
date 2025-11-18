@@ -247,7 +247,26 @@ export default function Profile() {
                       </> : 'Manage Subscription'}
                   </Button>
                 ) : currentTier !== 'loading' && (
-                  <Button onClick={() => window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank')}>
+                  <Button onClick={async () => {
+                    if (!session) return;
+                    try {
+                      const { data, error } = await supabase.functions.invoke('create-checkout', {
+                        body: { price_id: SUBSCRIPTION_TIERS.pro.price_id },
+                        headers: {
+                          Authorization: `Bearer ${session.access_token}`,
+                        },
+                      });
+                      if (error) throw error;
+                      if (data?.url) window.open(data.url, '_blank');
+                    } catch (error) {
+                      console.error('Error creating checkout:', error);
+                      toast({
+                        title: "Error",
+                        description: "Failed to start checkout",
+                        variant: "destructive",
+                      });
+                    }
+                  }}>
                     Subscribe Now
                   </Button>
                 )}
