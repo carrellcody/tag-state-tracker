@@ -48,7 +48,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       if (error) {
         console.error('[CHECK-SUB] Edge function error:', error);
-        // Don't clear the status on error - keep the DB-loaded value
+        // Set default free tier if no status exists yet
+        setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
         toast({
           title: "Subscription check failed",
           description: "Using cached subscription status",
@@ -61,7 +62,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setSubscriptionStatus(data);
     } catch (error) {
       console.error('[CHECK-SUB] Exception:', error);
-      // Don't clear the status on error - keep the DB-loaded value
+      // Set default free tier if no status exists yet
+      setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
       toast({
         title: "Subscription check failed",
         description: error instanceof Error ? error.message : "Using cached subscription status",
@@ -83,14 +85,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setTimeout(async () => {
             try {
               console.log('[AUTH-CHANGE] Loading subscription from DB for user:', userId);
-              const { data: profile, error: profileError } = await supabase
-                .from('profiles')
-                .select('subscription_status, product_id, subscription_end')
-                .eq('id', userId)
-                .maybeSingle();
+              
+              // Helper function to load profile with retry
+              const loadProfile = async (retryCount = 0): Promise<any> => {
+                const { data: profile, error: profileError } = await supabase
+                  .from('profiles')
+                  .select('subscription_status, product_id, subscription_end')
+                  .eq('id', userId)
+                  .maybeSingle();
+                
+                // Retry once if profile not found (might be race condition with trigger)
+                if (!profile && !profileError && retryCount < 1) {
+                  console.log('[AUTH-CHANGE] Profile not found, retrying in 500ms...');
+                  await new Promise(resolve => setTimeout(resolve, 500));
+                  return loadProfile(retryCount + 1);
+                }
+                
+                return { profile, profileError };
+              };
+              
+              const { profile, profileError } = await loadProfile();
               
               if (profileError) {
                 console.error('[AUTH-CHANGE] Error loading profile:', profileError);
+                // Set default free tier on error
+                console.log('[AUTH-CHANGE] Setting default free tier due to error');
+                setSubscriptionStatus({ subscribed: false, product_id: null, subscription_end: null });
               } else if (profile) {
                 console.log('[AUTH-CHANGE] Profile loaded from DB:', profile);
                 setSubscriptionStatus({
@@ -99,7 +119,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   subscription_end: profile.subscription_end,
                 });
               } else {
-                console.log('[AUTH-CHANGE] No profile found in DB');
+                // No profile found even after retry - set default free tier
+                console.log('[AUTH-CHANGE] No profile found after retry, setting default free tier');
+                setSubscriptionStatus({ subscribed: false, product_id: null, subscription_end: null });
               }
               
               // Sync with Stripe after loading from DB
@@ -107,6 +129,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               await checkSubscription();
             } catch (e) {
               console.error('[AUTH-CHANGE] Deferred work failed:', e);
+              // Ensure we have a default status even on exception
+              setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
             }
           }, 0);
         } else {
@@ -125,14 +149,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (session?.user) {
         // Instantly load subscription status from DB
         console.log('[AUTH-INIT] Loading subscription from DB for user:', session.user.id);
-        const { data: profile, error: profileError } = await supabase
-          .from('profiles')
-          .select('subscription_status, product_id, subscription_end')
-          .eq('id', session.user.id)
-          .maybeSingle();
+        
+        // Helper function to load profile with retry
+        const loadProfile = async (retryCount = 0): Promise<any> => {
+          const { data: profile, error: profileError } = await supabase
+            .from('profiles')
+            .select('subscription_status, product_id, subscription_end')
+            .eq('id', session.user.id)
+            .maybeSingle();
+          
+          // Retry once if profile not found (might be race condition with trigger)
+          if (!profile && !profileError && retryCount < 1) {
+            console.log('[AUTH-INIT] Profile not found, retrying in 500ms...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+            return loadProfile(retryCount + 1);
+          }
+          
+          return { profile, profileError };
+        };
+        
+        const { profile, profileError } = await loadProfile();
         
         if (profileError) {
           console.error('[AUTH-INIT] Error loading profile:', profileError);
+          // Set default free tier on error
+          console.log('[AUTH-INIT] Setting default free tier due to error');
+          setSubscriptionStatus({ subscribed: false, product_id: null, subscription_end: null });
         } else if (profile) {
           console.log('[AUTH-INIT] Profile loaded from DB:', profile);
           setSubscriptionStatus({
@@ -141,7 +183,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             subscription_end: profile.subscription_end,
           });
         } else {
-          console.log('[AUTH-INIT] No profile found in DB');
+          // No profile found even after retry - set default free tier
+          console.log('[AUTH-INIT] No profile found after retry, setting default free tier');
+          setSubscriptionStatus({ subscribed: false, product_id: null, subscription_end: null });
         }
         
         // Sync with Stripe after loading from DB
