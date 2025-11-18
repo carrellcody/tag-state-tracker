@@ -14,13 +14,13 @@ verify_jwt = true
 verify_jwt = true
 
 [functions.list-active-coupons]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-draw-reminder]
-verify_jwt = false
+verify_jwt = true
 
 [functions.send-new-data-alert]
-verify_jwt = false
+verify_jwt = true
 
 [functions.update-promo-code]
 verify_jwt = true

@@ -9,6 +9,18 @@ import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/contexts/AuthContext";
+import { z } from "zod";
+
+const loginSchema = z.object({
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters").max(128, "Password must be less than 128 characters")
+});
+
+const signupSchema = loginSchema.extend({
+  firstName: z.string().trim().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
+  lastName: z.string().trim().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
+  stateResidency: z.string().min(1, "State residency is required")
+});
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut",
@@ -43,31 +55,28 @@ export default function Auth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!email || !password) {
-      toast({
-        title: "Error",
-        description: "Please fill in all fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!isLogin && (!firstName || !lastName || !stateResidency)) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (password.length < 6) {
-      toast({
-        title: "Error",
-        description: "Password must be at least 6 characters",
-        variant: "destructive",
-      });
-      return;
+    // Validate input using Zod
+    try {
+      if (isLogin) {
+        loginSchema.parse({ email, password });
+      } else {
+        signupSchema.parse({ 
+          email, 
+          password, 
+          firstName, 
+          lastName, 
+          stateResidency 
+        });
+      }
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+        return;
+      }
     }
 
     setLoading(true);
