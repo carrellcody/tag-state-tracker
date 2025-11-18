@@ -201,12 +201,18 @@ export default function Profile() {
                   {currentTier === 'loading' ? 'Checking...' : SUBSCRIPTION_TIERS[currentTier].name}
                 </Badge>
               </div>
-              {subscriptionStatus?.subscribed && <Button onClick={handleManageSubscription} disabled={portalLoading} variant="outline">
+              {subscriptionStatus?.subscribed ? (
+                <Button onClick={handleManageSubscription} disabled={portalLoading} variant="outline">
                   {portalLoading ? <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Loading...
                     </> : 'Manage Subscription'}
-                </Button>}
+                </Button>
+              ) : currentTier !== 'loading' && (
+                <Button onClick={() => window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank')}>
+                  Subscribe Now
+                </Button>
+              )}
             </div>
             {subscriptionStatus?.subscription_end && <p className="text-sm text-muted-foreground">
                 Renews on {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
