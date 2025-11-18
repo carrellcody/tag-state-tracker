@@ -36,15 +36,22 @@ serve(async (req) => {
 
     const token = authHeader.replace("Bearer ", "");
     logStep("Authenticating user with token");
-    
-    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
-    if (userError) throw new Error(`Authentication error: ${userError.message}`);
-    const user = userData.user;
-    if (!user?.email) throw new Error("User not authenticated or email not available");
-    logStep("User authenticated", { userId: user.id, email: user.email });
+
+    let payload: any;
+    try {
+      const [, body] = token.split(".");
+      payload = JSON.parse(atob(body));
+    } catch (_err) {
+      throw new Error("Invalid authentication token");
+    }
+
+    const userId = payload.sub as string | undefined;
+    const email = payload.email as string | undefined;
+    if (!userId || !email) throw new Error("User not authenticated or email not available");
+    logStep("User authenticated", { userId, email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email, limit: 1 });
     
     if (customers.data.length === 0) {
       logStep("No customer found, updating unsubscribed state");
@@ -57,7 +64,7 @@ serve(async (req) => {
           product_id: null,
           subscription_end: null
         })
-        .eq('id', user.id);
+        .eq('id', userId);
       
       return new Response(JSON.stringify({ subscribed: false }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
@@ -72,7 +79,7 @@ serve(async (req) => {
     await supabaseClient
       .from('profiles')
       .update({ stripe_customer_id: customerId })
-      .eq('id', user.id);
+      .eq('id', userId);
 
     const subscriptions = await stripe.subscriptions.list({
       customer: customerId,
@@ -101,7 +108,7 @@ serve(async (req) => {
           product_id: productId,
           subscription_end: subscriptionEnd
         })
-        .eq('id', user.id);
+        .eq('id', userId);
     } else {
       logStep("No active subscription found");
       
@@ -113,7 +120,7 @@ serve(async (req) => {
           product_id: null,
           subscription_end: null
         })
-        .eq('id', user.id);
+        .eq('id', userId);
     }
 
     return new Response(JSON.stringify({
