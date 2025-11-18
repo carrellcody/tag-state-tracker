@@ -24,6 +24,7 @@ export default function Profile() {
   const [loading, setLoading] = useState(false);
   const [portalLoading, setPortalLoading] = useState(false);
   const [saveLoading, setSaveLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [email, setEmail] = useState('');
   const [deerPoints, setDeerPoints] = useState(0);
   const [elkPoints, setElkPoints] = useState(0);
@@ -158,7 +159,28 @@ export default function Profile() {
       setPortalLoading(false);
     }
   };
-  const getUserTier = () => {
+
+  const handleRefreshSubscription = async () => {
+    if (!user) return;
+    setRefreshing(true);
+    try {
+      await checkSubscription();
+      toast({
+        title: "Subscription refreshed",
+        description: "Your subscription status has been updated."
+      });
+    } catch (error) {
+      console.error('Error refreshing subscription:', error);
+      toast({
+        title: "Error",
+        description: "Failed to refresh subscription status",
+        variant: "destructive"
+      });
+    } finally {
+      setRefreshing(false);
+    }
+  };
+   const getUserTier = () => {
     if (subscriptionStatus === null) return 'loading';
     if (!subscriptionStatus?.subscribed) return 'free';
     const productId = subscriptionStatus.product_id;
@@ -194,25 +216,42 @@ export default function Profile() {
             <CardDescription>Your current plan and billing</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="font-medium">Current Plan</p>
                 <Badge variant={currentTier === 'pro' ? "default" : "secondary"} className="mt-1">
                   {currentTier === 'loading' ? 'Checking...' : SUBSCRIPTION_TIERS[currentTier].name}
                 </Badge>
               </div>
-              {subscriptionStatus?.subscribed ? (
-                <Button onClick={handleManageSubscription} disabled={portalLoading} variant="outline">
-                  {portalLoading ? <>
+              <div className="flex items-center gap-2">
+                <Button
+                  onClick={handleRefreshSubscription}
+                  disabled={refreshing}
+                  variant="outline"
+                  size="sm"
+                >
+                  {refreshing ? (
+                    <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Loading...
-                    </> : 'Manage Subscription'}
+                      Refreshing
+                    </>
+                  ) : (
+                    'Refresh Status'
+                  )}
                 </Button>
-              ) : currentTier !== 'loading' && (
-                <Button onClick={() => window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank')}>
-                  Subscribe Now
-                </Button>
-              )}
+                {subscriptionStatus?.subscribed ? (
+                  <Button onClick={handleManageSubscription} disabled={portalLoading} variant="outline">
+                    {portalLoading ? <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Loading...
+                      </> : 'Manage Subscription'}
+                  </Button>
+                ) : currentTier !== 'loading' && (
+                  <Button onClick={() => window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank')}>
+                    Subscribe Now
+                  </Button>
+                )}
+              </div>
             </div>
             {subscriptionStatus?.subscription_end && <p className="text-sm text-muted-foreground">
                 Renews on {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}

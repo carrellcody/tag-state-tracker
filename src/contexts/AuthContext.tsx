@@ -201,7 +201,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  const signOut = async () => {
+  // Periodically sync subscription status while the user is logged in
+  useEffect(() => {
+    if (!session?.user) return;
+
+    const interval = setInterval(() => {
+      checkSubscription().catch((error) => {
+        console.error('[CHECK-SUB] Periodic sync failed:', error);
+      });
+    }, 60_000);
+
+    return () => clearInterval(interval);
+  }, [session?.user?.id]);
+ 
+   const signOut = async () => {
     console.log('Starting sign out process...');
     try {
       // Race sign out with a timeout to avoid hanging
