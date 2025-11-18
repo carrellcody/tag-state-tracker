@@ -91,7 +91,7 @@ export default function Layout({ children }: LayoutProps) {
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card shadow-subtle">
         <div className="container mx-auto px-4">
-          <div className="flex h-16 items-center justify-between">
+          <div className="flex h-11 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
               <span className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">Tag Season</span>
