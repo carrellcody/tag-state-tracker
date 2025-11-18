@@ -19,7 +19,15 @@ const loginSchema = z.object({
 const signupSchema = loginSchema.extend({
   firstName: z.string().trim().min(1, "First name is required").max(100, "First name must be less than 100 characters"),
   lastName: z.string().trim().min(1, "Last name is required").max(100, "Last name must be less than 100 characters"),
-  stateResidency: z.string().min(1, "State residency is required")
+  stateResidency: z.string().min(1, "State residency is required"),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"]
+});
+
+const resetPasswordSchema = z.object({
+  email: z.string().trim().email("Invalid email address").max(255, "Email must be less than 255 characters")
 });
 
 const US_STATES = [
@@ -37,11 +45,17 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [stateResidency, setStateResidency] = useState("");
   const [receiveEmails, setReceiveEmails] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [resetEmail, setResetEmail] = useState("");
+  const [isResettingPassword, setIsResettingPassword] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
   const { user } = useAuth();
@@ -50,6 +64,15 @@ export default function Auth() {
     if (user) {
       navigate('/');
     }
+
+    // Check for password recovery event
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'PASSWORD_RECOVERY') {
+        setIsResettingPassword(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -63,6 +86,7 @@ export default function Auth() {
         signupSchema.parse({ 
           email, 
           password, 
+          confirmPassword,
           firstName, 
           lastName, 
           stateResidency 
@@ -116,15 +140,98 @@ export default function Auth() {
 
         toast({
           title: "Success",
-          description: "Account created successfully",
+          description: "Account created successfully! Please check your email to verify your account.",
         });
-        navigate('/');
       }
     } catch (error: any) {
-      console.error('Auth error:', error);
       toast({
         title: "Error",
-        description: error.message || "An error occurred",
+        description: error.message || "An error occurred during authentication",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const validatedData = resetPasswordSchema.parse({
+        email: resetEmail.trim(),
+      });
+
+      const { error } = await supabase.auth.resetPasswordForEmail(
+        validatedData.email,
+        {
+          redirectTo: `${window.location.origin}/auth`,
+        }
+      );
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Password reset email sent. Please check your inbox.",
+      });
+
+      setTimeout(() => {
+        setIsForgotPassword(false);
+        setResetEmail("");
+      }, 3000);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: error.errors[0].message,
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Error",
+          description: "Failed to send reset email. Please try again.",
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleUpdatePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      if (newPassword !== confirmNewPassword) {
+        throw new Error("Passwords don't match");
+      }
+
+      if (newPassword.length < 6 || newPassword.length > 128) {
+        throw new Error("Password must be between 6 and 128 characters");
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Password updated successfully!",
+      });
+
+      setIsResettingPassword(false);
+      setNewPassword("");
+      setConfirmNewPassword("");
+      navigate("/");
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update password",
         variant: "destructive",
       });
     } finally {
@@ -133,136 +240,237 @@ export default function Auth() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-20">
-      <div className="max-w-md mx-auto">
-        <Card className="shadow-medium border-accent/20">
-          <CardHeader className="space-y-4 text-center">
-            <div className="flex justify-center">
-              <div className="rounded-full bg-gradient-primary p-3">
-                <Lock className="h-8 w-8 text-primary-foreground" />
-              </div>
-            </div>
-            <CardTitle className="text-2xl">
-              {isLogin ? "Sign In" : "Create Account"}
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
+      <div className="w-full max-w-md">
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center gap-2">
+            <Lock className="h-8 w-8 text-primary" />
+            <h1 className="text-3xl font-bold">Colorado Draw Odds</h1>
+          </div>
+        </div>
+
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>
+              {isResettingPassword ? "Set New Password" : isForgotPassword ? "Reset Password" : isLogin ? "Login" : "Sign Up"}
             </CardTitle>
             <CardDescription>
-              {isLogin
-                ? "Sign in to access your account"
+              {isResettingPassword 
+                ? "Enter your new password"
+                : isForgotPassword
+                ? "Enter your email to receive a password reset link"
+                : isLogin
+                ? "Enter your credentials to access your account"
                 : "Create an account to get started"}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {!isLogin && (
-                <>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="firstName">First Name</Label>
-                      <Input 
-                        id="firstName" 
-                        type="text" 
-                        placeholder="John"
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required={!isLogin}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="lastName">Last Name</Label>
-                      <Input 
-                        id="lastName" 
-                        type="text" 
-                        placeholder="Doe"
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required={!isLogin}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="stateResidency">State of Residency</Label>
-                    <select
-                      id="stateResidency"
-                      value={stateResidency}
-                      onChange={(e) => setStateResidency(e.target.value)}
-                      required={!isLogin}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    >
-                      <option value="">Select a state</option>
-                      {US_STATES.map((state) => (
-                        <option key={state} value={state}>
-                          {state}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-              
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
-                <Input 
-                  id="password" 
-                  type="password" 
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  minLength={6}
-                />
-              </div>
-
-              {!isLogin && (
-                <div className="flex items-center justify-between space-x-2 rounded-lg border border-border p-4">
-                  <div className="space-y-0.5 flex-1">
-                    <Label htmlFor="receive-emails" className="text-base font-normal cursor-pointer">
-                      Receive emails with draw deadline reminders, data update announcements, new feature availability, etc.?
-                    </Label>
-                  </div>
-                  <Switch
-                    id="receive-emails"
-                    checked={receiveEmails}
-                    onCheckedChange={setReceiveEmails}
+            {isResettingPassword ? (
+              <form onSubmit={handleUpdatePassword} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    placeholder="Enter new password"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    required
+                    disabled={loading}
                   />
                 </div>
-              )}
+                <div className="space-y-2">
+                  <Label htmlFor="confirmNewPassword">Confirm New Password</Label>
+                  <Input
+                    id="confirmNewPassword"
+                    type="password"
+                    placeholder="Confirm new password"
+                    value={confirmNewPassword}
+                    onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Updating...</> : "Update Password"}
+                </Button>
+              </form>
+            ) : isForgotPassword ? (
+              <form onSubmit={handlePasswordReset} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="resetEmail">Email</Label>
+                  <Input
+                    id="resetEmail"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={resetEmail}
+                    onChange={(e) => setResetEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Sending...</> : "Send Reset Link"}
+                </Button>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => {
+                    setIsForgotPassword(false);
+                    setResetEmail("");
+                  }}
+                  disabled={loading}
+                >
+                  Back to Login
+                </Button>
+              </form>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                </div>
 
-              <Button type="submit" className="w-full" size="lg" disabled={loading}>
-                {loading ? (
-                  <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
-                  </>
-                ) : isLogin ? (
-                  'Sign In'
-                ) : (
-                  'Create Account'
+                <div className="space-y-2">
+                  <Label htmlFor="password">Password</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={loading}
+                  />
+                  {isLogin && (
+                    <Button
+                      type="button"
+                      variant="link"
+                      className="px-0 text-sm h-auto"
+                      onClick={() => setIsForgotPassword(true)}
+                    >
+                      Forgot your password?
+                    </Button>
+                  )}
+                </div>
+
+                {!isLogin && (
+                  <div className="space-y-2">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      id="confirmPassword"
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      disabled={loading}
+                    />
+                  </div>
                 )}
-              </Button>
-            </form>
 
-            <div className="mt-4 text-center text-sm">
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:underline"
-              >
-                {isLogin
-                  ? "Don't have an account? Sign up"
-                  : "Already have an account? Sign in"}
-              </button>
-            </div>
+                {!isLogin && (
+                  <>
+                    <div className="space-y-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        type="text"
+                        placeholder="Enter your first name"
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        type="text"
+                        placeholder="Enter your last name"
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
+                        disabled={loading}
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="stateResidency">State of Residency</Label>
+                      <select
+                        id="stateResidency"
+                        value={stateResidency}
+                        onChange={(e) => setStateResidency(e.target.value)}
+                        required
+                        disabled={loading}
+                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <option value="">Select your state</option>
+                        {US_STATES.map((state) => (
+                          <option key={state} value={state}>
+                            {state}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="receiveEmails"
+                        checked={receiveEmails}
+                        onCheckedChange={setReceiveEmails}
+                        disabled={loading}
+                      />
+                      <Label htmlFor="receiveEmails" className="text-sm text-muted-foreground cursor-pointer">
+                        I want to receive email notifications about draw dates and new data
+                      </Label>
+                    </div>
+                  </>
+                )}
+
+                <Button type="submit" className="w-full" disabled={loading}>
+                  {loading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {isLogin ? "Signing in..." : "Creating account..."}
+                    </>
+                  ) : (
+                    isLogin ? "Login" : "Sign Up"
+                  )}
+                </Button>
+
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full"
+                  onClick={() => {
+                    setIsLogin(!isLogin);
+                    setEmail("");
+                    setPassword("");
+                    setConfirmPassword("");
+                    setFirstName("");
+                    setLastName("");
+                    setStateResidency("");
+                    setReceiveEmails(true);
+                  }}
+                >
+                  {isLogin
+                    ? "Don't have an account? Sign up"
+                    : "Already have an account? Login"}
+                </Button>
+              </form>
+            )}
           </CardContent>
         </Card>
       </div>
