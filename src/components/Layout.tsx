@@ -320,19 +320,19 @@ export default function Layout({ children }: LayoutProps) {
       <AlertDialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Premium Feature</AlertDialogTitle>
+            <AlertDialogTitle>Pro Plan Required</AlertDialogTitle>
             <AlertDialogDescription>
-              Subscribe to the Pro plan for $15 to view Elk and Deer tags!
+              Purchase pro plan to view deer and elk data
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={() => {
                 setShowSubscriptionDialog(false);
-                navigate("/subscription");
+                window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
               }}
             >
-              View Subscription Plans
+              Subscribe Now
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
