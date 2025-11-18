@@ -2,39 +2,18 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Target, TrendingUp, MapPin, FileText } from "lucide-react";
-
 export default function Home() {
-  return (
-    <div className="min-h-screen">
+  return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-20 px-4">
         <div className="container mx-auto text-center">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-2">
-            Tag Season
+            Taggout
           </h1>
           <p className="text-lg sm:text-xl md:text-2xl text-primary-foreground/90 mb-6 sm:mb-8">
             Colorado
           </p>
-          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center max-w-3xl mx-auto">
-            <Button 
-              size="lg" 
-              variant="outline" 
-              className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full sm:w-auto"
-              onClick={() => document.getElementById('draw-stats')?.scrollIntoView({ behavior: 'smooth' })}
-            >
-              Explore Draw and Harvest Stats
-            </Button>
-            <Link to="/about" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full">
-                How to use Tag-Season
-              </Button>
-            </Link>
-            <Link to="/learn" className="w-full sm:w-auto">
-              <Button size="lg" variant="outline" className="bg-[hsl(200,6%,47%)] text-primary-foreground border-[hsl(200,6%,47%)] hover:bg-secondary hover:text-secondary-foreground font-semibold h-12 sm:h-14 px-6 sm:px-8 text-sm sm:text-base w-full">
-                Learn the Draw Process
-              </Button>
-            </Link>
-          </div>
+          
         </div>
       </section>
 
@@ -114,38 +93,22 @@ export default function Home() {
         <div className="container mx-auto">
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Colorado Parks & Wildlife Resources</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
-            <a
-              href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full h-20">
                 2025 Big Game Brochure
               </Button>
             </a>
-            <a
-              href="https://cpw.state.co.us/hunting/big-game/elk/statistics"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://cpw.state.co.us/hunting/big-game/elk/statistics" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full h-20">
                 Elk Statistics
               </Button>
             </a>
-            <a
-              href="https://cpw.state.co.us/hunting/big-game/deer/statistics"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://cpw.state.co.us/hunting/big-game/deer/statistics" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full h-20">
                 Deer Statistics
               </Button>
             </a>
-            <a
-              href="https://cpw.state.co.us/hunting/big-game/pronghorn/statistics"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
+            <a href="https://cpw.state.co.us/hunting/big-game/pronghorn/statistics" target="_blank" rel="noopener noreferrer">
               <Button variant="outline" className="w-full h-20">
                 Antelope Statistics
               </Button>
@@ -153,6 +116,5 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 }
