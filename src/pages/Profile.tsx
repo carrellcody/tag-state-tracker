@@ -217,6 +217,30 @@ export default function Profile() {
             {subscriptionStatus?.subscription_end && <p className="text-sm text-muted-foreground">
                 Renews on {new Date(subscriptionStatus.subscription_end).toLocaleDateString()}
               </p>}
+            
+            <Separator />
+            
+            {/* Plan Descriptions */}
+            <div className="space-y-3">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-sm">Pro Plan</p>
+                  <p className="text-sm text-muted-foreground">$15/year. Access to Elk, Deer, and Antelope data.</p>
+                </div>
+                {currentTier === 'pro' && (
+                  <Badge variant="default" className="shrink-0">Current</Badge>
+                )}
+              </div>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="font-semibold text-sm">Free Plan</p>
+                  <p className="text-sm text-muted-foreground">$0. Access to Antelope data only.</p>
+                </div>
+                {currentTier === 'free' && (
+                  <Badge variant="secondary" className="shrink-0">Current</Badge>
+                )}
+              </div>
+            </div>
           </CardContent>
         </Card>
 
