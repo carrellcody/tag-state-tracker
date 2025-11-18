@@ -10,7 +10,6 @@ const corsHeaders = {
 
 const CheckoutSchema = z.object({
   price_id: z.string().regex(/^price_[a-zA-Z0-9]+$/, "Invalid Stripe price ID format"),
-  promo_code: z.string().max(100).optional(),
 });
 
 serve(async (req) => {
@@ -30,9 +29,9 @@ serve(async (req) => {
     const user = data.user;
     if (!user?.email) throw new Error("User not authenticated or email not available");
 
-    // Get price_id and optional promo_code from request body with validation
+    // Get price_id from request body with validation
     const requestBody = await req.json();
-    const { price_id, promo_code } = CheckoutSchema.parse(requestBody);
+    const { price_id } = CheckoutSchema.parse(requestBody);
 
     const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY") || "", { 
       apiVersion: "2025-08-27.basil" 
@@ -47,7 +46,7 @@ serve(async (req) => {
 
     const origin = req.headers.get("origin") || "https://nbkybwnjjzmwyiiciffm.lovableproject.com";
     
-    const sessionConfig: any = {
+    const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
       line_items: [
@@ -61,16 +60,8 @@ serve(async (req) => {
       cancel_url: `${origin}/?canceled=true`,
       metadata: {
         user_id: user.id,
-        promo_code: promo_code || '',
       },
-    };
-
-    // Apply promo code if provided
-    if (promo_code) {
-      sessionConfig.discounts = [{ coupon: promo_code }];
-    }
-
-    const session = await stripe.checkout.sessions.create(sessionConfig);
+    });
 
     return new Response(JSON.stringify({ url: session.url }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
