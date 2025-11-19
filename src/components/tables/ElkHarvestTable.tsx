@@ -6,18 +6,21 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
 import { TableWrapper } from './TableWrapper';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ROWS_PER_PAGE = 50;
 
 export function ElkHarvestTable() {
   const { data, loading, error } = useCsvData('/data/elkHarvest25.csv');
   const { favorites, toggleFavorite } = useFavorites('elk_harvest');
+  const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [showMobileFilters, setShowMobileFilters] = useState(true);
   
   const [unitSearch, setUnitSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All manners of take');
@@ -129,7 +132,17 @@ export function ElkHarvestTable() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
+      {(!isMobile || showMobileFilters) && (
+      <>
       <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(false)} 
+            className="w-full mb-4"
+          >
+            Apply filters and view data
+          </Button>
+        )}
         <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
@@ -240,6 +253,8 @@ export function ElkHarvestTable() {
           </table>
         </div>
       </main>
+      </>
+      )}
     </div>
   );
 }
