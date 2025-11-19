@@ -8,8 +8,9 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Star } from 'lucide-react';
+import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
 import { TableWrapper } from './TableWrapper';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const ROWS_PER_PAGE = 50;
 
@@ -19,11 +20,13 @@ export function AntelopeDrawTable() {
   const { data: codePages } = useCsvData('/data/ant25code_pages.csv');
   const { favorites, toggleFavorite } = useFavorites('antelope_draw');
   const { user } = useAuth();
+  const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [showMobileFilters, setShowMobileFilters] = useState(true);
   
   const [unitSearch, setUnitSearch] = useState('');
   const [sexFilter, setSexFilter] = useState<string[]>(['All']);
@@ -208,7 +211,16 @@ export function AntelopeDrawTable() {
 
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
+      {(!isMobile || showMobileFilters) && (
       <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(false)} 
+            className="w-full mb-4"
+          >
+            Apply filters and view data
+          </Button>
+        )}
         <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
@@ -433,9 +445,31 @@ export function AntelopeDrawTable() {
           setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
           setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no'); setListFilter(['Any']);
         }}>Clear Filters</Button>
+        
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(false)} 
+            className="w-full"
+          >
+            Apply filters and view data
+          </Button>
+        )}
       </aside>
+      )}
 
+      {(!isMobile || !showMobileFilters) && (
       <main className="flex-1 overflow-hidden flex flex-col">
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(true)} 
+            variant="outline"
+            className="w-full mb-4"
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
+          </Button>
+        )}
+        
         <div className="mb-4 flex justify-between items-center">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
           <div className="flex items-center gap-4">
@@ -564,6 +598,7 @@ export function AntelopeDrawTable() {
           </table>
         </div>
       </main>
+      )}
     </div>
   );
 }
