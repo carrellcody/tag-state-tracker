@@ -141,8 +141,10 @@ export function ElkDrawTable() {
       if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
       
       // Points sliders
-      const dol = parseFloat(row.Drawn_out_level || 0);
-      if (dol < minPoints || dol > maxPoints) return false;
+      const dolStr = String(row.Drawn_out_level || '').trim();
+      const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
+      const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
+      if (isNaN(dol) || dol < minPoints || dol > maxPoints) return false;
       
       // No applicants filter
       if (showNoApplicants === 'no' && row.NoApps === 'Yes') return false;
