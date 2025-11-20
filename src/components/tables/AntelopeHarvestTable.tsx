@@ -131,17 +131,16 @@ export function AntelopeHarvestTable() {
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
-      <>
-      <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
-        {isMobile && (
-          <Button 
-            onClick={() => setShowMobileFilters(false)} 
-            className="w-full mb-4"
-          >
-            Apply filters and view data
-          </Button>
-        )}
-        <h3 className="font-semibold text-lg">Filters</h3>
+        <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
+          {isMobile && (
+            <Button 
+              onClick={() => setShowMobileFilters(false)} 
+              className="w-full mb-4"
+            >
+              Apply filters and view data
+            </Button>
+          )}
+          <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
           <Label>Search Units</Label>
@@ -189,22 +188,43 @@ export function AntelopeHarvestTable() {
           </Button>
         </div>
 
-        <Button variant="outline" className="w-full" onClick={() => {
-          setUnitSearch(''); setCategoryFilter('All manners of take'); setMinSuccessRate(''); setMinPublicLand('');
-        }}>Clear Filters</Button>
-      </aside>
+          <Button variant="outline" className="w-full" onClick={() => {
+            setUnitSearch(''); setCategoryFilter('All manners of take'); setMinSuccessRate(''); setMinPublicLand('');
+          }}>Clear Filters</Button>
 
-      <main className="flex-1 overflow-hidden flex flex-col">
-        <div className="mb-4 flex justify-between items-center">
-          <p className="text-sm text-muted-foreground">{sortedData.length} units match</p>
-          <div className="flex items-center gap-4">
-            <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
-            <div className="flex gap-2">
-              <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
-              <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+          {isMobile && (
+            <Button 
+              onClick={() => setShowMobileFilters(false)} 
+              className="w-full mt-4"
+            >
+              Apply filters and view data
+            </Button>
+          )}
+        </aside>
+      )}
+
+      {(!isMobile || !showMobileFilters) && (
+        <main className="flex-1 overflow-hidden flex flex-col">
+          {isMobile && (
+            <Button 
+              onClick={() => setShowMobileFilters(true)} 
+              className="mb-4"
+              variant="outline"
+            >
+              <Filter className="w-4 h-4 mr-2" />
+              Filters
+            </Button>
+          )}
+          <div className="mb-4 flex justify-between items-center">
+            <p className="text-sm text-muted-foreground">{sortedData.length} units match</p>
+            <div className="flex items-center gap-4">
+              <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
+                <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>Next</Button>
+              </div>
             </div>
           </div>
-        </div>
 
         <div className="overflow-auto flex-1">
           <table className="w-full border-collapse bg-card">
@@ -251,7 +271,6 @@ export function AntelopeHarvestTable() {
           </table>
         </div>
       </main>
-      </>
       )}
     </div>
   );
