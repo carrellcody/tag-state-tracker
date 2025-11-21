@@ -23,7 +23,7 @@ export default function Home() {
           <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Draw Statistics */}
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Draw Statistics 2025</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">Draw Statistics 2025</h2>
               <div className="flex flex-col items-center gap-4">
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Link to="/deer">
@@ -55,7 +55,7 @@ export default function Home() {
 
             {/* Harvest Statistics */}
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Harvest Statistics 2024</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">Harvest Statistics 2024</h2>
               <div className="flex flex-col items-center gap-4">
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Link to="/deer-harvest">
@@ -87,7 +87,7 @@ export default function Home() {
 
             {/* OTC Statistics */}
             <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">OTC Statistics 2024</h2>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">OTC Statistics 2024</h2>
               <div className="flex flex-col items-center gap-4">
                 <div className="grid grid-cols-2 gap-4 w-full">
                   <Link to="/otc-deer">
