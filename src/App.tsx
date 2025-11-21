@@ -18,6 +18,8 @@ import ElkHarvest from "./pages/ElkHarvest";
 import AntelopeDraw from "./pages/AntelopeDraw";
 import AntelopeHarvest from "./pages/AntelopeHarvest";
 import OTCElk from "./pages/OTCElk";
+import OTCAntelope from "./pages/OTCAntelope";
+import OTCDeer from "./pages/OTCDeer";
 import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
@@ -48,6 +50,8 @@ const App = () => (
               <Route path="/antelope" element={<AntelopeDraw />} />
               <Route path="/antelope-harvest" element={<AntelopeHarvest />} />
               <Route path="/otc-elk" element={<OTCElk />} />
+              <Route path="/otc-antelope" element={<OTCAntelope />} />
+              <Route path="/otc-deer" element={<OTCDeer />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
