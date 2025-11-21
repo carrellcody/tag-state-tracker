@@ -54,6 +54,7 @@ export default function Layout({ children }: LayoutProps) {
       items: [
         { to: "/deer", label: "Draw Stats" },
         { to: "/deer-harvest", label: "Harvest Stats" },
+        { to: "/otc-deer", label: "OTC Stats" },
       ],
     },
     {
@@ -71,6 +72,7 @@ export default function Layout({ children }: LayoutProps) {
       items: [
         { to: "/antelope", label: "Draw Stats" },
         { to: "/antelope-harvest", label: "Harvest Stats" },
+        { to: "/otc-antelope", label: "OTC Stats" },
       ],
     },
   ];

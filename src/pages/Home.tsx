@@ -19,8 +19,8 @@ export default function Home() {
 
       {/* Statistics Section */}
       <section id="draw-stats" className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-6xl">
-          <div className="grid lg:grid-cols-2 gap-6 sm:gap-8">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
             {/* Draw Statistics */}
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">Draw Statistics 2025</h2>
@@ -76,6 +76,38 @@ export default function Home() {
                 </div>
                 
                 <Link to="/antelope-harvest" className="w-1/2">
+                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                    <CardHeader className="text-center">
+                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              </div>
+            </div>
+
+            {/* OTC Statistics */}
+            <div>
+              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">OTC Statistics 2024</h2>
+              <div className="flex flex-col items-center gap-4">
+                <div className="grid grid-cols-2 gap-4 w-full">
+                  <Link to="/otc-deer">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Deer</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                  
+                  <Link to="/otc-elk">
+                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
+                      <CardHeader className="text-center">
+                        <CardTitle className="text-2xl">Elk</CardTitle>
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                </div>
+                
+                <Link to="/otc-antelope" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
                       <CardTitle className="text-2xl">Antelope</CardTitle>
