@@ -10,12 +10,7 @@ import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ROWS_PER_PAGE = 50;
-
-const seasonOptions = [
-  { value: 'Archery Either Sex', label: 'Archery Either Sex' },
-  { value: 'Rifle Either Sex', label: 'Rifle Either Sex' },
-  { value: 'Muzzleloader Either Sex', label: 'Muzzleloader Either Sex' },
-];
+const FIXED_SEASON = 'Either Sex OTC Archery';
 
 export function OTCAntelopeTable() {
   const { data: harvestData, loading, error } = useCsvData('/data/antHarvest25.csv');
@@ -27,25 +22,14 @@ export function OTCAntelopeTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [selectedSeasons, setSelectedSeasons] = useState<string[]>(['Archery Either Sex']);
   const [unitSearch, setUnitSearch] = useState('');
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   const toggleFavorite = (unit: string) => {
-    const key = `${unit}-${selectedSeasons.join(',')}`;
+    const key = `${unit}-${FIXED_SEASON}`;
     toggleFavoriteRaw(key);
-  };
-
-  const toggleSeason = (season: string) => {
-    setSelectedSeasons(prev => {
-      if (prev.includes(season)) {
-        return prev.filter(s => s !== season);
-      } else {
-        return [...prev, season];
-      }
-    });
   };
 
   const filteredData = useMemo(() => {
@@ -54,14 +38,13 @@ export function OTCAntelopeTable() {
       if (!row.OTC) return false;
       
       if (showFavoritesOnly) {
-        const key = `${row.Unit}-${selectedSeasons.join(',')}`;
+        const key = `${row.Unit}-${FIXED_SEASON}`;
         if (!favorites.has(key)) return false;
       }
       
-      // Filter by OTC season - check if any selected season is present in the OTC value
-      if (selectedSeasons.length === 0) return false;
+      // Filter by OTC season - check if the fixed season is present in the OTC value
       const otcValue = String(row.OTC);
-      if (!selectedSeasons.some(season => otcValue.includes(season))) return false;
+      if (!otcValue.includes(FIXED_SEASON)) return false;
       
       // Unit search
       if (unitSearch) {
@@ -82,7 +65,7 @@ export function OTCAntelopeTable() {
       
       return true;
     });
-  }, [harvestData, selectedSeasons, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
+  }, [harvestData, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -199,19 +182,8 @@ export function OTCAntelopeTable() {
 
         <div className="space-y-2">
           <Label>OTC Season</Label>
-          <div className="space-y-2">
-            {seasonOptions.map((option) => (
-              <div key={option.value} className="flex items-center space-x-2">
-                <Checkbox
-                  id={`season-${option.value}`}
-                  checked={selectedSeasons.includes(option.value)}
-                  onCheckedChange={() => toggleSeason(option.value)}
-                />
-                <Label htmlFor={`season-${option.value}`} className="cursor-pointer">
-                  {option.label}
-                </Label>
-              </div>
-            ))}
+          <div className="p-3 bg-muted rounded-md">
+            <p className="text-sm font-medium">{FIXED_SEASON}</p>
           </div>
         </div>
 
@@ -251,7 +223,6 @@ export function OTCAntelopeTable() {
             setUnitSearch('');
             setMinSuccessRate('');
             setMinPublicLand('');
-            setSelectedSeasons(['Archery Either Sex']);
           }}
         >
           Clear Filters
@@ -316,7 +287,7 @@ export function OTCAntelopeTable() {
             </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
-                const favKey = `${row.Unit}-${selectedSeasons.join(',')}`;
+                const favKey = `${row.Unit}-${FIXED_SEASON}`;
                 const isFavorited = favorites.has(favKey);
                 return (
                   <tr key={idx} className="hover:bg-accent">
