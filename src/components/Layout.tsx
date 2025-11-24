@@ -97,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex h-11 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <img src={taggoutLogosmall} />
+              <img src={taggoutLogosmall} className="h-full max-h-11 w-auto object-contain" alt="Logo" />
             </Link>
 
             {/* Desktop Navigation */}
