@@ -1,15 +1,18 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, TrendingUp, MapPin, FileText } from "lucide-react";
+import taggoutLogo from "@/assets/taggout-logo.png";
+
 export default function Home() {
   return <div className="min-h-screen">
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-20 px-4">
         <div className="container mx-auto text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-2">
-            Taggout
-          </h1>
+          <img 
+            src={taggoutLogo} 
+            alt="Taggout Logo" 
+            className="h-16 sm:h-20 md:h-24 lg:h-28 mx-auto mb-4"
+          />
           <p className="text-lg sm:text-xl md:text-2xl text-primary-foreground/90 mb-6 sm:mb-8">
             Colorado
           </p>
