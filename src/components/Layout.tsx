@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
+import taggoutLogosmall from "@/assets/L4.png";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -96,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex h-11 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <span className="text-2xl font-bold gradient-primary bg-clip-text text-transparent">Tag Season</span>
+              <img src={taggoutLogo}/img>
             </Link>
 
             {/* Desktop Navigation */}
