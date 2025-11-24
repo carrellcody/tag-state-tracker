@@ -97,7 +97,7 @@ export default function Layout({ children }: LayoutProps) {
           <div className="flex h-11 items-center justify-between">
             {/* Logo */}
             <Link to="/" className="flex items-center space-x-2">
-              <img src={taggoutLogo}/img>
+              <img src={taggoutLogosmall} />
             </Link>
 
             {/* Desktop Navigation */}
@@ -324,15 +324,13 @@ export default function Layout({ children }: LayoutProps) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Pro Plan Required</AlertDialogTitle>
-            <AlertDialogDescription>
-              Purchase pro plan to view deer and elk data
-            </AlertDialogDescription>
+            <AlertDialogDescription>Purchase pro plan to view deer and elk data</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogAction
               onClick={() => {
                 setShowSubscriptionDialog(false);
-                window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
+                window.open("https://buy.stripe.com/7sYfZhaewf7795M0n83AY00", "_blank");
               }}
             >
               Subscribe Now
