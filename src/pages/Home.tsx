@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import taggoutLogo from "@/assets/taggout-logo.png";
+import taggoutLogo from "@/assets/L3-03.png";
 
 export default function Home() {
   return (
@@ -9,7 +9,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-10 px-1">
         <div className="container mx-auto text-center">
-          <img src={L3-03} alt="Taggout Logo" className="h-16 sm:h-20 md:h-24 lg:h-28 mx-auto mb-4" />
+          <img src={taggoutLogo} alt="Taggout Logo" className="h-16 sm:h-20 md:h-24 lg:h-28 mx-auto mb-4" />
         </div>
       </section>
 
