@@ -19,15 +19,15 @@ All colors MUST be HSL.
     --popover-foreground: 0 0% 0%;
 
     /* Teal primary brand color */
-    --primary: 176 100% 33%;
+    --primary: 180, 30%, 56.86%;
     --primary-foreground: 0 0% 100%;
 
     /* Brown secondary */
-    --secondary: 25 40% 39%;
+    --secondary: 26.29, 46.60%, 37.45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 3% 90%;
-    --muted-foreground: 210 3% 50%;
+    --muted: 26.29, 46.60%, 37.45%;
+    --muted-foreground: 26°, 25%, 55%;
 
     /* Gray accent */
     --accent: 210 3% 66%;
