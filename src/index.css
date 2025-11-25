@@ -23,10 +23,10 @@ All colors MUST be HSL.
     --primary-foreground: 0 0% 100%;
 
     /* Brown secondary */
-    --secondary: 26.29, 46.60%, 37.45%;
+    --secondary: 26.29, 46.6%, 37.45%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 26.29, 46.60%, 37.45%;
+    --muted: 26.29, 46.6%, 37.45%;
     --muted-foreground: 26°, 25%, 55%;
 
     /* Gray accent */
@@ -43,8 +43,8 @@ All colors MUST be HSL.
     --radius: 0.5rem;
 
     /* Gradients with brand colors */
-    --gradient-primary: linear-gradient(135deg, hsl(176.4 100% 32.7%), hsl(176 100% 38%));
-    --gradient-secondary: linear-gradient(135deg, hsl(25 40% 39%), hsl(25 40% 44%));
+    --gradient-primary: linear-gradient(135deg, hsl(180, 30%, 56.86%), hsl(180, 30%, 56.86%));
+    --gradient-secondary: linear-gradient(135deg, hsl(26.29, 46.6%, 37.45%), hsl(26.29, 46.6%, 37.45%));
 
     /* Shadows */
     --shadow-subtle: 0 2px 8px hsl(0 0% 0% / 0.08);
