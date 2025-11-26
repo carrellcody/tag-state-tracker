@@ -22,11 +22,11 @@ export default function ElkDraw() {
 
   return (
     <div className="container mx-auto py-6 pb-32 h-[calc(100vh-8rem)]">
-      <div className="mb-4">
-        <h1 className="text-3xl font-bold mb-2">Elk Draw Statistics</h1>
-        <p className="text-muted-foreground">
-          Explore Colorado elk draw odds and statistics for 2025
-        </p>
+      <div className="flex items-start gap-6 mb-3">
+        <div className="flex-shrink-0">
+          <h1 className="text-3xl font-bold mb-1">Elk Draw Statistics</h1>
+          <p className="text-muted-foreground text-sm">Explore Colorado elk draw odds and statistics for 2025</p>
+        </div>
       </div>
       <ElkDrawTable />
     </div>
