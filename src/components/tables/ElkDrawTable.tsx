@@ -40,6 +40,7 @@ export function ElkDrawTable() {
   const [showNoApplicants, setShowNoApplicants] = useState('no');
   const [listFilter, setListFilter] = useState<string[]>(['Any']);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showPreviousYears, setShowPreviousYears] = useState(false);
 
   // Load user's elk preference points from profile
   useEffect(() => {
@@ -203,17 +204,48 @@ export function ElkDrawTable() {
   if (loading) return <div className="p-8 text-center">Loading elk draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Tag", "List", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
+  const visibleColumns = showPreviousYears 
+    ? ["Tag", "List", "Valid GMUs", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Notes"]
+    : ["Tag", "List", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
+  
   const headerLabels: Record<string, string> = {
     "Tag": "Hunt Code",
     "List": "List",
     "Valid GMUs": "Valid Units",
-    "Drawn_out_level": "Drawn out level (Minimum points required)",
-    "Chance_with_First_choice": "% chance with your preference points",
-    "Chance_at_DOL": "% chance at drawn out level",
+    "Drawn_out_level23": "Drawn Out Level 2023",
+    "Chance_at_DOL23": "% Chance at Drawn Out Level 2023",
+    "Drawn_out_level24": "Drawn Out Level 2024",
+    "Chance_at_DOL24": "% Chance at Drawn Out Level 2024",
+    "Drawn_out_level": "Drawn Out Level (Minimum points required)",
+    "Chance_with_First_choice": "% Chance with your preference points",
+    "Chance_at_DOL": "% Chance at Drawn Out Level",
+    "slope": "Three Year Trend",
     "Sex": "Sex",
     "Weapon": "Weapon",
     "Notes": "Notes"
+  };
+
+  const renderTrendArrow = (value: any) => {
+    const numValue = parseFloat(value);
+    if (isNaN(numValue) || numValue === 0) return <span className="text-muted-foreground">-</span>;
+    
+    const magnitude = Math.abs(numValue);
+    const size = Math.min(Math.max(magnitude * 8, 16), 48);
+    const isPositive = numValue > 0;
+    
+    return (
+      <div className="flex items-center justify-center">
+        {isPositive ? (
+          <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-red-500">
+            <path d="M12 4L20 20H4L12 4Z" fill="currentColor" />
+          </svg>
+        ) : (
+          <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-green-500">
+            <path d="M12 20L4 4H20L12 20Z" fill="currentColor" />
+          </svg>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -237,6 +269,16 @@ export function ElkDrawTable() {
               checked={showFavoritesOnly}
               onCheckedChange={setShowFavoritesOnly}
               disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>See previous year draw results</Label>
+            <Switch
+              checked={showPreviousYears}
+              onCheckedChange={setShowPreviousYears}
             />
           </div>
         </div>
@@ -551,6 +593,8 @@ export function ElkDrawTable() {
                                   </a>
                                 ) : huntCode}
                               </div>
+                            ) : col === 'slope' ? (
+                              renderTrendArrow(row[col])
                             ) : (col === 'Valid GMUs' || col === 'Notes') ? (
                               <span title={row[col] || ''}>{row[col] || ''}</span>
                             ) : cellValue}
