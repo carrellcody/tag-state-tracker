@@ -20,12 +20,12 @@ export default function OTCElk() {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 pb-32 h-[calc(100vh-4rem)]">
-      <div className="mb-6">
-        <h1 className="text-4xl font-bold mb-2">OTC Elk Units</h1>
-        <p className="text-muted-foreground">
-          Browse Colorado's over-the-counter elk harvest statistics by unit and season.
-        </p>
+    <div className="container mx-auto py-6 px-4 pb-32 h-[calc(100vh-4rem)]">
+      <div className="flex items-start gap-6 mb-3">
+        <div className="flex-shrink-0">
+          <h1 className="text-3xl font-bold mb-1">OTC Elk Units</h1>
+          <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter elk harvest statistics by unit and season.</p>
+        </div>
       </div>
       <OTCElkTable />
     </div>
