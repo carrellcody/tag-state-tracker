@@ -11,23 +11,32 @@ import { Switch } from "@/components/ui/switch";
 import { ChevronDown, ChevronUp, Star, Filter } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-
 const ROWS_PER_PAGE = 50;
-
 export function DeerDrawTable() {
-  const { data, loading, error } = useCsvData("/data/FullDeer25Final.csv");
-  const { data: harvestData } = useCsvData("/data/DeerHarvest25.csv");
-  const { data: codePages } = useCsvData("/data/deer25code_pages.csv");
-  const { favorites, toggleFavorite } = useFavorites("deer_draw");
-  const { user } = useAuth();
+  const {
+    data,
+    loading,
+    error
+  } = useCsvData("/data/FullDeer25Final.csv");
+  const {
+    data: harvestData
+  } = useCsvData("/data/DeerHarvest25.csv");
+  const {
+    data: codePages
+  } = useCsvData("/data/deer25code_pages.csv");
+  const {
+    favorites,
+    toggleFavorite
+  } = useFavorites("deer_draw");
+  const {
+    user
+  } = useAuth();
   const isMobile = useIsMobile();
-
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const [showMobileFilters, setShowMobileFilters] = useState(true);
-
   const [unitSearch, setUnitSearch] = useState("");
   const [sexFilter, setSexFilter] = useState<string[]>(["All"]);
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(["Any"]);
@@ -46,19 +55,15 @@ export function DeerDrawTable() {
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
-
       try {
-        const { data: profile, error } = await supabase
-          .from("profiles")
-          .select("deer_preference_points")
-          .eq("id", user.id)
-          .maybeSingle();
-
+        const {
+          data: profile,
+          error
+        } = await supabase.from("profiles").select("deer_preference_points").eq("id", user.id).maybeSingle();
         if (error) {
           console.error("Error loading deer preference points:", error);
           return;
         }
-
         if (profile) {
           const points = profile.deer_preference_points || 0;
           setUserPreferencePoints(points);
@@ -68,7 +73,6 @@ export function DeerDrawTable() {
         console.error("Error loading deer preference points:", error);
       }
     };
-
     loadPreferencePoints();
   }, [user]);
 
@@ -78,7 +82,6 @@ export function DeerDrawTable() {
       setRfwFilter("none");
     }
   }, [hunterClass]);
-
   const huntCodeMap = useMemo(() => {
     const map: Record<string, string> = {};
     codePages.forEach((row: any) => {
@@ -86,7 +89,6 @@ export function DeerDrawTable() {
     });
     return map;
   }, [codePages]);
-
   const harvestByUnit = useMemo(() => {
     const map: Record<string, any> = {};
     harvestData.forEach((row: any) => {
@@ -94,31 +96,28 @@ export function DeerDrawTable() {
     });
     return map;
   }, [harvestData]);
-
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
-        const searchTerms = unitSearch
-          .split(",")
-          .map((s) => s.trim())
-          .filter(Boolean);
-        const units = String(row["Valid GMUs"] || "")
-          .split(",")
-          .map((u) => u.trim());
-        if (!searchTerms.some((term) => units.some((unit) => unit === term))) return false;
+        const searchTerms = unitSearch.split(",").map(s => s.trim()).filter(Boolean);
+        const units = String(row["Valid GMUs"] || "").split(",").map(u => u.trim());
+        if (!searchTerms.some(term => units.some(unit => unit === term))) return false;
       }
-
       if (!sexFilter.includes("All")) {
-        const sexMap: Record<string, string> = { Either: "E", Male: "M", Female: "F" };
-        const matchesSex = sexFilter.some((filter) => row.Sex === sexMap[filter]);
+        const sexMap: Record<string, string> = {
+          Either: "E",
+          Male: "M",
+          Female: "F"
+        };
+        const matchesSex = sexFilter.some(filter => row.Sex === sexMap[filter]);
         if (!matchesSex) return false;
       }
 
       // Season/Weapon filter (checkboxes)
       if (!seasonWeapons.includes("Any")) {
         const sw = row.SeasonWeapon || "";
-        const matchesFilter = seasonWeapons.some((filter) => {
+        const matchesFilter = seasonWeapons.some(filter => {
           if (filter === "A") return sw.includes("A");
           if (filter === "M") return sw.includes("M");
           if (filter === "O1R") return sw.includes("O1R");
@@ -128,16 +127,7 @@ export function DeerDrawTable() {
           if (filter === "E") return sw.includes("E");
           if (filter === "L") return sw.includes("L");
           if (filter === "Other") {
-            return (
-              !sw.includes("A") &&
-              !sw.includes("M") &&
-              !sw.includes("O1R") &&
-              !sw.includes("O2R") &&
-              !sw.includes("O3R") &&
-              !sw.includes("O4R") &&
-              !sw.includes("E") &&
-              !sw.includes("L")
-            );
+            return !sw.includes("A") && !sw.includes("M") && !sw.includes("O1R") && !sw.includes("O2R") && !sw.includes("O3R") && !sw.includes("O4R") && !sw.includes("E") && !sw.includes("L");
           }
           return false;
         });
@@ -167,28 +157,12 @@ export function DeerDrawTable() {
       // List filter
       if (!listFilter.includes("Any")) {
         const list = row.List || "";
-        const matchesList = listFilter.some((filter) => list === filter);
+        const matchesList = listFilter.some(filter => list === filter);
         if (!matchesList) return false;
       }
-
       return true;
     });
-  }, [
-    data,
-    unitSearch,
-    sexFilter,
-    seasonWeapons,
-    hunterClass,
-    ploFilter,
-    rfwFilter,
-    minPoints,
-    maxPoints,
-    showNoApplicants,
-    listFilter,
-    showFavoritesOnly,
-    favorites,
-  ]);
-
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites]);
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
     return [...filteredData].sort((a: any, b: any) => {
@@ -196,11 +170,9 @@ export function DeerDrawTable() {
       const bVal = b[sortColumn];
       const aNum = parseFloat(aVal);
       const bNum = parseFloat(bVal);
-
       if (!isNaN(aNum) && !isNaN(bNum)) {
         return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
       }
-
       const aStr = String(aVal || "").toLowerCase();
       const bStr = String(bVal || "").toLowerCase();
       if (aStr < bStr) return sortDirection === "asc" ? -1 : 1;
@@ -208,14 +180,11 @@ export function DeerDrawTable() {
       return 0;
     });
   }, [filteredData, sortColumn, sortDirection]);
-
   const paginatedData = useMemo(() => {
     const start = (currentPage - 1) * ROWS_PER_PAGE;
     return sortedData.slice(start, start + ROWS_PER_PAGE);
   }, [sortedData, currentPage]);
-
   const totalPages = Math.ceil(sortedData.length / ROWS_PER_PAGE);
-
   const handleSort = (column: string) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === "asc" ? "desc" : "asc");
@@ -224,43 +193,12 @@ export function DeerDrawTable() {
       setSortDirection("asc");
     }
   };
-
   const toggleRow = (index: number) => {
     setExpandedRow(expandedRow === index ? null : index);
   };
-
   if (loading) return <div className="p-8 text-center">Loading deer draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
-
-  const visibleColumns = showPreviousYears
-    ? [
-        "Tag",
-        "List",
-        "Valid GMUs",
-        "Drawn_out_level23",
-        "Chance_at_DOL23",
-        "Drawn_out_level24",
-        "Chance_at_DOL24",
-        "Drawn_out_level",
-        "Chance_at_DOL",
-        "slope",
-        "Chance_with_First_choice",
-        "Sex",
-        "Weapon",
-        "Notes",
-      ]
-    : [
-        "Tag",
-        "List",
-        "Valid GMUs",
-        "Drawn_out_level",
-        "Chance_with_First_choice",
-        "Chance_at_DOL",
-        "Sex",
-        "Weapon",
-        "Notes",
-      ];
-
+  const visibleColumns = showPreviousYears ? ["Tag", "List", "Valid GMUs", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Notes"] : ["Tag", "List", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
     List: "List",
@@ -275,9 +213,8 @@ export function DeerDrawTable() {
     slope: "Three Year Trend",
     Sex: "Sex",
     Weapon: "Weapon",
-    Notes: "Notes",
+    Notes: "Notes"
   };
-
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag. The first letter specifies the species (e.g. D for Deer), the second letter specifies the sex (M, F, E for Either), the next three numbers specify the unit – however, often times there are more than a single unit associated with a given hunt code, the next number-letter pair specifies the season (O1 = Season 1, etc.), and the final letter specifies the weapon (R= Rifle, etc.).",
     List: "Tag \"List\" tells you if you can draw more than one tag of a particular type. Only one A list tag can be purchased per species per year. If a tag is a B list tag, you can purchase up to two licenses for a given species (one A and one B, or two B's). If a tag is C list, you can purchase as many as you want along with your other A or B list tags (e.g. A+B+C+C+C)",
@@ -289,51 +226,33 @@ export function DeerDrawTable() {
     Drawn_out_level: "These were the minimum number of points needed to have a chance at drawing the associated hunt code in the 2025 draw. Having this many points did NOT guarantee a tag. Instead, with this number of points the percent chance an applicant had at successfully drawing is listed in the next column (Chance at Drawn Out Level 2025). To guarantee a tag in 2025 (100% draw odds), an applicant would have needed one more point than what is listed here.",
     Chance_at_DOL: "If an applicant had the number of points specified in the \"Drawn Out Level 2025\" column, these are the odds they would have drawn this tag.",
     slope: "This is the trend of points required to draw the tag over the last three draws. A green down arrow means it is becoming easier to draw (Lower points needed, or a better chance with the same number of points). A red up arrow means that it is becoming harder to draw (More points needed, or lower odds with the same number of points).",
-    Chance_with_First_choice: "This shows your odds of drawing the tag with your number of preference points (As indicated in your profile, or in the filters section on the left) if you were to put this particular tag as your first choice in the most recent draw (2025). We cannot predict the draw results for next year, so use your best judgement when applying!",
+    Chance_with_First_choice: "This shows your odds of drawing the tag with your number of preference points (As indicated in your profile, or in the filters section on the left) if you were to put this particular tag as your first choice in the most recent draw (2025). We cannot predict the draw results for next year, so use your best judgement when applying!"
   };
-
   const renderTrendArrow = (value: any) => {
     const numValue = parseFloat(value);
     if (isNaN(numValue) || numValue === 0) return <span className="text-muted-foreground">-</span>;
-
     const magnitude = Math.abs(numValue);
     const size = Math.min(Math.max(magnitude * 8, 16), 48);
     const isPositive = numValue > 0;
-
-    return (
-      <div className="flex items-center justify-center">
-        {isPositive ? (
-          <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-red-500">
+    return <div className="flex items-center justify-center">
+        {isPositive ? <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-red-500">
             <path d="M12 4L20 20H4L12 4Z" fill="currentColor" />
-          </svg>
-        ) : (
-          <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-green-500">
+          </svg> : <svg width={size} height={size} viewBox="0 0 24 24" fill="none" className="text-green-500">
             <path d="M12 20L4 4H20L12 20Z" fill="currentColor" />
-          </svg>
-        )}
-      </div>
-    );
+          </svg>}
+      </div>;
   };
-
-  return (
-    <div className="flex flex-col lg:flex-row gap-4 h-full">
-      {(!isMobile || showMobileFilters) && (
-        <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
-          {isMobile && (
-            <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4">
+  return <div className="flex flex-col lg:flex-row gap-4 h-full">
+      {(!isMobile || showMobileFilters) && <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
+          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4">
               Apply filters and view data
-            </Button>
-          )}
+            </Button>}
           <h3 className="font-semibold text-lg">Filters</h3>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
               <Label>Show Favorites Only</Label>
-              <Switch
-                checked={showFavoritesOnly}
-                onCheckedChange={setShowFavoritesOnly}
-                disabled={favorites.size === 0}
-              />
+              <Switch checked={showFavoritesOnly} onCheckedChange={setShowFavoritesOnly} disabled={favorites.size === 0} />
             </div>
           </div>
 
@@ -346,44 +265,22 @@ export function DeerDrawTable() {
 
           <div className="space-y-2">
             <Label>Search Units</Label>
-            <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
+            <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={e => setUnitSearch(e.target.value)} />
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="deer-user-pp">Your Deer Preference Points</Label>
-            <Input
-              id="deer-user-pp"
-              type="number"
-              min="0"
-              max="32"
-              value={userPreferencePoints}
-              onChange={(e) => setUserPreferencePoints(Math.max(0, Math.min(32, parseInt(e.target.value) || 0)))}
-              placeholder="Enter your PP"
-            />
+            <Input id="deer-user-pp" type="number" min="0" max="32" value={userPreferencePoints} onChange={e => setUserPreferencePoints(Math.max(0, Math.min(32, parseInt(e.target.value) || 0)))} placeholder="Enter your PP" />
           </div>
 
           <div className="space-y-2">
             <Label>Minimum Preference Points: {minPoints}</Label>
-            <input
-              type="range"
-              min="0"
-              max="32"
-              value={minPoints}
-              onChange={(e) => setMinPoints(Number(e.target.value))}
-              className="w-full"
-            />
+            <input type="range" min="0" max="32" value={minPoints} onChange={e => setMinPoints(Number(e.target.value))} className="w-full" />
           </div>
 
           <div className="space-y-2">
             <Label>Maximum Preference Points: {maxPoints}</Label>
-            <input
-              type="range"
-              min="0"
-              max="32"
-              value={maxPoints}
-              onChange={(e) => setMaxPoints(Number(e.target.value))}
-              className="w-full"
-            />
+            <input type="range" min="0" max="32" value={maxPoints} onChange={e => setMaxPoints(Number(e.target.value))} className="w-full" />
           </div>
 
           <div className="space-y-2">
@@ -434,8 +331,7 @@ export function DeerDrawTable() {
             </RadioGroup>
           </div>
 
-          {hunterClass !== "A_NR" && hunterClass !== "Y_NR" && (
-            <div className="space-y-2">
+          {hunterClass !== "A_NR" && hunterClass !== "Y_NR" && <div className="space-y-2">
               <Label>RFW Tags</Label>
               <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
                 <div className="flex items-center space-x-2">
@@ -451,114 +347,125 @@ export function DeerDrawTable() {
                   <Label htmlFor="deer-rfw-none">Don't show RFW tags</Label>
                 </div>
               </RadioGroup>
-            </div>
-          )}
+            </div>}
 
           <div className="space-y-2">
             <Label>Sex</Label>
             <div className="space-y-1">
-              {[
-                { value: "All", label: "All" },
-                { value: "Either", label: "Either" },
-                { value: "Male", label: "Male" },
-                { value: "Female", label: "Female" },
-              ].map(({ value, label }) => (
-                <div key={value} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id={`deer-sex-${value}`}
-                    checked={sexFilter.includes(value)}
-                    onChange={(e) => {
-                      if (value === "All") {
-                        setSexFilter(e.target.checked ? ["All"] : []);
-                      } else {
-                        const newSex = e.target.checked
-                          ? [...sexFilter.filter((s) => s !== "All"), value]
-                          : sexFilter.filter((s) => s !== value);
-                        setSexFilter(newSex.length === 0 ? ["All"] : newSex);
-                      }
-                    }}
-                    className="rounded"
-                  />
+              {[{
+            value: "All",
+            label: "All"
+          }, {
+            value: "Either",
+            label: "Either"
+          }, {
+            value: "Male",
+            label: "Male"
+          }, {
+            value: "Female",
+            label: "Female"
+          }].map(({
+            value,
+            label
+          }) => <div key={value} className="flex items-center space-x-2">
+                  <input type="checkbox" id={`deer-sex-${value}`} checked={sexFilter.includes(value)} onChange={e => {
+              if (value === "All") {
+                setSexFilter(e.target.checked ? ["All"] : []);
+              } else {
+                const newSex = e.target.checked ? [...sexFilter.filter(s => s !== "All"), value] : sexFilter.filter(s => s !== value);
+                setSexFilter(newSex.length === 0 ? ["All"] : newSex);
+              }
+            }} className="rounded" />
                   <Label htmlFor={`deer-sex-${value}`} className="cursor-pointer">
                     {label}
                   </Label>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>Weapon/Season</Label>
             <div className="space-y-1">
-              {[
-                { value: "A", label: "Archery" },
-                { value: "M", label: "Muzzleloader" },
-                { value: "O1R", label: "First Rifle" },
-                { value: "O2R", label: "Second Rifle" },
-                { value: "O3R", label: "Third Rifle" },
-                { value: "O4R", label: "Fourth Rifle" },
-                { value: "E", label: "Early Rifle" },
-                { value: "L", label: "Late Rifle" },
-                { value: "Other", label: "Other" },
-                { value: "Any", label: "Any" },
-              ].map(({ value, label }) => (
-                <div key={value} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id={`deer-season-${value}`}
-                    checked={seasonWeapons.includes(value)}
-                    onChange={(e) => {
-                      if (value === "Any") {
-                        setSeasonWeapons(e.target.checked ? ["Any"] : []);
-                      } else {
-                        const newSeasons = e.target.checked
-                          ? [...seasonWeapons.filter((s) => s !== "Any"), value]
-                          : seasonWeapons.filter((s) => s !== value);
-                        setSeasonWeapons(newSeasons.length === 0 ? ["Any"] : newSeasons);
-                      }
-                    }}
-                    className="rounded"
-                  />
+              {[{
+            value: "A",
+            label: "Archery"
+          }, {
+            value: "M",
+            label: "Muzzleloader"
+          }, {
+            value: "O1R",
+            label: "First Rifle"
+          }, {
+            value: "O2R",
+            label: "Second Rifle"
+          }, {
+            value: "O3R",
+            label: "Third Rifle"
+          }, {
+            value: "O4R",
+            label: "Fourth Rifle"
+          }, {
+            value: "E",
+            label: "Early Rifle"
+          }, {
+            value: "L",
+            label: "Late Rifle"
+          }, {
+            value: "Other",
+            label: "Other"
+          }, {
+            value: "Any",
+            label: "Any"
+          }].map(({
+            value,
+            label
+          }) => <div key={value} className="flex items-center space-x-2">
+                  <input type="checkbox" id={`deer-season-${value}`} checked={seasonWeapons.includes(value)} onChange={e => {
+              if (value === "Any") {
+                setSeasonWeapons(e.target.checked ? ["Any"] : []);
+              } else {
+                const newSeasons = e.target.checked ? [...seasonWeapons.filter(s => s !== "Any"), value] : seasonWeapons.filter(s => s !== value);
+                setSeasonWeapons(newSeasons.length === 0 ? ["Any"] : newSeasons);
+              }
+            }} className="rounded" />
                   <Label htmlFor={`deer-season-${value}`} className="cursor-pointer">
                     {label}
                   </Label>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
           <div className="space-y-2">
             <Label>List</Label>
             <div className="space-y-1">
-              {[
-                { value: "Any", label: "Any" },
-                { value: "A", label: "A" },
-                { value: "B", label: "B" },
-                { value: "C", label: "C" },
-              ].map(({ value, label }) => (
-                <div key={value} className="flex items-center space-x-2">
-                  <input
-                    type="checkbox"
-                    id={`deer-list-${value}`}
-                    checked={listFilter.includes(value)}
-                    onChange={(e) => {
-                      if (value === "Any") {
-                        setListFilter(e.target.checked ? ["Any"] : []);
-                      } else {
-                        const newList = e.target.checked
-                          ? [...listFilter.filter((l) => l !== "Any"), value]
-                          : listFilter.filter((l) => l !== value);
-                        setListFilter(newList.length === 0 ? ["Any"] : newList);
-                      }
-                    }}
-                    className="rounded"
-                  />
+              {[{
+            value: "Any",
+            label: "Any"
+          }, {
+            value: "A",
+            label: "A"
+          }, {
+            value: "B",
+            label: "B"
+          }, {
+            value: "C",
+            label: "C"
+          }].map(({
+            value,
+            label
+          }) => <div key={value} className="flex items-center space-x-2">
+                  <input type="checkbox" id={`deer-list-${value}`} checked={listFilter.includes(value)} onChange={e => {
+              if (value === "Any") {
+                setListFilter(e.target.checked ? ["Any"] : []);
+              } else {
+                const newList = e.target.checked ? [...listFilter.filter(l => l !== "Any"), value] : listFilter.filter(l => l !== value);
+                setListFilter(newList.length === 0 ? ["Any"] : newList);
+              }
+            }} className="rounded" />
                   <Label htmlFor={`deer-list-${value}`} className="cursor-pointer">
                     {label}
                   </Label>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
 
@@ -576,41 +483,31 @@ export function DeerDrawTable() {
             </RadioGroup>
           </div>
 
-          <Button
-            variant="outline"
-            className="w-full"
-            onClick={() => {
-              setUnitSearch("");
-              setSexFilter(["All"]);
-              setSeasonWeapons(["Any"]);
-              setHunterClass("A_R");
-              setPloFilter("all");
-              setRfwFilter("all");
-              setMinPoints(0);
-              setMaxPoints(32);
-              setShowNoApplicants("no");
-              setListFilter(["Any"]);
-            }}
-          >
+          <Button variant="outline" className="w-full" onClick={() => {
+        setUnitSearch("");
+        setSexFilter(["All"]);
+        setSeasonWeapons(["Any"]);
+        setHunterClass("A_R");
+        setPloFilter("all");
+        setRfwFilter("all");
+        setMinPoints(0);
+        setMaxPoints(32);
+        setShowNoApplicants("no");
+        setListFilter(["Any"]);
+      }}>
             Clear Filters
           </Button>
 
-          {isMobile && (
-            <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4">
+          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4">
               Apply filters and view data
-            </Button>
-          )}
-        </aside>
-      )}
+            </Button>}
+        </aside>}
 
-      {(!isMobile || !showMobileFilters) && (
-        <main className="flex-1 overflow-hidden flex flex-col">
-          {isMobile && (
-            <Button onClick={() => setShowMobileFilters(true)} className="mb-4" variant="outline">
+      {(!isMobile || !showMobileFilters) && <main className="flex-1 overflow-hidden flex flex-col">
+          {isMobile && <Button onClick={() => setShowMobileFilters(true)} className="mb-4" variant="outline">
               <Filter className="w-4 h-4 mr-2" />
               Filters
-            </Button>
-          )}
+            </Button>}
           <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
             <div className="flex items-center gap-4">
@@ -618,20 +515,10 @@ export function DeerDrawTable() {
                 Page {currentPage} of {totalPages}
               </p>
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === 1}
-                  onClick={() => setCurrentPage((p) => p - 1)}
-                >
+                <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>
                   Previous
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={currentPage === totalPages}
-                  onClick={() => setCurrentPage((p) => p + 1)}
-                >
+                <Button variant="outline" size="sm" disabled={currentPage === totalPages} onClick={() => setCurrentPage(p => p + 1)}>
                   Next
                 </Button>
               </div>
@@ -644,116 +531,65 @@ export function DeerDrawTable() {
                 <thead className="sticky top-0 gradient-primary z-10">
                   <tr>
                     <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                    {visibleColumns.map((col) => (
-                      <th
-                        key={col}
-                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
-                        onClick={() => handleSort(col)}
-                      >
+                    {visibleColumns.map(col => <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <div className="flex items-center gap-1">
                               {headerLabels[col] || col}
-                              {sortColumn === col &&
-                                (sortDirection === "asc" ? (
-                                  <ChevronUp className="w-4 h-4" />
-                                ) : (
-                                  <ChevronDown className="w-4 h-4" />
-                                ))}
+                              {sortColumn === col && (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
                             </div>
                           </TooltipTrigger>
-                          {helpText[col] && (
-                            <TooltipContent className="max-w-sm z-50">
+                          {helpText[col] && <TooltipContent className="max-w-sm z-50">
                               <p>{helpText[col]}</p>
-                            </TooltipContent>
-                          )}
+                            </TooltipContent>}
                         </Tooltip>
-                      </th>
-                    ))}
+                      </th>)}
                   </tr>
                 </thead>
               <tbody>
                 {paginatedData.map((row: any, idx: number) => {
-                  const isExpanded = expandedRow === idx;
-                  const huntCode = row.Tag;
-                  const isFavorited = favorites.has(huntCode);
-                  const pageNum = huntCodeMap[huntCode];
-                  const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
-                  const harvestUnits = String(row.harvestunit || "")
-                    .split(",")
-                    .map((u) => u.trim())
-                    .filter(Boolean);
-
-                  return (
-                    <Fragment key={idx}>
+                const isExpanded = expandedRow === idx;
+                const huntCode = row.Tag;
+                const isFavorited = favorites.has(huntCode);
+                const pageNum = huntCodeMap[huntCode];
+                const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
+                const harvestUnits = String(row.harvestunit || "").split(",").map(u => u.trim()).filter(Boolean);
+                return <Fragment key={idx}>
                       <tr className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
-                        <td className="border border-border p-2 text-center" onClick={(e) => e.stopPropagation()}>
-                          <Star
-                            className={`w-5 h-5 cursor-pointer ${isFavorited ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`}
-                            onClick={() => toggleFavorite(huntCode)}
-                          />
+                        <td className="border border-border p-2 text-center" onClick={e => e.stopPropagation()}>
+                          <Star className={`w-5 h-5 cursor-pointer ${isFavorited ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} onClick={() => toggleFavorite(huntCode)} />
                         </td>
-                        {visibleColumns.map((col) => {
-                          let cellValue = row[col] || "";
+                        {visibleColumns.map(col => {
+                      let cellValue = row[col] || "";
 
-                          // Dynamic calculation for Chance_with_First_choice based on user's preference points
-                          if (col === "Chance_with_First_choice") {
-                            const dol = parseFloat(row.Drawn_out_level || 0);
-                            if (userPreferencePoints > dol) {
-                              cellValue = "100%";
-                            } else if (userPreferencePoints < dol) {
-                              cellValue = "0%";
-                            } else {
-                              cellValue = row.Chance_at_DOL || "";
-                            }
-                          }
-
-                          return (
-                            <td
-                              key={col}
-                              className="border border-border p-2"
-                              style={
-                                col === "Valid GMUs" || col === "Notes"
-                                  ? {
-                                      maxWidth: "150px",
-                                      overflow: "hidden",
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                    }
-                                  : {}
-                              }
-                            >
-                              {col === "Tag" ? (
-                                <div className="flex items-center gap-2">
+                      // Dynamic calculation for Chance_with_First_choice based on user's preference points
+                      if (col === "Chance_with_First_choice") {
+                        const dol = parseFloat(row.Drawn_out_level || 0);
+                        if (userPreferencePoints > dol) {
+                          cellValue = "100%";
+                        } else if (userPreferencePoints < dol) {
+                          cellValue = "0%";
+                        } else {
+                          cellValue = row.Chance_at_DOL || "";
+                        }
+                      }
+                      return <td key={col} className="border border-border p-2" style={col === "Valid GMUs" || col === "Notes" ? {
+                        maxWidth: "150px",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap"
+                      } : {}}>
+                              {col === "Tag" ? <div className="flex items-center gap-2">
                                   <span>{isExpanded ? "▼" : "▶"}</span>
-                                  {pageNum ? (
-                                    <a
-                                      href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`}
-                                      target="_blank"
-                                      rel="noopener noreferrer"
-                                      className="text-primary hover:underline"
-                                      onClick={(e) => e.stopPropagation()}
-                                    >
+                                  {pageNum ? <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={e => e.stopPropagation()}>
                                       {huntCode}
-                                    </a>
-                                  ) : (
-                                    huntCode
-                                  )}
-                                </div>
-                              ) : col === "slope" ? (
-                                renderTrendArrow(row[col])
-                              ) : col === "Valid GMUs" || col === "Notes" ? (
-                                <span title={row[col] || ""}>{row[col] || ""}</span>
-                              ) : (
-                                cellValue
-                              )}
-                            </td>
-                          );
-                        })}
+                                    </a> : huntCode}
+                                </div> : col === "slope" ? renderTrendArrow(row[col]) : col === "Valid GMUs" || col === "Notes" ? <span title={row[col] || ""}>{row[col] || ""}</span> : cellValue}
+                            </td>;
+                    })}
                       </tr>
-                      {isExpanded && harvestUnits.length > 0 && (
-                        <tr>
-                          <td colSpan={visibleColumns.length} className="border border-border p-4 bg-muted">
+                      {isExpanded && harvestUnits.length > 0 && <tr>
+                          <td colSpan={visibleColumns.length} className="border border-border p-4 bg-primary-foreground text-popover-foreground">
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="bg-secondary">
@@ -767,24 +603,14 @@ export function DeerDrawTable() {
                                 </tr>
                               </thead>
                               <tbody>
-                                {harvestUnits.map((unit) => {
-                                  const harvestRow = harvestByUnit[unit];
-                                  if (!harvestRow) return null;
-                                  return (
-                                    <tr key={unit}>
+                                {harvestUnits.map(unit => {
+                            const harvestRow = harvestByUnit[unit];
+                            if (!harvestRow) return null;
+                            return <tr key={unit}>
                                       <td className="border p-1">
-                                        {harvestRow.onx ? (
-                                          <a
-                                            href={harvestRow.onx}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="text-primary hover:underline"
-                                          >
+                                        {harvestRow.onx ? <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                                             {harvestRow.Unit}
-                                          </a>
-                                        ) : (
-                                          harvestRow.Unit
-                                        )}
+                                          </a> : harvestRow.Unit}
                                       </td>
                                       <td className="border p-1">{harvestRow.Category}</td>
                                       <td className="border p-1">{harvestRow.Bucks}</td>
@@ -792,23 +618,18 @@ export function DeerDrawTable() {
                                       <td className="border p-1">{harvestRow["Total Hunters"]}</td>
                                       <td className="border p-1">{harvestRow["Percent Success"]}</td>
                                       <td className="border p-1">{harvestRow.percent_public}</td>
-                                    </tr>
-                                  );
-                                })}
+                                    </tr>;
+                          })}
                               </tbody>
                             </table>
                           </td>
-                        </tr>
-                      )}
-                    </Fragment>
-                  );
-                })}
+                        </tr>}
+                    </Fragment>;
+              })}
               </tbody>
             </table>
             </TooltipProvider>
           </div>
-        </main>
-      )}
-    </div>
-  );
+        </main>}
+    </div>;
 }
