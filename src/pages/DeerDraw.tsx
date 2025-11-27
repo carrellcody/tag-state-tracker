@@ -5,15 +5,17 @@ import { useEffect } from "react";
 import { getTierFromProductId, canAccessDeer } from "@/utils/subscriptionTiers";
 
 export default function DeerDraw() {
-  const { subscriptionStatus } = useAuth();
+  const { subscriptionStatus, loading } = useAuth();
   const navigate = useNavigate();
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
   useEffect(() => {
-    if (!canAccessDeer(currentTier)) {
+    // Wait for auth to finish loading before checking access
+    if (!loading && !canAccessDeer(currentTier)) {
       navigate("/subscription");
     }
-  }, [currentTier, navigate]);
-  if (!canAccessDeer(currentTier)) {
+  }, [currentTier, navigate, loading]);
+  // Show nothing while loading or if no access
+  if (loading || !canAccessDeer(currentTier)) {
     return null;
   }
   return (

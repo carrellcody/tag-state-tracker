@@ -6,17 +6,19 @@ import { getTierFromProductId, canAccessElk } from '@/utils/subscriptionTiers';
 
 
 export default function ElkDraw() {
-  const { subscriptionStatus } = useAuth();
+  const { subscriptionStatus, loading } = useAuth();
   const navigate = useNavigate();
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
 
   useEffect(() => {
-    if (!canAccessElk(currentTier)) {
+    // Wait for auth to finish loading before checking access
+    if (!loading && !canAccessElk(currentTier)) {
       navigate('/subscription');
     }
-  }, [currentTier, navigate]);
+  }, [currentTier, navigate, loading]);
 
-  if (!canAccessElk(currentTier)) {
+  // Show nothing while loading or if no access
+  if (loading || !canAccessElk(currentTier)) {
     return null;
   }
 
