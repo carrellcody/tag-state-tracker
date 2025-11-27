@@ -98,8 +98,7 @@ export default function Layout({
                 <NavigationMenuList>
                   {navLinks.map(link => <NavigationMenuItem key={link.to}>
                       <Link to={link.to}>
-                        <Button variant={isActive(link.to) ? "default" : "ghost"} size="sm" className="font-medium">
-                          {link.label}
+                        <Button variant={isActive(link.to) ? "default" : "ghost"} size="sm" className="font-medium">About Taggout{link.label}
                         </Button>
                       </Link>
                     </NavigationMenuItem>)}
