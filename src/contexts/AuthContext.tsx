@@ -127,17 +127,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               // Sync with Stripe after loading from DB
               console.log('[AUTH-CHANGE] Syncing with Stripe...');
               await checkSubscription();
+              
+              // Only set loading to false after subscription status is loaded
+              setLoading(false);
             } catch (e) {
               console.error('[AUTH-CHANGE] Deferred work failed:', e);
               // Ensure we have a default status even on exception
               setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
+              setLoading(false);
             }
           }, 0);
         } else {
           setSubscriptionStatus(null);
+          setLoading(false);
         }
-        
-        setLoading(false);
       }
     );
 
@@ -193,6 +196,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         await checkSubscription();
       }
       
+      // Only set loading to false after subscription status is loaded
       setLoading(false);
     });
 
