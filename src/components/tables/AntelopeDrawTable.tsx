@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const ROWS_PER_PAGE = 50;
 
@@ -211,13 +212,27 @@ export function AntelopeDrawTable() {
     "Chance_at_DOL23": "Chance at Drawn Out Level 2023",
     "Drawn_out_level24": "Drawn Out Level 2024",
     "Chance_at_DOL24": "Chance at Drawn Out Level 2024",
-    "Drawn_out_level": "Drawn Out Level (Minimum points required)",
+    "Drawn_out_level": "Drawn Out Level 2025",
     "Chance_with_First_choice": "Chance with your preference points",
     "Chance_at_DOL": "Chance at Drawn Out Level",
     "slope": "Three Year Trend",
     "Sex": "Sex",
     "Weapon": "Weapon",
     "Notes": "Notes"
+  };
+
+  const helpText: Record<string, string> = {
+    Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag. The first letter specifies the species (e.g. A for Antelope), the second letter specifies the sex (M, F, E for Either), the next three numbers specify the unit – however, often times there are more than a single unit associated with a given hunt code, the next number-letter pair specifies the season (O1 = Season 1, etc.), and the final letter specifies the weapon (R= Rifle, etc.).",
+    List: "Tag \"List\" tells you if you can draw more than one tag of a particular type. Only one A list tag can be purchased per species per year. If a tag is a B list tag, you can purchase up to two licenses for a given species (one A and one B, or two B's). If a tag is C list, you can purchase as many as you want along with your other A or B list tags (e.g. A+B+C+C+C)",
+    "Valid GMUs": "These are the units that can legally be hunted if you hold the license for the associated hunt code",
+    Drawn_out_level23: "These were the minimum number of points needed to have a chance at drawing the associated hunt code in the 2023 draw. Having this many points did NOT guarantee a tag. Instead, with this number of points the percent chance an applicant had at successfully drawing is listed in the next column (Chance at Drawn Out Level 2023). To guarantee a tag in 2023 (100% draw odds), an applicant would have needed one more point than what is listed here.",
+    Chance_at_DOL23: "If an applicant had the number of points specified in the \"Drawn Out Level 2023\" column, these are the odds they would have drawn this tag.",
+    Drawn_out_level24: "These were the minimum number of points needed to have a chance at drawing the associated hunt code in the 2024 draw. Having this many points did NOT guarantee a tag. Instead, with this number of points the percent chance an applicant had at successfully drawing is listed in the next column (Chance at Drawn Out Level 2024). To guarantee a tag in 2024 (100% draw odds), an applicant would have needed one more point than what is listed here.",
+    Chance_at_DOL24: "If an applicant had the number of points specified in the \"Drawn Out Level 2024\" column, these are the odds they would have drawn this tag.",
+    Drawn_out_level: "These were the minimum number of points needed to have a chance at drawing the associated hunt code in the 2025 draw. Having this many points did NOT guarantee a tag. Instead, with this number of points the percent chance an applicant had at successfully drawing is listed in the next column (Chance at Drawn Out Level 2025). To guarantee a tag in 2025 (100% draw odds), an applicant would have needed one more point than what is listed here.",
+    Chance_at_DOL: "If an applicant had the number of points specified in the \"Drawn Out Level 2025\" column, these are the odds they would have drawn this tag.",
+    slope: "This is the trend of points required to draw the tag over the last three draws. A green down arrow means it is becoming easier to draw (Lower points needed, or a better chance with the same number of points). A red up arrow means that it is becoming harder to draw (More points needed, or lower odds with the same number of points).",
+    Chance_with_First_choice: "This shows your odds of drawing the tag with your number of preference points (As indicated in your profile, or in the filters section on the left) if you were to put this particular tag as your first choice in the most recent draw (2025). We cannot predict the draw results for next year, so use your best judgement when applying!",
   };
 
   const renderTrendArrow = (value: any) => {
@@ -526,20 +541,30 @@ export function AntelopeDrawTable() {
         </div>
 
         <div className="overflow-auto flex-1">
-          <table className="w-full border-collapse bg-card">
-            <thead className="sticky top-0 gradient-primary z-10">
-              <tr>
-                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                {visibleColumns.map((col) => (
-                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
-                    <div className="flex items-center gap-1">
-                      {headerLabels[col] || col}
-                      {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                    </div>
-                  </th>
-                ))}
-              </tr>
-            </thead>
+          <TooltipProvider>
+            <table className="w-full border-collapse bg-card">
+              <thead className="sticky top-0 gradient-primary z-10">
+                <tr>
+                  <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
+                  {visibleColumns.map((col) => (
+                    <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className="flex items-center gap-1">
+                            {headerLabels[col] || col}
+                            {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                          </div>
+                        </TooltipTrigger>
+                        {helpText[col] && (
+                          <TooltipContent className="max-w-sm z-50">
+                            <p>{helpText[col]}</p>
+                          </TooltipContent>
+                        )}
+                      </Tooltip>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
                 const isExpanded = expandedRow === idx;
@@ -642,6 +667,7 @@ export function AntelopeDrawTable() {
               })}
             </tbody>
           </table>
+          </TooltipProvider>
         </div>
       </main>
       )}
