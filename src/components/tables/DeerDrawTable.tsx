@@ -593,13 +593,13 @@ export function DeerDrawTable() {
                             <table className="w-full text-sm">
                               <thead>
                                 <tr className="bg-secondary">
-                                  <th className="border p-1">Unit</th>
-                                  <th className="border p-1">Harvest Category</th>
-                                  <th className="border p-1">Bucks</th>
-                                  <th className="border p-1">Antlerless</th>
-                                  <th className="border p-1">Total Hunters</th>
-                                  <th className="border p-1">Success %</th>
-                                  <th className="border p-1">Public %</th>
+                                  <th className="border p-1 bg-accent">Unit</th>
+                                  <th className="border p-1 bg-accent">Harvest Category</th>
+                                  <th className="border p-1 bg-accent">Bucks</th>
+                                  <th className="border p-1 bg-accent">Antlerless</th>
+                                  <th className="border p-1 bg-accent">Total Hunters</th>
+                                  <th className="border p-1 bg-accent">Success %</th>
+                                  <th className="border p-1 bg-accent">Public %</th>
                                 </tr>
                               </thead>
                               <tbody>
