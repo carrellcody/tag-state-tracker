@@ -356,7 +356,7 @@ export default function Layout({ children }: LayoutProps) {
             <AlertDialogAction
               onClick={() => {
                 setShowSubscriptionDialog(false);
-                window.open("https://buy.stripe.com/7sYfZhaewf7795M0n83AY00", "_blank");
+                window.open("https://buy.stripe.com/7sYfZhaewf7795M0n83AY00");
               }}
             >
               Subscribe Now
