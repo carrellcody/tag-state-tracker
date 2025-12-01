@@ -23,7 +23,7 @@ export function DeerHarvestTable() {
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
   const [unitSearch, setUnitSearch] = useState('');
-  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
+  const [categoryFilters, setCategoryFilters] = useState<string[]>(['All manners of take']);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
