@@ -3,7 +3,7 @@ import { useCsvData } from '@/hooks/useCsvData';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
@@ -23,13 +23,21 @@ export function AntelopeHarvestTable() {
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
   const [unitSearch, setUnitSearch] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('All manners of take');
+  const [categoryFilters, setCategoryFilters] = useState<string[]>([]);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   const handleToggleFavorite = (unit: string, category: string) => {
     const key = `${unit}-${category}`;
     toggleFavorite(key);
+  };
+
+  const toggleCategoryFilter = (category: string) => {
+    setCategoryFilters(prev => 
+      prev.includes(category) 
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
   };
 
   const visibleCategories = [
@@ -68,12 +76,12 @@ export function AntelopeHarvestTable() {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
         if (!searchTerms.some(term => row.Unit?.toLowerCase().includes(term.toLowerCase()))) return false;
       }
-      if (categoryFilter && row.Category !== categoryFilter) return false;
+      if (categoryFilters.length > 0 && !categoryFilters.includes(row.Category)) return false;
       if (minSuccessRate && parseFloat(row['Percent Success'] || 0) < parseFloat(minSuccessRate)) return false;
       if (minPublicLand && parseFloat(row.percent_public || 0) < parseFloat(minPublicLand)) return false;
       return true;
     });
-  }, [data, unitSearch, categoryFilter, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
+  }, [data, unitSearch, categoryFilters, minSuccessRate, minPublicLand, showFavoritesOnly, favorites]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -170,14 +178,18 @@ export function AntelopeHarvestTable() {
 
         <div className="space-y-2">
           <Label>Category</Label>
-          <RadioGroup value={categoryFilter} onValueChange={setCategoryFilter}>
+          <div className="space-y-2">
             {(showMoreCategories ? allCategories : visibleCategories).map((cat, idx) => (
               <div key={idx} className="flex items-center space-x-2">
-                <RadioGroupItem value={cat} id={`ant-cat-${idx}`} />
-                <Label htmlFor={`ant-cat-${idx}`} className="text-xs">{cat}</Label>
+                <Checkbox 
+                  id={`ant-cat-${idx}`}
+                  checked={categoryFilters.includes(cat)}
+                  onCheckedChange={() => toggleCategoryFilter(cat)}
+                />
+                <Label htmlFor={`ant-cat-${idx}`} className="text-xs cursor-pointer">{cat}</Label>
               </div>
             ))}
-          </RadioGroup>
+          </div>
           <Button
             variant="ghost"
             size="sm"
@@ -189,7 +201,7 @@ export function AntelopeHarvestTable() {
         </div>
 
           <Button variant="outline" className="w-full" onClick={() => {
-            setUnitSearch(''); setCategoryFilter('All manners of take'); setMinSuccessRate(''); setMinPublicLand('');
+            setUnitSearch(''); setCategoryFilters([]); setMinSuccessRate(''); setMinPublicLand('');
           }}>Clear Filters</Button>
 
           {isMobile && (
