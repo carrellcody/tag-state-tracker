@@ -27,8 +27,8 @@ export function DeerHarvestTable() {
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
-  const handleToggleFavorite = (unit: string, category: string) => {
-    const key = `${unit}-${category}`;
+  const handleToggleFavorite = (unitList: string, category: string) => {
+    const key = `${unitList}-${category}`;
     toggleFavorite(key);
   };
 
@@ -71,12 +71,12 @@ export function DeerHarvestTable() {
     return data.filter((row: any) => {
       if (row.Category === 'NA') return false;
       if (showFavoritesOnly) {
-        const key = `${row.Unit}-${row.Category}`;
+        const key = `${row.UnitList}-${row.Category}`;
         if (!favorites.has(key)) return false;
       }
       if (unitSearch) {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
-        if (!searchTerms.some(term => row.Unit?.toLowerCase().includes(term.toLowerCase()))) {
+        if (!searchTerms.some(term => row.UnitList?.toLowerCase().includes(term.toLowerCase()))) {
           return false;
         }
       }
@@ -135,9 +135,9 @@ export function DeerHarvestTable() {
   if (loading) return <div className="p-8 text-center">Loading deer harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["UnitList", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
-    "Unit": "Unit",
+    "UnitList": "Unit",
     "Category": "Category",
     "Bucks": "Bucks",
     "Antlerless": "Antlerless",
@@ -293,19 +293,19 @@ export function DeerHarvestTable() {
             </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
-                const favKey = `${row.Unit}-${row.Category}`;
+                const favKey = `${row.UnitList}-${row.Category}`;
                 const isFavorited = favorites.has(favKey);
                 return (
                   <tr key={idx} className="hover:bg-accent">
                     <td className="border border-border p-2 text-center">
                       <Star
                         className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
-                        onClick={() => handleToggleFavorite(row.Unit, row.Category)}
+                        onClick={() => handleToggleFavorite(row.UnitList, row.Category)}
                       />
                     </td>
                     {visibleColumns.map((col) => (
                     <td key={col} className="border border-border p-2">
-                      {col === 'Unit' && row.onx ? (
+                      {col === 'UnitList' && row.onx ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] || ''}
                         </a>
