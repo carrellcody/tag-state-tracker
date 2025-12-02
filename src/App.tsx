@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Learn from "./pages/Learn";
+import TableGuide from "./pages/TableGuide";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 import DeerDraw from "./pages/DeerDraw";
@@ -38,6 +39,7 @@ const App = () => (
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
               <Route path="/learn" element={<Learn />} />
+              <Route path="/table-guide" element={<TableGuide />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/subscription" element={<Subscription />} />
               <Route path="/profile" element={<Profile />} />

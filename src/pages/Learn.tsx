@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Info } from "lucide-react";
+import { Link } from "react-router-dom";
 import preferencePointsDistribution from "@/assets/preference-points-distribution.png";
 export default function Learn() {
   return <div className="container mx-auto px-4 py-12 max-w-4xl">
@@ -16,6 +17,12 @@ export default function Learn() {
           regulations. Always refer to the official CPW Big Game Brochure for the most current rules.
         </AlertDescription>
       </Alert>
+
+      <div className="mb-8 text-center">
+        <Link to="/table-guide" className="text-primary hover:underline font-medium text-lg">
+          Learn about Taggout Tables →
+        </Link>
+      </div>
 
       <div className="space-y-8">
         <Card className="shadow-medium">

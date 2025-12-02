@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, { message: "Name is required" }).max(100),
@@ -65,6 +65,11 @@ export default function About() {
           <p>
             We started with Colorado, but have plans to expand across all western states, so stay tuned!
           </p>
+          <div className="pt-4">
+            <Link to="/table-guide" className="text-primary hover:underline font-medium">
+              Learn about Taggout Tables →
+            </Link>
+          </div>
         </CardContent>
       </Card>
 
