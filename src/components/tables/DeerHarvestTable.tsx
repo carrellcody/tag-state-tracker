@@ -305,7 +305,7 @@ export function DeerHarvestTable() {
                     </td>
                     {visibleColumns.map((col) => (
                     <td key={col} className="border border-border p-2">
-                      {col === 'UnitList' && row.onx ? (
+                      {col === 'UnitList' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] || ''}
                         </a>
