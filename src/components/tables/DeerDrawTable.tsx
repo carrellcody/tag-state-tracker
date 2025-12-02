@@ -41,6 +41,7 @@ export function DeerDrawTable() {
   const [sexFilter, setSexFilter] = useState<string[]>(["All"]);
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(["Any"]);
   const [hunterClass, setHunterClass] = useState("A_R");
+  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = useState(false);
   const [ploFilter, setPloFilter] = useState("all");
   const [rfwFilter, setRfwFilter] = useState("all");
   const [minPoints, setMinPoints] = useState(0);
@@ -51,7 +52,7 @@ export function DeerDrawTable() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showPreviousYears, setShowPreviousYears] = useState(false);
 
-  // Load user's deer preference points from profile
+  // Load user's deer preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
@@ -59,7 +60,7 @@ export function DeerDrawTable() {
         const {
           data: profile,
           error
-        } = await supabase.from("profiles").select("deer_preference_points").eq("id", user.id).maybeSingle();
+        } = await supabase.from("profiles").select("deer_preference_points, state_residency").eq("id", user.id).maybeSingle();
         if (error) {
           console.error("Error loading deer preference points:", error);
           return;
@@ -68,13 +69,27 @@ export function DeerDrawTable() {
           const points = profile.deer_preference_points || 0;
           setUserPreferencePoints(points);
           setMaxPoints(points);
+
+          // Auto-set hunter class based on residency only once per session
+          const sessionKey = `hunterClass_autoSet_deer_${user.id}`;
+          const alreadySet = sessionStorage.getItem(sessionKey);
+          
+          if (!alreadySet && !hunterClassManuallyChanged) {
+            const residency = profile.state_residency || '';
+            if (residency.toLowerCase() === 'colorado') {
+              setHunterClass('A_R');
+            } else if (residency) {
+              setHunterClass('A_NR');
+            }
+            sessionStorage.setItem(sessionKey, 'true');
+          }
         }
       } catch (error) {
         console.error("Error loading deer preference points:", error);
       }
     };
     loadPreferencePoints();
-  }, [user]);
+  }, [user, hunterClassManuallyChanged]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -285,7 +300,10 @@ export function DeerDrawTable() {
 
           <div className="space-y-2">
             <Label>Hunter Class</Label>
-            <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
+            <RadioGroup value={hunterClass} onValueChange={(value) => {
+              setHunterClass(value);
+              setHunterClassManuallyChanged(true);
+            }}>
               <div className="flex items-center space-x-2">
                 <RadioGroupItem value="A_R" id="deer-class-ar" />
                 <Label htmlFor="deer-class-ar">Resident Adult</Label>
