@@ -657,15 +657,15 @@ export function AntelopeDrawTable() {
                                 if (!harvestRow) return null;
                                 return (
                                   <tr key={unit}>
-                                    <td className="border p-1">
-                                      {harvestRow.onx ? (
-                                        <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                                          {harvestRow.Unit}
-                                        </a>
-                                      ) : (
-                                        harvestRow.Unit
-                                      )}
-                                    </td>
+                                     <td className="border p-1">
+                                       {harvestRow.onx && !isMobile ? (
+                                         <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                           {harvestRow.Unit}
+                                         </a>
+                                       ) : (
+                                         harvestRow.Unit
+                                       )}
+                                     </td>
                                     <td className="border p-1">{harvestRow.Category}</td>
                                     <td className="border p-1">{harvestRow.Bucks}</td>
                                     <td className="border p-1">{harvestRow.Antlerless}</td>

@@ -303,7 +303,7 @@ export function OTCAntelopeTable() {
                       className="border border-border p-2"
                       style={col === 'Hunters Density Per Public Sq. Mile' ? { backgroundColor: getDensityColor(row[col]) } : {}}
                     >
-                      {col === 'Unit' && row.onx ? (
+                      {col === 'Unit' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] || ''}
                         </a>

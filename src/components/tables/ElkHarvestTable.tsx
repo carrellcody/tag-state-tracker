@@ -269,7 +269,7 @@ export function ElkHarvestTable() {
                     </td>
                     {visibleColumns.map((col) => (
                     <td key={col} className="border border-border p-2">
-                      {col === 'Unit' && row.onx ? (
+                      {col === 'Unit' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] || ''}
                         </a>
