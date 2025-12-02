@@ -33,6 +33,7 @@ export function ElkDrawTable() {
   const [sexFilter, setSexFilter] = useState<string[]>(['All']);
   const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
   const [hunterClass, setHunterClass] = useState('A_R');
+  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = useState(false);
   const [ploFilter, setPloFilter] = useState('all');
   const [rfwFilter, setRfwFilter] = useState('all');
   const [minPoints, setMinPoints] = useState(0);
@@ -43,7 +44,7 @@ export function ElkDrawTable() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showPreviousYears, setShowPreviousYears] = useState(false);
 
-  // Load user's elk preference points from profile
+  // Load user's elk preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
@@ -51,7 +52,7 @@ export function ElkDrawTable() {
       try {
         const { data: profile, error } = await supabase
           .from('profiles')
-          .select('elk_preference_points')
+          .select('elk_preference_points, state_residency')
           .eq('id', user.id)
           .maybeSingle();
 
@@ -64,6 +65,20 @@ export function ElkDrawTable() {
           const points = profile.elk_preference_points || 0;
           setUserPreferencePoints(points);
           setMaxPoints(points);
+
+          // Auto-set hunter class based on residency only once per session
+          const sessionKey = `hunterClass_autoSet_elk_${user.id}`;
+          const alreadySet = sessionStorage.getItem(sessionKey);
+          
+          if (!alreadySet && !hunterClassManuallyChanged) {
+            const residency = profile.state_residency || '';
+            if (residency.toLowerCase() === 'colorado') {
+              setHunterClass('A_R');
+            } else if (residency) {
+              setHunterClass('A_NR');
+            }
+            sessionStorage.setItem(sessionKey, 'true');
+          }
         }
       } catch (error) {
         console.error('Error loading elk preference points:', error);
@@ -71,7 +86,7 @@ export function ElkDrawTable() {
     };
 
     loadPreferencePoints();
-  }, [user]);
+  }, [user, hunterClassManuallyChanged]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
@@ -328,7 +343,10 @@ export function ElkDrawTable() {
 
         <div className="space-y-2">
           <Label>Hunter Class</Label>
-          <RadioGroup value={hunterClass} onValueChange={setHunterClass}>
+          <RadioGroup value={hunterClass} onValueChange={(value) => {
+            setHunterClass(value);
+            setHunterClassManuallyChanged(true);
+          }}>
             <div className="flex items-center space-x-2">
               <RadioGroupItem value="A_R" id="elk-class-ar" />
               <Label htmlFor="elk-class-ar">Resident Adult</Label>
