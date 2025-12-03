@@ -579,7 +579,7 @@ export function AntelopeDrawTable() {
                 <tr>
                   <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                   {visibleColumns.map((col) => (
-                    <th key={col} className="border border-border p-2 text-left text-primary-foreground">
+                    <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
                       <div className="flex items-center gap-1">
                         <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
                           <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
