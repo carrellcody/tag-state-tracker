@@ -9,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { TableHeaderHelp } from './TableHeaderHelp';
 
 const ROWS_PER_PAGE = 50;
 
@@ -144,6 +145,19 @@ export function ElkHarvestTable() {
     "Hunters Density Per Public Sq. Mile": "Hunters/Public Sq. Mile"
   };
 
+  const headerHelpText: Record<string, string> = {
+    "Unit": "",
+    "Category": "",
+    "Bulls": "",
+    "Total Antlerless Harvest": "",
+    "Total Harvest": "",
+    "Total Hunters": "",
+    "Percent Success": "",
+    "percent_public": "",
+    "Acres Public": "",
+    "Hunters Density Per Public Sq. Mile": ""
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
@@ -261,7 +275,8 @@ export function ElkHarvestTable() {
               <tr>
                 <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                 {visibleColumns.map((col) => (
-                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
+                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative" onClick={() => handleSort(col)}>
+                    <TableHeaderHelp label="" helpText={headerHelpText[col]} />
                     <div className="flex items-center gap-1">
                       {headerLabels[col] || col}
                       {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
