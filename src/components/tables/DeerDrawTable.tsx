@@ -26,7 +26,8 @@ export function DeerDrawTable() {
   } = useCsvData("/data/deer25code_pages.csv");
   const {
     favorites,
-    toggleFavorite
+    toggleFavorite,
+    clearAllFavorites
   } = useFavorites("deer_draw");
   const {
     user
@@ -514,6 +515,15 @@ export function DeerDrawTable() {
         setListFilter(["Any"]);
       }}>
             Clear Filters
+          </Button>
+
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            onClick={clearAllFavorites}
+            disabled={favorites.size === 0}
+          >
+            Clear Favorites ({favorites.size})
           </Button>
 
           {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4">

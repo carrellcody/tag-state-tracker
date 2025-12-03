@@ -19,7 +19,7 @@ export function AntelopeDrawTable() {
   const { data, loading, error } = useCsvData('/data/Fullant25Final.csv');
   const { data: harvestData } = useCsvData('/data/antHarvest25.csv');
   const { data: codePages } = useCsvData('/data/ant25code_pages.csv');
-  const { favorites, toggleFavorite } = useFavorites('antelope_draw');
+  const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_draw');
   const { user } = useAuth();
   const isMobile = useIsMobile();
   
@@ -522,6 +522,15 @@ export function AntelopeDrawTable() {
           setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
           setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no'); setListFilter(['Any']);
         }}>Clear Filters</Button>
+
+        <Button 
+          variant="outline" 
+          className="w-full" 
+          onClick={clearAllFavorites}
+          disabled={favorites.size === 0}
+        >
+          Clear Favorites ({favorites.size})
+        </Button>
         
         {isMobile && (
           <Button 

@@ -81,5 +81,28 @@ export function useFavorites(favoriteType: string) {
     }
   };
 
-  return { favorites, toggleFavorite, loading };
+  const clearAllFavorites = async () => {
+    if (favorites.size === 0) return;
+    
+    const previousFavorites = favorites;
+    setFavorites(new Set());
+
+    if (user) {
+      try {
+        await supabase
+          .from('favorites')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('favorite_type', favoriteType);
+      } catch (error) {
+        console.error('Error clearing favorites:', error);
+        // Revert on error
+        setFavorites(previousFavorites);
+      }
+    } else {
+      localStorage.removeItem(`${favoriteType}Favorites`);
+    }
+  };
+
+  return { favorites, toggleFavorite, clearAllFavorites, loading };
 }

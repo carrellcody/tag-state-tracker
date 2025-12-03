@@ -25,7 +25,7 @@ const seasonOptions = [
 
 export function OTCElkTable() {
   const { data: harvestData, loading, error } = useCsvData('/data/elkHarvest25.csv');
-  const { favorites, toggleFavorite: toggleFavoriteRaw } = useFavorites('otc_elk');
+  const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_elk');
   const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -261,6 +261,15 @@ export function OTCElkTable() {
           }}
         >
           Clear Filters
+        </Button>
+
+        <Button 
+          variant="outline" 
+          className="w-full" 
+          onClick={clearAllFavorites}
+          disabled={favorites.size === 0}
+        >
+          Clear Favorites ({favorites.size})
         </Button>
       </aside>
 
