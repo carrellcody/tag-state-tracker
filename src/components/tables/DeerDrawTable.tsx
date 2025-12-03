@@ -53,6 +53,12 @@ export function DeerDrawTable() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showPreviousYears, setShowPreviousYears] = useState(false);
 
+  useEffect(() => {
+    if (favorites.size === 0 && showFavoritesOnly) {
+      setShowFavoritesOnly(false);
+    }
+  }, [favorites.size, showFavoritesOnly]);
+
   // Load user's deer preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
