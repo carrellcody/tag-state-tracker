@@ -17,20 +17,18 @@ export function TableHeaderHelp({ label, helpText }: TableHeaderHelpProps) {
 
   return (
     <>
-      <div className="relative">
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation();
-            setOpen(true);
-          }}
-          className="absolute -top-1 -right-1 p-0.5 rounded hover:bg-primary-foreground/20 transition-colors"
-          aria-label={`Help for ${label}`}
-        >
-          <HelpCircle className="w-3.5 h-3.5 opacity-60" />
-        </button>
-        <span>{label}</span>
-      </div>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen(true);
+        }}
+        className="absolute top-1 right-1 p-0.5 rounded hover:bg-primary-foreground/20 transition-colors z-20"
+        aria-label={`Help for ${label}`}
+      >
+        <HelpCircle className="w-3.5 h-3.5 opacity-60" />
+      </button>
+      <span>{label}</span>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>

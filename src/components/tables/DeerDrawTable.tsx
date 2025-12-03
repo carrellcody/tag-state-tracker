@@ -564,7 +564,7 @@ export function DeerDrawTable() {
                 <thead className="sticky top-0 gradient-primary z-10">
                   <tr>
                     <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                    {visibleColumns.map(col => <th key={col} className="border border-border p-2 text-left text-primary-foreground">
+                    {visibleColumns.map(col => <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
                         <div className="flex items-center gap-1">
                           <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
                             <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
