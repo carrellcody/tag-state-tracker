@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
@@ -26,6 +26,12 @@ export function AntelopeHarvestTable() {
   const [categoryFilters, setCategoryFilters] = useState<string[]>(['All manners of take']);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  useEffect(() => {
+    if (favorites.size === 0 && showFavoritesOnly) {
+      setShowFavoritesOnly(false);
+    }
+  }, [favorites.size, showFavoritesOnly]);
 
   const handleToggleFavorite = (unit: string, category: string) => {
     const key = `${unit}-${category}`;

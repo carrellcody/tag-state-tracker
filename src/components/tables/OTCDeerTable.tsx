@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
@@ -26,6 +26,12 @@ export function OTCDeerTable() {
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+
+  useEffect(() => {
+    if (favorites.size === 0 && showFavoritesOnly) {
+      setShowFavoritesOnly(false);
+    }
+  }, [favorites.size, showFavoritesOnly]);
 
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${FIXED_SEASON}`;
