@@ -14,7 +14,7 @@ const ROWS_PER_PAGE = 50;
 
 export function ElkHarvestTable() {
   const { data, loading, error } = useCsvData('/data/elkHarvest25.csv');
-  const { favorites, toggleFavorite } = useFavorites('elk_harvest');
+  const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('elk_harvest');
   const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -205,6 +205,15 @@ export function ElkHarvestTable() {
           <Button variant="outline" className="w-full" onClick={() => {
             setUnitSearch(''); setCategoryFilters([]); setMinSuccessRate(''); setMinPublicLand('');
           }}>Clear Filters</Button>
+
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            onClick={clearAllFavorites}
+            disabled={favorites.size === 0}
+          >
+            Clear Favorites ({favorites.size})
+          </Button>
 
           {isMobile && (
             <Button 

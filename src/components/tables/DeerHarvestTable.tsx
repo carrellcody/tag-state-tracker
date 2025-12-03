@@ -14,7 +14,7 @@ const ROWS_PER_PAGE = 50;
 
 export function DeerHarvestTable() {
   const { data, loading, error } = useCsvData('/data/DeerHarvest25.csv');
-  const { favorites, toggleFavorite } = useFavorites('deer_harvest');
+  const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('deer_harvest');
   const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -234,6 +234,15 @@ export function DeerHarvestTable() {
             }}
           >
             Clear Filters
+          </Button>
+
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            onClick={clearAllFavorites}
+            disabled={favorites.size === 0}
+          >
+            Clear Favorites ({favorites.size})
           </Button>
 
           {isMobile && (

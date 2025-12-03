@@ -19,7 +19,7 @@ export function ElkDrawTable() {
   const { data, loading, error } = useCsvData('/data/Fullelk25Final.csv');
   const { data: harvestData } = useCsvData('/data/elkHarvest25.csv');
   const { data: codePages } = useCsvData('/data/elk25code_pages.csv');
-  const { favorites, toggleFavorite } = useFavorites('elk_draw');
+  const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('elk_draw');
   const { user } = useAuth();
   const isMobile = useIsMobile();
   
@@ -532,6 +532,15 @@ export function ElkDrawTable() {
           setUnitSearch(''); setSexFilter(['All']); setSeasonWeapons(['Any']); 
           setHunterClass('A_R'); setPloFilter('all'); setRfwFilter('all'); setMinPoints(0); setMaxPoints(32); setShowNoApplicants('no'); setListFilter(['Any']);
         }}>Clear Filters</Button>
+
+        <Button 
+          variant="outline" 
+          className="w-full" 
+          onClick={clearAllFavorites}
+          disabled={favorites.size === 0}
+        >
+          Clear Favorites ({favorites.size})
+        </Button>
 
         {isMobile && (
           <Button 

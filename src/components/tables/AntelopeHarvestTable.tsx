@@ -14,7 +14,7 @@ const ROWS_PER_PAGE = 50;
 
 export function AntelopeHarvestTable() {
   const { data, loading, error } = useCsvData('/data/antHarvest25.csv');
-  const { favorites, toggleFavorite } = useFavorites('antelope_harvest');
+  const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_harvest');
   const isMobile = useIsMobile();
   
   const [currentPage, setCurrentPage] = useState(1);
@@ -203,6 +203,15 @@ export function AntelopeHarvestTable() {
           <Button variant="outline" className="w-full" onClick={() => {
             setUnitSearch(''); setCategoryFilters([]); setMinSuccessRate(''); setMinPublicLand('');
           }}>Clear Filters</Button>
+
+          <Button 
+            variant="outline" 
+            className="w-full" 
+            onClick={clearAllFavorites}
+            disabled={favorites.size === 0}
+          >
+            Clear Favorites ({favorites.size})
+          </Button>
 
           {isMobile && (
             <Button 
