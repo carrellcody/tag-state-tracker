@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { ChevronDown, ChevronUp, Star, Filter } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { TableHeaderHelp } from './TableHeaderHelp';
 const ROWS_PER_PAGE = 50;
 export function DeerDrawTable() {
   const {
@@ -560,23 +560,17 @@ export function DeerDrawTable() {
           </div>
 
           <div className="overflow-auto flex-1">
-            <TooltipProvider>
               <table className="w-full border-collapse bg-card">
                 <thead className="sticky top-0 gradient-primary z-10">
                   <tr>
                     <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                    {visibleColumns.map(col => <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <div className="flex items-center gap-1">
-                              {headerLabels[col] || col}
-                              {sortColumn === col && (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                            </div>
-                          </TooltipTrigger>
-                          {helpText[col] && <TooltipContent className="max-w-sm z-50">
-                              <p>{helpText[col]}</p>
-                            </TooltipContent>}
-                        </Tooltip>
+                    {visibleColumns.map(col => <th key={col} className="border border-border p-2 text-left text-primary-foreground">
+                        <div className="flex items-center gap-1">
+                          <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                            <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                            {sortColumn === col && (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                          </div>
+                        </div>
                       </th>)}
                   </tr>
                 </thead>
@@ -662,7 +656,6 @@ export function DeerDrawTable() {
               })}
               </tbody>
             </table>
-            </TooltipProvider>
           </div>
         </main>}
     </div>;
