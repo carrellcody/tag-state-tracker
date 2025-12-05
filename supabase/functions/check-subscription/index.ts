@@ -65,12 +65,37 @@ serve(async (req) => {
 
     let customerId = profile?.stripe_customer_id as string | null;
 
-    // If we don't have a stored customer ID, fall back to email lookup
+    // If we don't have a stored customer ID, try multiple fallbacks
     if (!customerId) {
+      // First try email lookup
       const customers = await stripe.customers.list({ email, limit: 1 });
 
-      if (customers.data.length === 0) {
-        logStep("No customer found by email and no stored Stripe customer id, updating unsubscribed state");
+      if (customers.data.length > 0) {
+        customerId = customers.data[0].id;
+        logStep("Found Stripe customer by email", { customerId });
+      } else {
+        // Fallback: search for recent checkout sessions with this user's client_reference_id
+        logStep("No customer found by email, searching checkout sessions by client_reference_id", { userId });
+        
+        const sessions = await stripe.checkout.sessions.list({
+          limit: 10,
+        });
+        
+        const userSession = sessions.data.find(
+          (s: { client_reference_id?: string | null; customer?: string | object | null; payment_status?: string }) => 
+            s.client_reference_id === userId && s.customer && s.payment_status === 'paid'
+        );
+        
+        if (userSession?.customer) {
+          customerId = typeof userSession.customer === 'string' 
+            ? userSession.customer 
+            : userSession.customer.id;
+          logStep("Found Stripe customer via checkout session client_reference_id", { customerId, sessionId: userSession.id });
+        }
+      }
+
+      if (!customerId) {
+        logStep("No customer found by any method, updating unsubscribed state");
 
         await supabaseClient
           .from('profiles')
@@ -90,14 +115,12 @@ serve(async (req) => {
         );
       }
 
-      customerId = customers.data[0].id;
-      logStep("Found Stripe customer by email", { customerId });
-
       // Persist the Stripe customer ID for future checks
       await supabaseClient
         .from('profiles')
         .update({ stripe_customer_id: customerId })
         .eq('id', userId);
+      logStep("Persisted Stripe customer ID to profile", { customerId });
     } else {
       logStep("Using existing Stripe customer id from profile", { customerId });
     }
