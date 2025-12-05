@@ -37,17 +37,14 @@ serve(async (req) => {
     const token = authHeader.replace("Bearer ", "");
     logStep("Authenticating user with token");
 
-    let payload: any;
-    try {
-      const [, body] = token.split(".");
-      payload = JSON.parse(atob(body));
-    } catch (_err) {
-      throw new Error("Invalid authentication token");
+    const { data: userData, error: userError } = await supabaseClient.auth.getUser(token);
+    if (userError || !userData.user) {
+      throw new Error(`Authentication error: ${userError?.message || "User not found"}`);
     }
 
-    const userId = payload.sub as string | undefined;
-    const email = payload.email as string | undefined;
-    if (!userId || !email) throw new Error("User not authenticated or email not available");
+    const userId = userData.user.id;
+    const email = userData.user.email;
+    if (!email) throw new Error("User email not available");
     logStep("User authenticated", { userId, email });
 
     const stripe = new Stripe(stripeKey, { apiVersion: "2024-06-20" });
