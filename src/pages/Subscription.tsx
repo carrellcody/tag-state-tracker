@@ -51,7 +51,7 @@ export default function Subscription() {
     }
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!session) {
       toast({
         title: 'Authentication Required',
@@ -62,12 +62,27 @@ export default function Subscription() {
       return;
     }
 
-    // Use the static Stripe Payment Link with promo code support
-    window.open('https://buy.stripe.com/7sYfZhaewf7795M0n83AY00', '_blank');
-    toast({
-      title: "Checkout opened",
-      description: "Complete your purchase in the new tab",
-    });
+    try {
+      const { data, error } = await supabase.functions.invoke('create-checkout', {
+        body: { price_id: SUBSCRIPTION_TIERS.pro.price_id },
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (error) {
+      console.error('Error creating checkout:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start checkout. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   const handleManageSubscription = async () => {
