@@ -220,11 +220,13 @@ export function DeerDrawTable() {
   };
   if (loading) return <div className="p-8 text-center">Loading deer draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
-  const visibleColumns = showPreviousYears ? ["Tag", "List", "Valid GMUs", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Notes"] : ["Tag", "List", "Valid GMUs", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
+  const visibleColumns = showPreviousYears ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Notes"] : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_with_First_choice", "Chance_at_DOL", "Sex", "Weapon", "Notes"];
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
     List: "List",
     "Valid GMUs": "Valid Units",
+    Dates: "Dates",
+    Quota: "Total tag quota",
     Drawn_out_level23: "Drawn Out Level 2023",
     Chance_at_DOL23: "Chance at Drawn Out Level 2023",
     Drawn_out_level24: "Drawn Out Level 2024",
