@@ -244,18 +244,31 @@ export function AntelopeDrawTable() {
     "Valid GMUs": "Valid Units",
     "Dates": "Dates",
     "Quota": "Total tag quota",
-    "Drawn_out_level23": "Drawn Out Level 2023",
-    "Chance_at_DOL23": "Chance at Drawn Out Level 2023",
-    "Drawn_out_level24": "Drawn Out Level 2024",
-    "Chance_at_DOL24": "Chance at Drawn Out Level 2024",
-    "Drawn_out_level": "Drawn Out Level 2025",
+    "Drawn_out_level23": "Drawn Out Level",
+    "Chance_at_DOL23": "Chance at DOL",
+    "Drawn_out_level24": "Drawn Out Level",
+    "Chance_at_DOL24": "Chance at DOL",
+    "Drawn_out_level": "Drawn Out Level",
     "Chance_with_First_choice": "Chance with your preference points",
-    "Chance_at_DOL": "Chance at Drawn Out Level",
+    "Chance_at_DOL": "Chance at DOL",
     "slope": "Three Year Trend",
     "Sex": "Sex",
     "Weapon": "Weapon",
     "Notes": "Notes"
   };
+
+  // Columns that are grouped under year headers
+  const yearGroupedColumns = {
+    '2023': ['Drawn_out_level23', 'Chance_at_DOL23'],
+    '2024': ['Drawn_out_level24', 'Chance_at_DOL24'],
+    '2025': ['Drawn_out_level', 'Chance_at_DOL']
+  };
+  
+  // Non-grouped columns (appear before and after year groups)
+  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
+  const nonGroupedColumnsAfter = showPreviousYears 
+    ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Notes']
+    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Notes'];
 
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag. The first letter specifies the species (e.g. A for Antelope), the second letter specifies the sex (M, F, E for Either), the next three numbers specify the unit – however, often times there are more than a single unit associated with a given hunt code, the next number-letter pair specifies the season (O1 = Season 1, etc.), and the final letter specifies the weapon (R= Rifle, etc.).",
@@ -591,9 +604,64 @@ export function AntelopeDrawTable() {
         <div className="overflow-auto flex-1">
             <table className="w-full border-collapse bg-card">
               <thead className="sticky top-0 gradient-primary z-10">
+                {/* First row - Year group headers */}
                 <tr>
-                  <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                  {visibleColumns.map((col) => (
+                  <th rowSpan={2} className="border border-border p-2 text-left text-primary-foreground w-12"></th>
+                  {nonGroupedColumnsBefore.map(col => (
+                    <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative">
+                      <div className="flex items-center gap-1">
+                        <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                          {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                        </div>
+                      </div>
+                    </th>
+                  ))}
+                  {showPreviousYears && (
+                    <>
+                      <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2023</th>
+                      <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2024</th>
+                    </>
+                  )}
+                  <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2025</th>
+                  {nonGroupedColumnsAfter.map(col => (
+                    <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative">
+                      <div className="flex items-center gap-1">
+                        <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                          {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                        </div>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+                {/* Second row - Sub-headers for year groups */}
+                <tr>
+                  {showPreviousYears && (
+                    <>
+                      {yearGroupedColumns['2023'].map(col => (
+                        <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
+                          <div className="flex items-center gap-1">
+                            <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                              <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                              {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                            </div>
+                          </div>
+                        </th>
+                      ))}
+                      {yearGroupedColumns['2024'].map(col => (
+                        <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
+                          <div className="flex items-center gap-1">
+                            <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                              <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                              {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                            </div>
+                          </div>
+                        </th>
+                      ))}
+                    </>
+                  )}
+                  {yearGroupedColumns['2025'].map(col => (
                     <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
                       <div className="flex items-center gap-1">
                         <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
