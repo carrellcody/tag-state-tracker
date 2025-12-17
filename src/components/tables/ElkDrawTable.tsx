@@ -50,6 +50,11 @@ export function ElkDrawTable() {
     }
   }, [favorites.size, showFavoritesOnly]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears]);
+
   // Load user's elk preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
