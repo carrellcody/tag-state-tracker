@@ -624,13 +624,18 @@ export function ElkDrawTable() {
                         
                         // Dynamic calculation for Chance_with_First_choice based on user's preference points
                         if (col === 'Chance_with_First_choice') {
-                          const dol = parseFloat(row.Drawn_out_level || 0);
-                          if (userPreferencePoints > dol) {
-                            cellValue = '100%';
-                          } else if (userPreferencePoints < dol) {
-                            cellValue = '0%';
-                          } else {
-                            cellValue = row.Chance_at_DOL || '';
+                          const dolStr = String(row.Drawn_out_level || '').trim();
+                          const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
+                          const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
+                          
+                          if (!isNaN(dol)) {
+                            if (userPreferencePoints > dol) {
+                              cellValue = '100%';
+                            } else if (userPreferencePoints < dol) {
+                              cellValue = '0%';
+                            } else {
+                              cellValue = row.Chance_at_DOL || '';
+                            }
                           }
                         }
                         
