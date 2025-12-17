@@ -33,6 +33,11 @@ export function OTCDeerTable() {
     }
   }, [favorites.size, showFavoritesOnly]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly]);
+
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${FIXED_SEASON}`;
     toggleFavoriteRaw(key);
