@@ -617,15 +617,20 @@ export function AntelopeDrawTable() {
                         if (col === 'Chance_with_First_choice') {
                           const dolStr = String(row.Drawn_out_level || '').trim();
                           const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
-                          const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
                           
-                          if (!isNaN(dol)) {
-                            if (userPreferencePoints > dol) {
-                              cellValue = '100%';
-                            } else if (userPreferencePoints < dol) {
-                              cellValue = '0%';
-                            } else {
-                              cellValue = row.Chance_at_DOL || '';
+                          if (isLeftoverOrChoice) {
+                            // Leftover and Choice tags have negative DOL, so always 100% since user PP >= 0
+                            cellValue = '100%';
+                          } else {
+                            const dol = parseFloat(dolStr || '0');
+                            if (!isNaN(dol)) {
+                              if (userPreferencePoints > dol) {
+                                cellValue = '100%';
+                              } else if (userPreferencePoints < dol) {
+                                cellValue = '0%';
+                              } else {
+                                cellValue = row.Chance_at_DOL || '';
+                              }
                             }
                           }
                         }
