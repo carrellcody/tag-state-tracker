@@ -45,6 +45,11 @@ export function OTCElkTable() {
     }
   }, [favorites.size, showFavoritesOnly]);
 
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedSeasons, unitSearch, minSuccessRate, minPublicLand, showFavoritesOnly]);
+
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${selectedSeasons.join(',')}`;
     toggleFavoriteRaw(key);

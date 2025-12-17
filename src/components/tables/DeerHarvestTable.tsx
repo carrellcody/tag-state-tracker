@@ -35,6 +35,7 @@ export function DeerHarvestTable() {
     }
   }, [favorites.size, showFavoritesOnly]);
 
+
   const handleToggleFavorite = (unitList: string, category: string) => {
     const key = `${unitList}-${category}`;
     toggleFavorite(key);
@@ -74,6 +75,11 @@ export function DeerHarvestTable() {
   }, [data]);
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [unitSearch, categoryFilters, minSuccessRate, minPublicLand, showFavoritesOnly]);
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
