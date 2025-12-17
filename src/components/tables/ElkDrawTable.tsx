@@ -26,7 +26,7 @@ export function ElkDrawTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
-  const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
   const [unitSearch, setUnitSearch] = useState('');
@@ -225,7 +225,15 @@ export function ElkDrawTable() {
   };
 
   const toggleRow = (index: number) => {
-    setExpandedRow(expandedRow === index ? null : index);
+    setExpandedRows(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
 
   if (loading) return <div className="p-8 text-center">Loading elk draw data...</div>;
@@ -608,7 +616,7 @@ export function ElkDrawTable() {
               </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
-                const isExpanded = expandedRow === idx;
+                const isExpanded = expandedRows.has(idx);
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
