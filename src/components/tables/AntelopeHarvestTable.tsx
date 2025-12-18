@@ -305,10 +305,10 @@ export function AntelopeHarvestTable() {
                     <td key={col} className="border border-border p-2">
                       {col === 'Unit' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                          {row[col] || ''}
+                          {row[col] ?? ''}
                         </a>
                       ) : (
-                        row[col] || ''
+                        row[col] ?? ''
                       )}
                     </td>
                     ))}
