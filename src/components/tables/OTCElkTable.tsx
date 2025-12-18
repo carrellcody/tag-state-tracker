@@ -143,11 +143,12 @@ export function OTCElkTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Bulls", "Total Antlerless Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["Unit", "Bulls", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Bulls": "Bulls",
-    "Total Antlerless Harvest": "Antlerless",
+    "Antlerless": "Antlerless",
+    "Total Harvest": "Total Harvest",
     "Total Hunters": "Total Hunters",
     "Percent Success": "Success %",
     "percent_public": "Public %",

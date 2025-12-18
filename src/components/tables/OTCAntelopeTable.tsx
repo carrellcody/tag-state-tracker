@@ -120,11 +120,12 @@ export function OTCAntelopeTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Bucks", "Total Antlerless Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["Unit", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Bucks": "Bucks",
-    "Total Antlerless Harvest": "Antlerless",
+    "Antlerless": "Doe/Fawn",
+    "Total Harvest": "Total Harvest",
     "Total Hunters": "Total Hunters",
     "Percent Success": "Success %",
     "percent_public": "Public %",
