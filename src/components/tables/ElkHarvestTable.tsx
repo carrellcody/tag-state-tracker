@@ -137,13 +137,13 @@ export function ElkHarvestTable() {
   if (loading) return <div className="p-8 text-center">Loading elk harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Category", "Bulls", "Total Antlerless Harvest", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["Unit", "Category", "Bulls", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Category": "Category",
     "Bulls": "Bulls",
-    "Total Antlerless Harvest": "Antlerless",
-    "Total Harvest": "Total",
+    "Antlerless": "Antlerless",
+    "Total Harvest": "Total Harvest",
     "Total Hunters": "Hunters",
     "Percent Success": "Success %",
     "percent_public": "Public %",
@@ -155,7 +155,7 @@ export function ElkHarvestTable() {
     "Unit": "",
     "Category": "",
     "Bulls": "",
-    "Total Antlerless Harvest": "",
+    "Antlerless": "",
     "Total Harvest": "",
     "Total Hunters": "",
     "Percent Success": "",
