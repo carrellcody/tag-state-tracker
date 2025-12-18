@@ -14,6 +14,13 @@ export function useCsvData<T = any>(csvPath: string) {
       download: true,
       header: true,
       skipEmptyLines: true,
+      transformHeader: (header) => {
+        // Remove BOM, trim whitespace, and normalize Unicode
+        return header
+          .replace(/^\uFEFF/, '') // Remove BOM
+          .replace(/[\u00A0]/g, ' ') // Replace non-breaking spaces
+          .trim();
+      },
       complete: (results) => {
         setData(results.data as T[]);
         setLoading(false);
