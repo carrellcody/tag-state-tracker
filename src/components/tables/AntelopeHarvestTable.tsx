@@ -135,12 +135,12 @@ export function AntelopeHarvestTable() {
   if (loading) return <div className="p-8 text-center">Loading antelope harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["Unit", "Category", "Bucks", "DoeFawn", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Category": "Category",
     "Bucks": "Bucks",
-    "Antlerless": "Doe/Fawn",
+    "DoeFawn": "Doe/Fawn",
     "Total Harvest": "Total Harvest",
     "Total Hunters": "Hunters",
     "Percent Success": "Success %",
@@ -148,12 +148,21 @@ export function AntelopeHarvestTable() {
     "Acres Public": "Public Acres",
     "Hunters Density Per Public Sq. Mile": "Hunters/Public Sq. Mile"
   };
+  
+  const getCellValue = (row: any, col: string) => {
+    if (col === 'DoeFawn') {
+      const does = parseInt(row.Does || 0);
+      const fawns = parseInt(row.Fawns || 0);
+      return does + fawns;
+    }
+    return row[col] || '';
+  };
 
   const headerHelpText: Record<string, string> = {
     "Unit": "",
     "Category": "",
     "Bucks": "",
-    "Antlerless": "",
+    "DoeFawn": "",
     "Total Harvest": "",
     "Total Hunters": "",
     "Percent Success": "",
@@ -305,10 +314,10 @@ export function AntelopeHarvestTable() {
                     <td key={col} className="border border-border p-2">
                       {col === 'Unit' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                          {row[col] || ''}
+                          {getCellValue(row, col)}
                         </a>
                       ) : (
-                        row[col] || ''
+                        getCellValue(row, col)
                       )}
                     </td>
                     ))}

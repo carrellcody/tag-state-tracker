@@ -120,17 +120,26 @@ export function OTCAntelopeTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const visibleColumns = ["Unit", "Bucks", "DoeFawn", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Bucks": "Bucks",
-    "Antlerless": "Doe/Fawn",
+    "DoeFawn": "Doe/Fawn",
     "Total Harvest": "Total Harvest",
     "Total Hunters": "Total Hunters",
     "Percent Success": "Success %",
     "percent_public": "Public %",
     "Acres Public": "Public Acres",
     "Hunters Density Per Public Sq. Mile": "Hunter Density/Public Sq. Mile (x1000)"
+  };
+  
+  const getCellValue = (row: any, col: string) => {
+    if (col === 'DoeFawn') {
+      const does = parseInt(row.Does || 0);
+      const fawns = parseInt(row.Fawns || 0);
+      return does + fawns;
+    }
+    return row[col] || '';
   };
 
   // Calculate percentile-based min/max for hunter density color scaling
@@ -326,10 +335,10 @@ export function OTCAntelopeTable() {
                     >
                       {col === 'Unit' && row.onx && !isMobile ? (
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                          {row[col] || ''}
+                          {getCellValue(row, col)}
                         </a>
                       ) : (
-                        row[col] || ''
+                        getCellValue(row, col)
                       )}
                     </td>
                     ))}
