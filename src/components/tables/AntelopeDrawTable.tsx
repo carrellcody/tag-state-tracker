@@ -43,6 +43,7 @@ export function AntelopeDrawTable() {
   const [listFilter, setListFilter] = useState<string[]>(['Any']);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showPreviousYears, setShowPreviousYears] = useState(false);
+  const [showNoPointsOnly, setShowNoPointsOnly] = useState(false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -53,7 +54,7 @@ export function AntelopeDrawTable() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly]);
 
   // Load user's antelope preference points and set hunter class based on residency
   useEffect(() => {
@@ -124,6 +125,7 @@ export function AntelopeDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
@@ -181,7 +183,7 @@ export function AntelopeDrawTable() {
       
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -338,6 +340,16 @@ export function AntelopeDrawTable() {
             <Switch
               checked={showPreviousYears}
               onCheckedChange={setShowPreviousYears}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm leading-tight">Show tags that don't require burning your preference points (Leftover / Choice 2-4)</Label>
+            <Switch
+              checked={showNoPointsOnly}
+              onCheckedChange={setShowNoPointsOnly}
             />
           </div>
         </div>
