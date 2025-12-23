@@ -27,6 +27,7 @@ export function AntelopeHarvestTable() {
   const [categoryFilters, setCategoryFilters] = useState<string[]>(['All manners of take']);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -135,7 +136,14 @@ export function AntelopeHarvestTable() {
   if (loading) return <div className="p-8 text-center">Loading antelope harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const baseColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];
+  const previousYearColumns = ["PS22", "PS23"];
+  const remainingColumns = ["Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  
+  const visibleColumns = showPreviousYearStats 
+    ? [...baseColumns, ...previousYearColumns, ...remainingColumns]
+    : [...baseColumns, ...remainingColumns];
+
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Category": "Category",
@@ -143,7 +151,9 @@ export function AntelopeHarvestTable() {
     "Antlerless": "Doe/Fawn",
     "Total Harvest": "Total Harvest",
     "Total Hunters": "Hunters",
-    "Percent Success": "Success %",
+    "PS22": "2022 Success %",
+    "PS23": "2023 Success %",
+    "Percent Success": "2024 Success %",
     "percent_public": "Public %",
     "Acres Public": "Public Acres",
     "Hunters Density Per Public Sq. Mile": "Hunters/Public Sq. Mile"
@@ -198,6 +208,16 @@ export function AntelopeHarvestTable() {
               checked={showFavoritesOnly}
               onCheckedChange={setShowFavoritesOnly}
               disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Show previous year stats</Label>
+            <Switch
+              checked={showPreviousYearStats}
+              onCheckedChange={setShowPreviousYearStats}
             />
           </div>
         </div>
