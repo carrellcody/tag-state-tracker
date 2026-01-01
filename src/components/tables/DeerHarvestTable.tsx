@@ -14,7 +14,7 @@ import { TableHeaderHelp } from './TableHeaderHelp';
 const ROWS_PER_PAGE = 50;
 
 export function DeerHarvestTable() {
-  const { data, loading, error } = useCsvData('/data/DeerHarvest25.csv');
+  const { data, loading, error } = useCsvData('/data/DeerHarvest24.csv');
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('deer_harvest');
   const isMobile = useIsMobile();
   
