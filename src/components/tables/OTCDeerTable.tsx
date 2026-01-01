@@ -13,7 +13,7 @@ const ROWS_PER_PAGE = 50;
 const FIXED_SEASON = 'Whitetail Only Late Rifle Season';
 
 export function OTCDeerTable() {
-  const { data: harvestData, loading, error } = useCsvData('/data/DeerHarvest25.csv');
+  const { data: harvestData, loading, error } = useCsvData('/data/DeerHarvest24.csv');
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_deer');
   const isMobile = useIsMobile();
   
