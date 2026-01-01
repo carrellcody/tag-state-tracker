@@ -151,12 +151,13 @@ export function DeerHarvestTable() {
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const baseColumns = ["UnitList", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];
-  const previousYearColumns = ["PS22", "PS23"];
-  const remainingColumns = ["Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const previousYearColumns = ["PS23", "PS22"];
+  const successColumn = ["Percent Success"];
+  const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
   const visibleColumns = showPreviousYearStats 
-    ? [...baseColumns, ...previousYearColumns, ...remainingColumns]
-    : [...baseColumns, ...remainingColumns];
+    ? [...baseColumns, ...successColumn, ...previousYearColumns, ...remainingColumns]
+    : [...baseColumns, ...successColumn, ...remainingColumns];
 
   const headerLabels: Record<string, string> = {
     "UnitList": "Unit",
