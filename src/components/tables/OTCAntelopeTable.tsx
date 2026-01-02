@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const ROWS_PER_PAGE = 50;
@@ -26,6 +26,7 @@ export function OTCAntelopeTable() {
   const [minSuccessRate, setMinSuccessRate] = useState('');
   const [minPublicLand, setMinPublicLand] = useState('');
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -120,14 +121,25 @@ export function OTCAntelopeTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ["Unit", "Bucks", "Antlerless", "Total Harvest", "Total Hunters", "Percent Success", "percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  const baseColumns = ["Unit", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];
+  const successColumn = ["Percent Success"];
+  const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
+  
+  const visibleColumns = showPreviousYearStats 
+    ? [...baseColumns, "PS22", "PS23", ...successColumn, "threeyearsuccess", "slope", ...remainingColumns]
+    : [...baseColumns, ...successColumn, ...remainingColumns];
+
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
     "Bucks": "Bucks",
     "Antlerless": "Doe/Fawn",
     "Total Harvest": "Total Harvest",
     "Total Hunters": "Total Hunters",
-    "Percent Success": "Success %",
+    "PS22": "2022",
+    "PS23": "2023",
+    "Percent Success": "2024",
+    "threeyearsuccess": "3-Year Average",
+    "slope": "Trend",
     "percent_public": "Public %",
     "Acres Public": "Public Acres",
     "Hunters Density Per Public Sq. Mile": "Hunter Density/Public Sq. Mile (x1000)"
@@ -188,6 +200,16 @@ export function OTCAntelopeTable() {
               checked={showFavoritesOnly}
               onCheckedChange={setShowFavoritesOnly}
               disabled={favorites.size === 0}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label>Show previous year stats</Label>
+            <Switch
+              checked={showPreviousYearStats}
+              onCheckedChange={setShowPreviousYearStats}
             />
           </div>
         </div>
@@ -288,23 +310,80 @@ export function OTCAntelopeTable() {
         <div className="overflow-x-auto">
           <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
-              <tr>
-                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                {visibleColumns.map((col) => (
-                  <th
-                    key={col}
-                    className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
-                    onClick={() => handleSort(col)}
-                  >
-                    <div className="flex items-center gap-1">
-                      {headerLabels[col] || col}
-                      {sortColumn === col && (
-                        sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
-                      )}
-                    </div>
-                  </th>
-                ))}
-              </tr>
+              {showPreviousYearStats ? (
+                <>
+                  <tr>
+                    <th className="border border-border p-2 text-left text-primary-foreground w-12" rowSpan={2}></th>
+                    {baseColumns.map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                        rowSpan={2}
+                        onClick={() => handleSort(col)}
+                      >
+                        <div className="flex items-center gap-1">
+                          {headerLabels[col] || col}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                    <th className="border border-border p-2 text-center text-primary-foreground" colSpan={5}>
+                      Percent Success
+                    </th>
+                    {remainingColumns.map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                        rowSpan={2}
+                        onClick={() => handleSort(col)}
+                      >
+                        <div className="flex items-center gap-1">
+                          {headerLabels[col] || col}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                  <tr>
+                    {["PS22", "PS23", "Percent Success", "threeyearsuccess", "slope"].map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                        onClick={() => handleSort(col)}
+                      >
+                        <div className="flex items-center gap-1">
+                          {headerLabels[col] || col}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </>
+              ) : (
+                <tr>
+                  <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
+                  {visibleColumns.map((col) => (
+                    <th
+                      key={col}
+                      className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                      onClick={() => handleSort(col)}
+                    >
+                      <div className="flex items-center gap-1">
+                        {col === "Percent Success" ? "Success %" : (headerLabels[col] || col)}
+                        {sortColumn === col && (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              )}
             </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
@@ -328,6 +407,16 @@ export function OTCAntelopeTable() {
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] ?? ''}
                         </a>
+                      ) : col === 'slope' ? (
+                        (() => {
+                          const slopeVal = parseFloat(row[col]);
+                          if (isNaN(slopeVal) || slopeVal === 0) return null;
+                          return slopeVal > 0 ? (
+                            <TrendingUp className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <TrendingDown className="w-5 h-5 text-red-500" />
+                          );
+                        })()
                       ) : (
                         row[col] ?? ''
                       )}
