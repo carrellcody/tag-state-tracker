@@ -144,7 +144,7 @@ export function ElkHarvestTable() {
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
   const visibleColumns = showPreviousYearStats 
-    ? [...baseColumns, ...successColumn, ...previousYearColumns, ...remainingColumns]
+    ? [...baseColumns, "PS22", "PS23", ...successColumn, ...remainingColumns]
     : [...baseColumns, ...successColumn, ...remainingColumns];
 
   const headerLabels: Record<string, string> = {
@@ -299,18 +299,83 @@ export function ElkHarvestTable() {
         <div className="overflow-auto flex-1">
           <table className="w-full border-collapse bg-card">
             <thead className="sticky top-0 gradient-primary z-10">
-              <tr>
-                <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                {visibleColumns.map((col) => (
-                  <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative" onClick={() => handleSort(col)}>
-                    <TableHeaderHelp label="" helpText={headerHelpText[col]} />
-                    <div className="flex items-center gap-1">
-                      {headerLabels[col] || col}
-                      {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
-                    </div>
-                  </th>
-                ))}
-              </tr>
+              {showPreviousYearStats ? (
+                <>
+                  <tr>
+                    <th className="border border-border p-2 text-left text-primary-foreground w-12" rowSpan={2}></th>
+                    {baseColumns.map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative"
+                        rowSpan={2}
+                        onClick={() => handleSort(col)}
+                      >
+                        <TableHeaderHelp label="" helpText={headerHelpText[col]} />
+                        <div className="flex items-center gap-1">
+                          {headerLabels[col] || col}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                    <th className="border border-border p-2 text-center text-primary-foreground" colSpan={3}>
+                      Percent Success
+                    </th>
+                    {remainingColumns.map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative"
+                        rowSpan={2}
+                        onClick={() => handleSort(col)}
+                      >
+                        <TableHeaderHelp label="" helpText={headerHelpText[col]} />
+                        <div className="flex items-center gap-1">
+                          {headerLabels[col] || col}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                  <tr>
+                    {["PS22", "PS23", "Percent Success"].map((col) => (
+                      <th
+                        key={col}
+                        className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative"
+                        onClick={() => handleSort(col)}
+                      >
+                        <div className="flex items-center gap-1">
+                          {col === "PS22" ? "2022" : col === "PS23" ? "2023" : "2024"}
+                          {sortColumn === col && (
+                            sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                          )}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </>
+              ) : (
+                <tr>
+                  <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
+                  {visibleColumns.map((col) => (
+                    <th
+                      key={col}
+                      className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative"
+                      onClick={() => handleSort(col)}
+                    >
+                      <TableHeaderHelp label="" helpText={headerHelpText[col]} />
+                      <div className="flex items-center gap-1">
+                        {headerLabels[col] || col}
+                        {sortColumn === col && (
+                          sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
+                        )}
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              )}
             </thead>
             <tbody>
               {paginatedData.map((row: any, idx: number) => {
