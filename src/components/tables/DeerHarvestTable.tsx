@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from 'lucide-react';
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TableHeaderHelp } from './TableHeaderHelp';
@@ -156,7 +156,7 @@ export function DeerHarvestTable() {
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
   const visibleColumns = showPreviousYearStats 
-    ? [...baseColumns, "PS22", "PS23", ...successColumn, ...remainingColumns]
+    ? [...baseColumns, "PS22", "PS23", ...successColumn, "threeyearsuccess", "slope", ...remainingColumns]
     : [...baseColumns, ...successColumn, ...remainingColumns];
 
   const headerLabels: Record<string, string> = {
@@ -350,7 +350,7 @@ export function DeerHarvestTable() {
                         </div>
                       </th>
                     ))}
-                    <th className="border border-border p-2 text-center text-primary-foreground" colSpan={3}>
+                    <th className="border border-border p-2 text-center text-primary-foreground" colSpan={5}>
                       Percent Success
                     </th>
                     {remainingColumns.map((col) => (
@@ -371,14 +371,14 @@ export function DeerHarvestTable() {
                     ))}
                   </tr>
                   <tr>
-                    {["PS22", "PS23", "Percent Success"].map((col) => (
+                    {["PS22", "PS23", "Percent Success", "threeyearsuccess", "slope"].map((col) => (
                       <th
                         key={col}
                         className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground relative"
                         onClick={() => handleSort(col)}
                       >
                         <div className="flex items-center gap-1">
-                          {col === "PS22" ? "2022" : col === "PS23" ? "2023" : "2024"}
+                          {col === "PS22" ? "2022" : col === "PS23" ? "2023" : col === "Percent Success" ? "2024" : col === "threeyearsuccess" ? "3-Year Average" : "Trend"}
                           {sortColumn === col && (
                             sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />
                           )}
@@ -426,6 +426,16 @@ export function DeerHarvestTable() {
                         <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
                           {row[col] || ''}
                         </a>
+                      ) : col === 'slope' ? (
+                        (() => {
+                          const slopeVal = parseFloat(row[col]);
+                          if (isNaN(slopeVal) || slopeVal === 0) return null;
+                          return slopeVal > 0 ? (
+                            <TrendingUp className="w-5 h-5 text-green-500" />
+                          ) : (
+                            <TrendingDown className="w-5 h-5 text-red-500" />
+                          );
+                        })()
                       ) : (
                         row[col] || ''
                       )}
