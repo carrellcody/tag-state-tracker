@@ -145,9 +145,7 @@ We want to make this information easy to access for everyone, so are committed t
           <CardTitle>Future Plans</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            We're constantly working to improve Tag Season and expand our coverage. Future updates will include additional states, more species, and enhanced data visualization tools.
-          </p>
+          <p>We're constantly working to improve TalloTags and expand our coverage. Future updates will include additional states, more species, and enhanced data visualization tools.</p>
           <p>
             All data is sourced from official Colorado Parks & Wildlife publications and is updated annually after each draw and hunting season.
           </p>
