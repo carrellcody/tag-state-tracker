@@ -59,7 +59,7 @@ export default function About() {
       
       <Card className="shadow-medium mb-8">
         <CardHeader>
-          <CardTitle>Our Mission</CardTitle>
+          <CardTitle className="text-center">Our Mission</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
           <p className="text-center">TalloTags was created to help hunters make informed decisions about their big game application strategies across the west.  
