@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
+
 import taggoutLogosmall from "@/assets/L4.png";
 interface LayoutProps {
   children: React.ReactNode;
@@ -38,7 +39,7 @@ export default function Layout({ children }: LayoutProps) {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
-  const { user, signOut, subscriptionStatus } = useAuth();
+  const { user, signOut, subscriptionStatus, loading } = useAuth();
   const navLinks = [
     {
       to: "/",
@@ -110,8 +111,9 @@ export default function Layout({ children }: LayoutProps) {
     },
   ];
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
-  const hasElkAccess = canAccessElk(currentTier);
-  const hasDeerAccess = canAccessDeer(currentTier);
+  // While loading, assume user has access to avoid greying out menus prematurely
+  const hasElkAccess = loading ? true : canAccessElk(currentTier);
+  const hasDeerAccess = loading ? true : canAccessDeer(currentTier);
   const handleRestrictedClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setShowSubscriptionDialog(true);
