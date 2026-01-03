@@ -696,7 +696,7 @@ export function AntelopeDrawTable() {
 
                 return (
                   <Fragment key={idx}>
-                    <tr className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
+                    <tr className="group hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
                       <td className="border border-border p-2 text-center" onClick={(e) => e.stopPropagation()}>
                         <Star
                           className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
@@ -731,10 +731,10 @@ export function AntelopeDrawTable() {
                         return (
                           <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
                             {col === 'Tag' ? (
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-2 text-primary-dark group-hover:text-white">
                                 <span>{isExpanded ? '▼' : '▶'}</span>
                                 {pageNum ? (
-                                  <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={(e) => e.stopPropagation()}>
+                                  <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={(e) => e.stopPropagation()}>
                                     {huntCode}
                                   </a>
                                 ) : huntCode}
