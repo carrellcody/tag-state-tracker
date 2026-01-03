@@ -377,14 +377,14 @@ export function ElkDrawTable() {
           />
         </div>
 
-        <div className="space-y-2">
+        <div className={`space-y-2 ${showNoPointsOnly ? 'opacity-50' : ''}`}>
           <Label>Minimum Preference Points: {minPoints}</Label>
-          <input type="range" min="0" max="32" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" />
+          <input type="range" min="0" max="32" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly} />
         </div>
 
-        <div className="space-y-2">
+        <div className={`space-y-2 ${showNoPointsOnly ? 'opacity-50' : ''}`}>
           <Label>Maximum Preference Points: {maxPoints}</Label>
-          <input type="range" min="0" max="32" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" />
+          <input type="range" min="0" max="32" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly} />
         </div>
 
         <div className="space-y-2">
@@ -420,43 +420,6 @@ export function ElkDrawTable() {
           </RadioGroup>
         </div>
 
-        <div className="space-y-2">
-          <Label>PLO Tags</Label>
-          <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="all" id="elk-plo-all" />
-              <Label htmlFor="elk-plo-all">Show all tags</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="only" id="elk-plo-only" />
-              <Label htmlFor="elk-plo-only">Show only PLO tags</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <RadioGroupItem value="none" id="elk-plo-none" />
-              <Label htmlFor="elk-plo-none">Don't show PLO tags</Label>
-            </div>
-          </RadioGroup>
-        </div>
-
-        {hunterClass !== 'A_NR' && hunterClass !== 'Y_NR' && (
-          <div className="space-y-2">
-            <Label>RFW Tags</Label>
-            <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="all" id="elk-rfw-all" />
-                <Label htmlFor="elk-rfw-all">Show all tags</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="only" id="elk-rfw-only" />
-                <Label htmlFor="elk-rfw-only">Show only RFW tags</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="none" id="elk-rfw-none" />
-                <Label htmlFor="elk-rfw-none">Don't show RFW tags</Label>
-              </div>
-            </RadioGroup>
-          </div>
-        )}
 
         <div className="space-y-2">
           <Label>Sex</Label>
@@ -559,6 +522,44 @@ export function ElkDrawTable() {
             ))}
           </div>
         </div>
+
+        <div className="space-y-2">
+          <Label>PLO Tags</Label>
+          <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="all" id="elk-plo-all" />
+              <Label htmlFor="elk-plo-all">Show all tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="only" id="elk-plo-only" />
+              <Label htmlFor="elk-plo-only">Show only PLO tags</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <RadioGroupItem value="none" id="elk-plo-none" />
+              <Label htmlFor="elk-plo-none">Don't show PLO tags</Label>
+            </div>
+          </RadioGroup>
+        </div>
+
+        {hunterClass !== 'A_NR' && hunterClass !== 'Y_NR' && (
+          <div className="space-y-2">
+            <Label>RFW Tags</Label>
+            <RadioGroup value={rfwFilter} onValueChange={setRfwFilter}>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="all" id="elk-rfw-all" />
+                <Label htmlFor="elk-rfw-all">Show all tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="only" id="elk-rfw-only" />
+                <Label htmlFor="elk-rfw-only">Show only RFW tags</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="none" id="elk-rfw-none" />
+                <Label htmlFor="elk-rfw-none">Don't show RFW tags</Label>
+              </div>
+            </RadioGroup>
+          </div>
+        )}
 
         <div className="space-y-2">
           <Label>Show tags with no applicants?</Label>
