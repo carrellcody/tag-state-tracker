@@ -69,11 +69,7 @@ We want to make this information easy to access for everyone, so are comitted to
           <p>
             We started with Colorado, but have plans to expand across all western states, so stay tuned!
           </p>
-          <div className="pt-4">
-            <Link to="/table-guide" className="text-primary hover:underline font-medium">
-              Learn about Taggout Tables →
-            </Link>
-          </div>
+          
         </CardContent>
       </Card>
 
