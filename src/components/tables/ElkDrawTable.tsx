@@ -16,7 +16,7 @@ import { TableHeaderHelp } from './TableHeaderHelp';
 const ROWS_PER_PAGE = 50;
 
 export function ElkDrawTable() {
-  const { data, loading, error } = useCsvData('/data/Fullelk25Final.csv');
+  const { data, loading, error } = useCsvData(`/data/Fullelk25Final.csv?v=${Date.now()}`);
   const { data: harvestData } = useCsvData('/data/elkHarvest25.csv');
   const { data: codePages } = useCsvData('/data/elk25code_pages.csv');
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('elk_draw');
@@ -106,6 +106,26 @@ export function ElkDrawTable() {
       setRfwFilter('none');
     }
   }, [hunterClass]);
+
+  // DEBUG: Log parsed data to verify columns
+  useEffect(() => {
+    if (data.length > 0) {
+      const sampleRow = data.find((r: any) => r.Tag === 'EE006O4R' && r.Class === 'A_R');
+      if (sampleRow) {
+        console.log('[ELK DEBUG] EE006O4R A_R row:', {
+          Tag: sampleRow.Tag,
+          Class: sampleRow.Class,
+          Drawn_out_level: sampleRow.Drawn_out_level,
+          Chance_at_DOL: sampleRow.Chance_at_DOL,
+          Drawn_out_level24: sampleRow.Drawn_out_level24,
+          Chance_at_DOL24: sampleRow.Chance_at_DOL24,
+          Drawn_out_level23: sampleRow.Drawn_out_level23,
+          Chance_at_DOL23: sampleRow.Chance_at_DOL23,
+        });
+        console.log('[ELK DEBUG] All column keys:', Object.keys(sampleRow));
+      }
+    }
+  }, [data]);
 
   const huntCodeMap = useMemo(() => {
     const map: Record<string, string> = {};
