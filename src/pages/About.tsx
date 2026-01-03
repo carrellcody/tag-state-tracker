@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Target, TrendingUp, MapPin, FileText } from "lucide-react";
+import { Target, TrendingUp, MapPin, FileText, Tag } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -120,6 +120,18 @@ We want to make this information easy to access for everyone, so are committed t
             <CardContent>
               <p className="text-muted-foreground">
                 Filter by preference points, weapon type, season, and more
+              </p>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+            <CardHeader>
+              <Tag className="h-10 w-10 text-accent mb-2" />
+              <CardTitle>Over The Counter Tag Analysis</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-muted-foreground">
+                Analyze over the counter tags with the most up to date harvest and unit data available
               </p>
             </CardContent>
           </Card>
