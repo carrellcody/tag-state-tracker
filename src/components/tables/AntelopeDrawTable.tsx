@@ -157,6 +157,10 @@ export function AntelopeDrawTable() {
       // Hunter Class filter
       if (hunterClass !== 'all' && row.Class !== hunterClass) return false;
       
+      // SeasonCode "V" filter - only show if non-resident is selected
+      const seasonCode = row.SeasonCode || '';
+      if (seasonCode.includes('V') && hunterClass !== 'N_A' && hunterClass !== 'N_Y') return false;
+      
       // PLO filter
       if (ploFilter === 'only' && row.PLO !== 'Yes') return false;
       if (ploFilter === 'none' && row.PLO === 'Yes') return false;
