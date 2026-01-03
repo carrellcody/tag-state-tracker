@@ -11,28 +11,34 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
-
 const contactSchema = z.object({
-  name: z.string().trim().min(1, { message: "Name is required" }).max(100),
-  email: z.string().trim().email({ message: "Invalid email address" }).max(255),
-  subject: z.string().min(1, { message: "Subject is required" }),
-  message: z.string().trim().min(1, { message: "Message is required" }).max(1000),
+  name: z.string().trim().min(1, {
+    message: "Name is required"
+  }).max(100),
+  email: z.string().trim().email({
+    message: "Invalid email address"
+  }).max(255),
+  subject: z.string().min(1, {
+    message: "Subject is required"
+  }),
+  message: z.string().trim().min(1, {
+    message: "Message is required"
+  }).max(1000)
 });
-
 export default function About() {
-  const { toast } = useToast();
+  const {
+    toast
+  } = useToast();
   const location = useLocation();
-  
   const form = useForm<z.infer<typeof contactSchema>>({
     resolver: zodResolver(contactSchema),
     defaultValues: {
       name: "",
       email: "",
       subject: "General Question",
-      message: "",
-    },
+      message: ""
+    }
   });
-
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const subjectParam = params.get('subject');
@@ -40,18 +46,15 @@ export default function About() {
       form.setValue('subject', 'Advertising');
     }
   }, [location.search, form]);
-
   const onSubmit = (data: z.infer<typeof contactSchema>) => {
     console.log("Contact form submitted:", data);
     toast({
       title: "Message sent!",
-      description: "Thank you for contacting us. We'll get back to you soon.",
+      description: "Thank you for contacting us. We'll get back to you soon."
     });
     form.reset();
   };
-
-  return (
-    <div className="container mx-auto px-4 py-12 max-w-4xl">
+  return <div className="container mx-auto px-4 py-12 max-w-4xl">
       <h1 className="text-4xl font-bold mb-8 text-center">About Tag Season</h1>
       
       <Card className="shadow-medium mb-8">
@@ -59,9 +62,10 @@ export default function About() {
           <CardTitle>Our Mission</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p>
-            Tag Season exists to help hunters make informed decisions about their application strategy for big game draws across the west at an affordable price. 
-          </p>
+          <p>Tag Season exists to help hunters make informed decisions about their application strategy for big game draws across the west.
+
+
+We want to make this information easy to access for everyone, so are comitted to bringing it to the public at an affordable yearly subscripti</p>
           <p>
             We started with Colorado, but have plans to expand across all western states, so stay tuned!
           </p>
@@ -147,37 +151,27 @@ export default function About() {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
+              <FormField control={form.control} name="name" render={({
+              field
+            }) => <FormItem>
                     <FormLabel>Name</FormLabel>
                     <FormControl>
                       <Input placeholder="Your name" {...field} />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
+                  </FormItem>} />
+              <FormField control={form.control} name="email" render={({
+              field
+            }) => <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="your@email.com" {...field} />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="subject"
-                render={({ field }) => (
-                  <FormItem>
+                  </FormItem>} />
+              <FormField control={form.control} name="subject" render={({
+              field
+            }) => <FormItem>
                     <FormLabel>Subject</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
@@ -193,31 +187,20 @@ export default function About() {
                       </SelectContent>
                     </Select>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="message"
-                render={({ field }) => (
-                  <FormItem>
+                  </FormItem>} />
+              <FormField control={form.control} name="message" render={({
+              field
+            }) => <FormItem>
                     <FormLabel>Message</FormLabel>
                     <FormControl>
-                      <Textarea 
-                        placeholder="Tell us what's on your mind..." 
-                        className="min-h-[120px]"
-                        {...field} 
-                      />
+                      <Textarea placeholder="Tell us what's on your mind..." className="min-h-[120px]" {...field} />
                     </FormControl>
                     <FormMessage />
-                  </FormItem>
-                )}
-              />
+                  </FormItem>} />
               <Button type="submit" className="w-full">Send Message</Button>
             </form>
           </Form>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
