@@ -51,7 +51,7 @@ export default function Layout({ children }: LayoutProps) {
     },
     {
       to: "/about",
-      label: "About Taggout",
+      label: "About TalloTags",
     },
   ];
   const speciesMenus = [
