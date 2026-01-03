@@ -751,10 +751,10 @@ export function AntelopeDrawTable() {
                     </tr>
                     {isExpanded && harvestUnits.length > 0 && (
                       <tr>
-                        <td colSpan={visibleColumns.length} className="border border-border p-4 bg-muted">
+                        <td colSpan={visibleColumns.length} className="border border-border p-4 bg-card">
                           <table className="w-full text-sm">
                             <thead>
-                              <tr className="bg-secondary">
+                              <tr className="bg-accent/50">
                                 <th className="border p-1">Unit</th>
                                 <th className="border p-1">Harvest Category</th>
                                 <th className="border p-1">Bucks</th>
