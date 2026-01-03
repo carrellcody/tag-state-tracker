@@ -55,7 +55,7 @@ export default function About() {
     form.reset();
   };
   return <div className="container mx-auto px-4 py-12 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-8 text-center">About Tag Season</h1>
+      <h1 className="text-4xl font-bold mb-8 text-center">About TalloTags</h1>
       
       <Card className="shadow-medium mb-8">
         <CardHeader>
