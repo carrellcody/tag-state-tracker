@@ -18,11 +18,6 @@ export default function Learn() {
         </AlertDescription>
       </Alert>
 
-      <div className="mb-8 text-center">
-        <Link to="/table-guide" className="text-primary hover:underline font-medium text-lg">
-          Learn about Taggout Tables →
-        </Link>
-      </div>
 
       <div className="space-y-8">
         <Card className="shadow-medium">
