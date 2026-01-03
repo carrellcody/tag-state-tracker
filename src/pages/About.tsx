@@ -74,7 +74,7 @@ We want to make this information easy to access for everyone, so are committed t
       </Card>
 
       <div className="mb-8">
-        <h2 className="text-3xl font-bold mb-6">What We Offer</h2>
+        <h2 className="text-3xl font-bold mb-6 text-center">What We Offer</h2>
         <div className="grid md:grid-cols-2 gap-6">
           <Card className="shadow-subtle hover:shadow-medium transition-shadow">
             <CardHeader>
@@ -124,7 +124,9 @@ We want to make this information easy to access for everyone, so are committed t
             </CardContent>
           </Card>
           
-          <Card className="shadow-subtle hover:shadow-medium transition-shadow">
+        </div>
+        <div className="flex justify-center mt-6">
+          <Card className="shadow-subtle hover:shadow-medium transition-shadow md:w-1/2">
             <CardHeader>
               <Tag className="h-10 w-10 text-accent mb-2" />
               <CardTitle>Over The Counter Tag Analysis</CardTitle>
