@@ -19,8 +19,11 @@ All colors MUST be HSL.
     --popover-foreground: 0 0% 0%;
 
     /* Teal primary brand color */
-    --primary: 180, 30%, 56.86%;
+    --primary: 180 30% 56.86%;
     --primary-foreground: 0 0% 100%;
+    
+    /* Darker teal for hunt code links */
+    --primary-dark: 176 100% 28%;
 
     /* Brown secondary */
     --secondary: 26.29, 46.6%, 37.45%;
@@ -72,6 +75,9 @@ All colors MUST be HSL.
 
     --primary: 176 100% 38%;
     --primary-foreground: 0 0% 0%;
+    
+    /* Darker teal for hunt code links in dark mode */
+    --primary-dark: 176 100% 45%;
 
     --secondary: 25 40% 44%;
     --secondary-foreground: 0 0% 100%;

@@ -677,7 +677,7 @@ export function DeerDrawTable() {
                 const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
                 const harvestUnits = String(row.harvestunit || "").split(",").map(u => u.trim()).filter(Boolean);
                 return <Fragment key={idx}>
-                      <tr className="hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
+                      <tr className="group hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
                         <td className="border border-border p-2 text-center" onClick={e => e.stopPropagation()}>
                           <Star className={`w-5 h-5 cursor-pointer ${isFavorited ? "fill-yellow-400 text-yellow-400" : "text-muted-foreground"}`} onClick={() => toggleFavorite(huntCode)} />
                         </td>
@@ -711,9 +711,9 @@ export function DeerDrawTable() {
                         textOverflow: "ellipsis",
                         whiteSpace: "nowrap"
                       } : {}}>
-                              {col === "Tag" ? <div className="flex items-center gap-2">
+                              {col === "Tag" ? <div className="flex items-center gap-2 text-primary-dark group-hover:text-white">
                                   <span>{isExpanded ? "▼" : "▶"}</span>
-                                  {pageNum ? <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline" onClick={e => e.stopPropagation()}>
+                                  {pageNum ? <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={e => e.stopPropagation()}>
                                       {huntCode}
                                     </a> : huntCode}
                                 </div> : col === "slope" ? renderTrendArrow(row[col]) : col === "Valid GMUs" || col === "Notes" ? <span title={row[col] || ""}>{row[col] || ""}</span> : cellValue}
