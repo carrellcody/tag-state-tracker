@@ -62,10 +62,10 @@ export default function About() {
           <CardTitle>Our Mission</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
-          <p>Tag Season exists to help hunters make informed decisions about their application strategy for big game draws across the west. 
+          <p className="text-center">TalloTags was created to help hunters make informed decisions about their big game application strategies across the west.  
 
 
-We want to make this information easy to access for everyone, so are comitted to bringing it to the public at an affordable yearly subscripti</p>
+We want to make this information easy to access for everyone, so are committed to offering an affordable yearly subscription fee.</p>
           <p>
             We started with Colorado, but have plans to expand across all western states, so stay tuned!
           </p>
