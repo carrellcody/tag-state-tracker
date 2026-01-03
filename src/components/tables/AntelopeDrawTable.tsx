@@ -769,9 +769,9 @@ export function AntelopeDrawTable() {
                                 if (!harvestRow) return null;
                                 return (
                                   <tr key={unit}>
-                                     <td className="border p-1">
+                                     <td className="border p-1 text-primary-dark">
                                        {harvestRow.onx && !isMobile ? (
-                                         <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                                         <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="hover:underline">
                                            {harvestRow.Unit}
                                          </a>
                                        ) : (
