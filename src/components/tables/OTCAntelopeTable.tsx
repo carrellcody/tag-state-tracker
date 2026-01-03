@@ -390,7 +390,7 @@ export function OTCAntelopeTable() {
                 const favKey = `${row.Unit}-${FIXED_SEASON}`;
                 const isFavorited = favorites.has(favKey);
                 return (
-                  <tr key={idx} className="hover:bg-accent">
+                  <tr key={idx} className="group hover:bg-accent">
                     <td className="border border-border p-2 text-center">
                       <Star
                         className={`w-5 h-5 cursor-pointer ${isFavorited ? 'fill-yellow-400 text-yellow-400' : 'text-muted-foreground'}`}
@@ -404,9 +404,11 @@ export function OTCAntelopeTable() {
                       style={col === 'Hunters Density Per Public Sq. Mile' ? { backgroundColor: getDensityColor(row[col]) } : {}}
                     >
                       {col === 'Unit' && row.onx && !isMobile ? (
-                        <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary-dark group-hover:text-white hover:underline">
                           {row[col] ?? ''}
                         </a>
+                      ) : col === 'Unit' ? (
+                        <span className="text-primary-dark group-hover:text-white">{row[col] ?? ''}</span>
                       ) : col === 'slope' ? (
                         (() => {
                           const slopeVal = parseFloat(row[col]);
