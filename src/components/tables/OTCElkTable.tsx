@@ -144,7 +144,7 @@ export function OTCElkTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const baseColumns = ["Unit", "OTC", "Bulls", "Antlerless", "Total Harvest", "Total Hunters"];
+  const baseColumns = ["Unit", "Category", "Bulls", "Antlerless", "Total Harvest", "Total Hunters"];
   const successColumn = ["Percent Success"];
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
@@ -154,7 +154,7 @@ export function OTCElkTable() {
 
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
-    "OTC": "OTC Category",
+    "Category": "Harvest Category",
     "Bulls": "Bulls",
     "Antlerless": "Antlerless",
     "Total Harvest": "Total Harvest",
