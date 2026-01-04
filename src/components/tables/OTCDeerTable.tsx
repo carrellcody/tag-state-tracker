@@ -121,7 +121,7 @@ export function OTCDeerTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC deer data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const baseColumns = ["Unit", "Bucks", "Total Antlerless Harvest", "Total Hunters"];
+  const baseColumns = ["Unit", "OTC", "Bucks", "Total Antlerless Harvest", "Total Hunters"];
   const successColumn = ["Percent Success"];
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
@@ -131,6 +131,7 @@ export function OTCDeerTable() {
 
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
+    "OTC": "OTC Category",
     "Bucks": "Bucks",
     "Total Antlerless Harvest": "Antlerless",
     "Total Hunters": "Total Hunters",
