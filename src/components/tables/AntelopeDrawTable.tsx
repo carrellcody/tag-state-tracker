@@ -15,6 +15,24 @@ import { TableHeaderHelp } from './TableHeaderHelp';
 
 const ROWS_PER_PAGE = 50;
 
+function normalizeCsvKey(key: string) {
+  return key.replace(/^\uFEFF/, '').replace(/[\u00A0]/g, ' ').trim().toLowerCase();
+}
+
+function getHybridCellValue(row: any): string {
+  if (!row) return '';
+
+  const direct = row.hybrid ?? row.Hybrid;
+  if (direct != null) return String(direct).replace(/[\u00A0]/g, ' ').trim();
+
+  const hybridKey = Object.keys(row).find((k) => normalizeCsvKey(k) === 'hybrid');
+  return String(hybridKey ? row[hybridKey] : '').replace(/[\u00A0]/g, ' ').trim();
+}
+
+function isHybridEligible(row: any) {
+  return getHybridCellValue(row) === 'Hybrid';
+}
+
 export function AntelopeDrawTable() {
   const { data, loading, error } = useCsvData('/data/Fullant25Final.csv');
   const { data: harvestData } = useCsvData('/data/antHarvest25.csv');
@@ -128,10 +146,7 @@ export function AntelopeDrawTable() {
     return data.filter((row: any) => {
       // Hybrid-only mode: show only hybrid rows, skip all other filters
       if (showHybridOnly) {
-        return String(row.hybrid ?? row.Hybrid ?? '')
-          .replace(/[\u00A0]/g, ' ')
-          .trim()
-          .toLowerCase() === 'hybrid';
+        return isHybridEligible(row);
       }
       if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
@@ -748,10 +763,7 @@ export function AntelopeDrawTable() {
                         }
                         
                         // Check if this is a hybrid row and if the column should be highlighted
-                        const isHybrid = String(row.hybrid ?? row.Hybrid ?? '')
-                          .replace(/[\u00A0]/g, ' ')
-                          .trim()
-                          .toLowerCase() === 'hybrid';
+                        const isHybrid = isHybridEligible(row);
                         const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24'].includes(col);
                         const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? 'bg-hybrid-highlight' : '';
                         
