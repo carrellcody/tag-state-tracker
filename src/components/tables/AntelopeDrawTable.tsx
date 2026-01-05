@@ -128,7 +128,7 @@ export function AntelopeDrawTable() {
     return data.filter((row: any) => {
       // Hybrid-only mode: show only hybrid rows, skip all other filters
       if (showHybridOnly) {
-        return String(row.Hybrid || '').toLowerCase() === 'hybrid';
+        return String(row.hybrid || '').toLowerCase() === 'hybrid';
       }
       if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
@@ -745,7 +745,7 @@ export function AntelopeDrawTable() {
                         }
                         
                         // Check if this is a hybrid row and if the column should be highlighted
-                        const isHybrid = String(row.Hybrid || '').toLowerCase() === 'hybrid';
+                        const isHybrid = String(row.hybrid || '').toLowerCase() === 'hybrid';
                         const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24'].includes(col);
                         const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? 'bg-hybrid-highlight' : '';
                         
