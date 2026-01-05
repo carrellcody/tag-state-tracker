@@ -145,9 +145,9 @@ export function ElkDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
-      // Hybrid-only mode: show only hybrid rows, skip all other filters
-      if (showHybridOnly) {
-        return isHybridEligible(row);
+      // Hybrid-only mode: show only hybrid rows
+      if (showHybridOnly && !isHybridEligible(row)) {
+        return false;
       }
       if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
@@ -194,11 +194,13 @@ export function ElkDrawTable() {
       if (rfwFilter === 'only' && row.RFW !== 'Yes') return false;
       if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
       
-      // Points sliders
-      const dolStr = String(row.Drawn_out_level || '').trim();
-      const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
-      const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
-      if (isNaN(dol) || dol < minPoints || dol > maxPoints) return false;
+      // Points sliders (skip when showHybridOnly or showNoPointsOnly is active)
+      if (!showHybridOnly && !showNoPointsOnly) {
+        const dolStr = String(row.Drawn_out_level || '').trim();
+        const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
+        const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
+        if (isNaN(dol) || dol < minPoints || dol > maxPoints) return false;
+      }
       
       // No applicants filter
       if (showNoApplicants === 'no' && row.NoApps === 'Yes') return false;
@@ -401,14 +403,14 @@ export function ElkDrawTable() {
           />
         </div>
 
-        <div className={`space-y-2 ${showNoPointsOnly ? 'opacity-50' : ''}`}>
+        <div className={`space-y-2 ${showNoPointsOnly || showHybridOnly ? 'opacity-50' : ''}`}>
           <Label>Minimum Preference Points: {minPoints}</Label>
-          <input type="range" min="0" max="32" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly} />
+          <input type="range" min="0" max="32" value={minPoints} onChange={(e) => setMinPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly || showHybridOnly} />
         </div>
 
-        <div className={`space-y-2 ${showNoPointsOnly ? 'opacity-50' : ''}`}>
+        <div className={`space-y-2 ${showNoPointsOnly || showHybridOnly ? 'opacity-50' : ''}`}>
           <Label>Maximum Preference Points: {maxPoints}</Label>
-          <input type="range" min="0" max="32" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly} />
+          <input type="range" min="0" max="32" value={maxPoints} onChange={(e) => setMaxPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly || showHybridOnly} />
         </div>
 
         <div className="space-y-2">
