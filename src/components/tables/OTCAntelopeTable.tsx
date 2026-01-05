@@ -13,7 +13,7 @@ const ROWS_PER_PAGE = 50;
 const FIXED_SEASON = 'Either Sex OTC Archery';
 
 export function OTCAntelopeTable() {
-  const { data: harvestData, loading, error } = useCsvData('/data/antHarvest25.csv');
+  const { data: harvestData, loading, error } = useCsvData('/data/antOTC24.csv');
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_antelope');
   const isMobile = useIsMobile();
   
@@ -47,16 +47,16 @@ export function OTCAntelopeTable() {
   const filteredData = useMemo(() => {
     return harvestData.filter((row: any) => {
       // Only show OTC units
-      if (!row.OTC) return false;
+      if (!row.OTCCat) return false;
       
       if (showFavoritesOnly) {
         const key = `${row.Unit}-${FIXED_SEASON}`;
         if (!favorites.has(key)) return false;
       }
       
-      // Filter by OTC season - check if the fixed season is present in the OTC value
-      const otcValue = String(row.OTC);
-      if (!otcValue.includes(FIXED_SEASON)) return false;
+      // Filter by OTC season - check if the fixed season is present in the OTCCat value
+      const otcCatValue = String(row.OTCCat);
+      if (!otcCatValue.includes(FIXED_SEASON)) return false;
       
       // Unit search
       if (unitSearch) {
@@ -121,7 +121,7 @@ export function OTCAntelopeTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const baseColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];
+  const baseColumns = ["Unit", "OTCCat", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];
   const successColumn = ["Percent Success"];
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
@@ -131,6 +131,7 @@ export function OTCAntelopeTable() {
 
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
+    "OTCCat": "OTC Category",
     "Category": "Harvest Category",
     "Bucks": "Bucks",
     "Antlerless": "Doe/Fawn",

@@ -24,7 +24,7 @@ const seasonOptions = [
 ];
 
 export function OTCElkTable() {
-  const { data: harvestData, loading, error } = useCsvData('/data/elkHarvest25.csv');
+  const { data: harvestData, loading, error } = useCsvData('/data/elkOTC24.csv');
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_elk');
   const isMobile = useIsMobile();
   
@@ -69,17 +69,17 @@ export function OTCElkTable() {
   const filteredData = useMemo(() => {
     return harvestData.filter((row: any) => {
       // Only show OTC units
-      if (!row.OTC) return false;
+      if (!row.OTCCat) return false;
       
       if (showFavoritesOnly) {
         const key = `${row.Unit}-${selectedSeasons.join(',')}`;
         if (!favorites.has(key)) return false;
       }
       
-      // Filter by OTC season - check if any selected season is present in the OTC value
+      // Filter by OTC season - check if any selected season is present in the OTCCat value
       if (selectedSeasons.length === 0) return false;
-      const otcValue = String(row.OTC);
-      if (!selectedSeasons.some(season => otcValue.includes(season))) return false;
+      const otcCatValue = String(row.OTCCat);
+      if (!selectedSeasons.some(season => otcCatValue.includes(season))) return false;
       
       // Unit search
       if (unitSearch) {
@@ -144,7 +144,7 @@ export function OTCElkTable() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const baseColumns = ["Unit", "Category", "Bulls", "Antlerless", "Total Harvest", "Total Hunters"];
+  const baseColumns = ["Unit", "OTCCat", "Category", "Bulls", "Antlerless", "Total Harvest", "Total Hunters"];
   const successColumn = ["Percent Success"];
   const remainingColumns = ["percent_public", "Acres Public", "Hunters Density Per Public Sq. Mile"];
   
@@ -154,6 +154,7 @@ export function OTCElkTable() {
 
   const headerLabels: Record<string, string> = {
     "Unit": "Unit",
+    "OTCCat": "OTC Category",
     "Category": "Harvest Category",
     "Bulls": "Bulls",
     "Antlerless": "Antlerless",
