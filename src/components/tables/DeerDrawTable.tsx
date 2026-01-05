@@ -39,7 +39,7 @@ export function DeerDrawTable() {
   } = useCsvData("/data/FullDeer25Final.csv");
   const {
     data: harvestData
-  } = useCsvData("/data/DeerHarvest25.csv");
+  } = useCsvData("/data/DeerHarvest24.csv");
   const {
     data: codePages
   } = useCsvData("/data/deer25code_pages.csv");
