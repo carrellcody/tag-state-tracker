@@ -44,6 +44,7 @@ export function ElkDrawTable() {
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [showPreviousYears, setShowPreviousYears] = useState(false);
   const [showNoPointsOnly, setShowNoPointsOnly] = useState(false);
+  const [showHybridOnly, setShowHybridOnly] = useState(false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -54,7 +55,7 @@ export function ElkDrawTable() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly]);
 
   // Load user's elk preference points and set hunter class based on residency
   useEffect(() => {
@@ -126,6 +127,10 @@ export function ElkDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      // Hybrid-only mode: show only hybrid rows, skip all other filters
+      if (showHybridOnly) {
+        return String(row.Hybrid || '').toLowerCase() === 'hybrid';
+      }
       if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
@@ -189,7 +194,7 @@ export function ElkDrawTable() {
       
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -563,6 +568,16 @@ export function ElkDrawTable() {
         )}
 
         <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm leading-tight">Show all tags eligible for hybrid draw</Label>
+            <Switch
+              checked={showHybridOnly}
+              onCheckedChange={setShowHybridOnly}
+            />
+          </div>
+        </div>
+
+        <div className="space-y-2">
           <Label>Show tags with no applicants?</Label>
           <RadioGroup value={showNoApplicants} onValueChange={setShowNoApplicants}>
             <div className="flex items-center space-x-2">
@@ -739,8 +754,13 @@ export function ElkDrawTable() {
                           }
                         }
                         
+                        // Check if this is a hybrid row and if the column should be highlighted
+                        const isHybrid = String(row.Hybrid || '').toLowerCase() === 'hybrid';
+                        const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24'].includes(col);
+                        const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? 'bg-hybrid-highlight' : '';
+                        
                         return (
-                          <td key={col} className="border border-border p-2" style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
+                          <td key={col} className={`border border-border p-2 ${hybridHighlightClass}`} style={col === 'Valid GMUs' || col === 'Notes' ? { maxWidth: '150px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } : {}}>
                             {col === 'Tag' ? (
                               <div className="flex items-center gap-2 text-primary-dark group-hover:text-white">
                                 <span>{isExpanded ? '▼' : '▶'}</span>
