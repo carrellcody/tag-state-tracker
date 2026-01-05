@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
+import { ChevronDown, ChevronUp, Star, Filter, HelpCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TableHeaderHelp } from './TableHeaderHelp';
@@ -63,6 +64,7 @@ export function AntelopeDrawTable() {
   const [showPreviousYears, setShowPreviousYears] = useState(false);
   const [showNoPointsOnly, setShowNoPointsOnly] = useState(false);
   const [showHybridOnly, setShowHybridOnly] = useState(false);
+  const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -578,13 +580,38 @@ export function AntelopeDrawTable() {
 
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <Label className="text-sm leading-tight">Show all tags eligible for hybrid draw</Label>
+            <div className="flex items-center gap-1">
+              <Label className="text-sm leading-tight">Show all tags eligible for hybrid draw</Label>
+              <button
+                type="button"
+                onClick={() => setShowHybridHelp(true)}
+                className="p-0.5 rounded hover:bg-muted transition-colors"
+                aria-label="Help for hybrid draw"
+              >
+                <HelpCircle className="w-3.5 h-3.5 opacity-60" />
+              </button>
+            </div>
             <Switch
               checked={showHybridOnly}
               onCheckedChange={setShowHybridOnly}
             />
           </div>
         </div>
+        <Dialog open={showHybridHelp} onOpenChange={setShowHybridHelp}>
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle className="text-xl">Hybrid Draw</DialogTitle>
+            </DialogHeader>
+            <p className="text-muted-foreground leading-relaxed">
+              Tags eligible for the hybrid draw are highly desirable tags, typically requiring 10 or more resident preference points. A small number of these tags are set aside to give those with greater than 5 points, but less than the required "drawn out" points a chance at drawing. Therefore, you can apply for these tags with your first choice, and so long as you have 5 or more preference points you will be entered into a random drawing that gives you a chance to draw a prized tag.
+            </p>
+            <div className="flex justify-end mt-4">
+              <DialogClose asChild>
+                <Button size="lg" className="px-8">Close</Button>
+              </DialogClose>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         <div className="space-y-2">
           <Label>Show tags with no applicants?</Label>
