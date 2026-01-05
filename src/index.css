@@ -42,6 +42,9 @@ All colors MUST be HSL.
     --border: 210 3% 82%;
     --input: 210 3% 82%;
     --ring: 176 100% 33%;
+    
+    /* Hybrid highlight - light brown */
+    --hybrid-highlight: 30 40% 85%;
 
     --radius: 0.5rem;
 
@@ -94,6 +97,9 @@ All colors MUST be HSL.
     --border: 210 3% 25%;
     --input: 210 3% 25%;
     --ring: 176 100% 38%;
+    
+    /* Hybrid highlight - light brown for dark mode */
+    --hybrid-highlight: 30 30% 30%;
 
     --sidebar-background: 0 0% 10%;
     --sidebar-foreground: 0 0% 95%;
