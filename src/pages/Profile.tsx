@@ -9,9 +9,23 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { SUBSCRIPTION_TIERS } from '@/utils/subscriptionTiers';
+
+const US_STATES = [
+  "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+  "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+  "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+  "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+  "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+  "New Hampshire", "New Jersey", "New Mexico", "New York",
+  "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+  "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+  "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+  "West Virginia", "Wisconsin", "Wyoming", "Other (Outside USA)"
+];
 export default function Profile() {
   const navigate = useNavigate();
   const {
@@ -32,6 +46,7 @@ export default function Profile() {
   const [elkPoints, setElkPoints] = useState(0);
   const [antelopePoints, setAntelopePoints] = useState(0);
   const [receiveEmails, setReceiveEmails] = useState(true);
+  const [stateResidency, setStateResidency] = useState('');
   const [promoData, setPromoData] = useState<{
     code: string | null;
     date: string | null;
@@ -67,13 +82,14 @@ export default function Profile() {
       const {
         data,
         error
-      } = await supabase.from('profiles').select('deer_preference_points, elk_preference_points, antelope_preference_points, receive_emails, promo_code_used, promo_code_applied_at').eq('id', user.id).single();
+      } = await supabase.from('profiles').select('deer_preference_points, elk_preference_points, antelope_preference_points, receive_emails, state_residency, promo_code_used, promo_code_applied_at').eq('id', user.id).single();
       if (error) throw error;
       if (data) {
         setDeerPoints(data.deer_preference_points || 0);
         setElkPoints(data.elk_preference_points || 0);
         setAntelopePoints(data.antelope_preference_points || 0);
         setReceiveEmails(data.receive_emails ?? true);
+        setStateResidency(data.state_residency || '');
       }
     } catch (error) {
       console.error('Error loading profile:', error);
@@ -91,7 +107,8 @@ export default function Profile() {
         deer_preference_points: deerPoints,
         elk_preference_points: elkPoints,
         antelope_preference_points: antelopePoints,
-        receive_emails: receiveEmails
+        receive_emails: receiveEmails,
+        state_residency: stateResidency || null
       }).eq('id', user.id);
       if (error) throw error;
       toast({
@@ -319,6 +336,38 @@ export default function Profile() {
                   Save Preference Points
                 </>}
             </Button>
+          </CardContent>
+        </Card>
+
+        {/* State Residency */}
+        <Card>
+          <CardHeader>
+            <CardTitle>State of Residency</CardTitle>
+            <CardDescription>Your state determines whether you're classified as a Resident or Non-Resident hunter</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="state-residency">Current State</Label>
+              <Select value={stateResidency} onValueChange={setStateResidency}>
+                <SelectTrigger id="state-residency">
+                  <SelectValue placeholder="Select your state" />
+                </SelectTrigger>
+                <SelectContent>
+                  {US_STATES.map((state) => (
+                    <SelectItem key={state} value={state}>
+                      {state}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {stateResidency && (
+                <p className="text-sm text-muted-foreground">
+                  {stateResidency === 'Colorado' 
+                    ? 'You will be shown Resident pricing and draw odds by default.'
+                    : 'You will be shown Non-Resident pricing and draw odds by default.'}
+                </p>
+              )}
+            </div>
           </CardContent>
         </Card>
 
