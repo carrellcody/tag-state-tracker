@@ -52,12 +52,28 @@ serve(async (req) => {
     // Try to use existing Stripe customer ID from profile first
     const { data: profile, error: profileError } = await supabaseClient
       .from('profiles')
-      .select('stripe_customer_id')
+      .select('stripe_customer_id, subscription_manual_override, subscription_status, product_id, subscription_end')
       .eq('id', userId)
       .single();
 
     if (profileError) {
       logStep("Error fetching profile", { message: profileError.message });
+    }
+
+    // If manual override is enabled, return the current DB values without syncing from Stripe
+    if (profile?.subscription_manual_override) {
+      logStep("Manual override enabled, skipping Stripe sync", { 
+        subscription_status: profile.subscription_status,
+        product_id: profile.product_id 
+      });
+      return new Response(JSON.stringify({
+        subscribed: profile.subscription_status === 'active',
+        product_id: profile.product_id,
+        subscription_end: profile.subscription_end
+      }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 200,
+      });
     }
 
     let customerId = profile?.stripe_customer_id as string | null;

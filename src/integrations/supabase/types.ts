@@ -145,6 +145,7 @@ export type Database = {
           state_residency: string | null
           stripe_customer_id: string | null
           subscription_end: string | null
+          subscription_manual_override: boolean | null
           subscription_status: string
           updated_at: string
         }
@@ -164,6 +165,7 @@ export type Database = {
           state_residency?: string | null
           stripe_customer_id?: string | null
           subscription_end?: string | null
+          subscription_manual_override?: boolean | null
           subscription_status?: string
           updated_at?: string
         }
@@ -183,6 +185,7 @@ export type Database = {
           state_residency?: string | null
           stripe_customer_id?: string | null
           subscription_end?: string | null
+          subscription_manual_override?: boolean | null
           subscription_status?: string
           updated_at?: string
         }
