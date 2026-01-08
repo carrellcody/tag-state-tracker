@@ -9,8 +9,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 const contactSchema = z.object({
   name: z.string().trim().min(1, {
     message: "Name is required"
@@ -46,13 +47,32 @@ export default function About() {
       form.setValue('subject', 'Advertising');
     }
   }, [location.search, form]);
-  const onSubmit = (data: z.infer<typeof contactSchema>) => {
-    console.log("Contact form submitted:", data);
-    toast({
-      title: "Message sent!",
-      description: "Thank you for contacting us. We'll get back to you soon."
-    });
-    form.reset();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (data: z.infer<typeof contactSchema>) => {
+    setIsSubmitting(true);
+    try {
+      const { error } = await supabase.functions.invoke('send-contact-email', {
+        body: data
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Message sent!",
+        description: "Thank you for contacting us. We'll get back to you soon."
+      });
+      form.reset();
+    } catch (error: any) {
+      console.error("Error sending message:", error);
+      toast({
+        title: "Error sending message",
+        description: "Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
   return <div className="container mx-auto px-4 py-12 max-w-4xl">
       <h1 className="text-4xl font-bold mb-8 text-center">About TalloTags</h1>
@@ -205,7 +225,9 @@ We want to make this information easy to access for everyone, so are committed t
                     </FormControl>
                     <FormMessage />
                   </FormItem>} />
-              <Button type="submit" className="w-full">Send Message</Button>
+<Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Sending..." : "Send Message"}
+              </Button>
             </form>
           </Form>
         </CardContent>
