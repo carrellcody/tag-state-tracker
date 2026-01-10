@@ -324,7 +324,7 @@ export function DeerDrawTable() {
   };
   return <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
-          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4">
+          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4" variant="secondary">
               Apply filters and view data
             </Button>}
           <h3 className="font-semibold text-lg">Filters</h3>
@@ -633,7 +633,7 @@ export function DeerDrawTable() {
             Clear Favorites ({favorites.size})
           </Button>
 
-          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4">
+          {isMobile && <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4" variant="secondary">
               Apply filters and view data
             </Button>}
         </aside>}
