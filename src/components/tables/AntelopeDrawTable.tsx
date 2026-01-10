@@ -344,6 +344,7 @@ export function AntelopeDrawTable() {
           <Button 
             onClick={() => setShowMobileFilters(false)} 
             className="w-full mb-4"
+            variant="secondary"
           >
             Apply filters and view data
           </Button>
@@ -645,6 +646,7 @@ export function AntelopeDrawTable() {
           <Button 
             onClick={() => setShowMobileFilters(false)} 
             className="w-full"
+            variant="secondary"
           >
             Apply filters and view data
           </Button>
