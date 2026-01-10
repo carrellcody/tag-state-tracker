@@ -61,14 +61,19 @@ serve(async (req) => {
     }
 
     // If manual override is enabled, return the current DB values without syncing from Stripe
+    // Use default premium product ID if none is set
+    const DEFAULT_PREMIUM_PRODUCT_ID = "prod_TQEkp6iEC7tmTK";
+    
     if (profile?.subscription_manual_override) {
+      const effectiveProductId = profile.product_id || DEFAULT_PREMIUM_PRODUCT_ID;
       logStep("Manual override enabled, skipping Stripe sync", { 
         subscription_status: profile.subscription_status,
-        product_id: profile.product_id 
+        product_id: effectiveProductId,
+        usingDefault: !profile.product_id
       });
       return new Response(JSON.stringify({
         subscribed: profile.subscription_status === 'active',
-        product_id: profile.product_id,
+        product_id: effectiveProductId,
         subscription_end: profile.subscription_end
       }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
