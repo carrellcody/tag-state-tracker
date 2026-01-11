@@ -283,7 +283,7 @@ export default function Profile() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-semibold text-sm">Pro Plan</p>
-                  <p className="text-sm text-muted-foreground">$15/year. Access to Elk, Deer, and Antelope data.</p>
+                  <p className="text-sm text-muted-foreground">$20/year. Access to Elk, Deer, and Antelope data.</p>
                 </div>
                 {currentTier === 'pro' && (
                   <Badge variant="default" className="shrink-0">Current</Badge>
