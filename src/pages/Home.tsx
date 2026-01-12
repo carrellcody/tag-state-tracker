@@ -122,6 +122,21 @@ export default function Home() {
         </div>
       </section>
 
+      {/* YouTube Video Section */}
+      <section className="py-8 sm:py-10 md:py-12 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <div className="aspect-video rounded-lg overflow-hidden shadow-medium">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/Gu5wuNdFANo"
+              title="YouTube video"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Colorado Resources */}
       <section className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
