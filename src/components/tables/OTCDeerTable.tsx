@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 const ROWS_PER_PAGE = 50;
 const FIXED_SEASON = 'Whitetail Only Late Rifle Season';
@@ -22,11 +23,11 @@ export function OTCDeerTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [unitSearch, setUnitSearch] = useState('');
-  const [minSuccessRate, setMinSuccessRate] = useState('');
-  const [minPublicLand, setMinPublicLand] = useState('');
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
+  const [unitSearch, setUnitSearch] = usePersistedState('otcDeer_unitSearch', '');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('otcDeer_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('otcDeer_minPublicLand', '');
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('otcDeer_showFavoritesOnly', false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = usePersistedState('otcDeer_showPreviousYearStats', false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {

@@ -13,6 +13,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TableHeaderHelp } from './TableHeaderHelp';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 const ROWS_PER_PAGE = 50;
 
@@ -48,22 +49,22 @@ export function ElkDrawTable() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [unitSearch, setUnitSearch] = useState('');
-  const [sexFilter, setSexFilter] = useState<string[]>(['All']);
-  const [seasonWeapons, setSeasonWeapons] = useState<string[]>(['Any']);
-  const [hunterClass, setHunterClass] = useState('A_R');
-  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = useState(false);
-  const [ploFilter, setPloFilter] = useState('all');
-  const [rfwFilter, setRfwFilter] = useState('all');
-  const [minPoints, setMinPoints] = useState(0);
-  const [maxPoints, setMaxPoints] = useState(32);
+  const [unitSearch, setUnitSearch] = usePersistedState('elkDraw_unitSearch', '');
+  const [sexFilter, setSexFilter] = usePersistedState<string[]>('elkDraw_sexFilter', ['All']);
+  const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>('elkDraw_seasonWeapons', ['Any']);
+  const [hunterClass, setHunterClass] = usePersistedState('elkDraw_hunterClass', 'A_R');
+  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = usePersistedState('elkDraw_hunterClassManuallyChanged', false);
+  const [ploFilter, setPloFilter] = usePersistedState('elkDraw_ploFilter', 'all');
+  const [rfwFilter, setRfwFilter] = usePersistedState('elkDraw_rfwFilter', 'all');
+  const [minPoints, setMinPoints] = usePersistedState('elkDraw_minPoints', 0);
+  const [maxPoints, setMaxPoints] = usePersistedState('elkDraw_maxPoints', 32);
   const [userPreferencePoints, setUserPreferencePoints] = useState(0);
-  const [showNoApplicants, setShowNoApplicants] = useState('no');
-  const [listFilter, setListFilter] = useState<string[]>(['Any']);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYears, setShowPreviousYears] = useState(false);
-  const [showNoPointsOnly, setShowNoPointsOnly] = useState(false);
-  const [showHybridOnly, setShowHybridOnly] = useState(false);
+  const [showNoApplicants, setShowNoApplicants] = usePersistedState('elkDraw_showNoApplicants', 'no');
+  const [listFilter, setListFilter] = usePersistedState<string[]>('elkDraw_listFilter', ['Any']);
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('elkDraw_showFavoritesOnly', false);
+  const [showPreviousYears, setShowPreviousYears] = usePersistedState('elkDraw_showPreviousYears', false);
+  const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState('elkDraw_showNoPointsOnly', false);
+  const [showHybridOnly, setShowHybridOnly] = usePersistedState('elkDraw_showHybridOnly', false);
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {

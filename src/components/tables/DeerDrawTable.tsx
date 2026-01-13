@@ -12,6 +12,7 @@ import { ChevronDown, ChevronUp, Star, Filter, HelpCircle } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@/components/ui/dialog';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from './TableHeaderHelp';
+import { usePersistedState } from "@/hooks/usePersistedState";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -58,22 +59,22 @@ export function DeerDrawTable() {
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
-  const [unitSearch, setUnitSearch] = useState("");
-  const [sexFilter, setSexFilter] = useState<string[]>(["All"]);
-  const [seasonWeapons, setSeasonWeapons] = useState<string[]>(["Any"]);
-  const [hunterClass, setHunterClass] = useState("A_R");
-  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = useState(false);
-  const [ploFilter, setPloFilter] = useState("all");
-  const [rfwFilter, setRfwFilter] = useState("all");
-  const [minPoints, setMinPoints] = useState(0);
-  const [maxPoints, setMaxPoints] = useState(32);
+  const [unitSearch, setUnitSearch] = usePersistedState("deerDraw_unitSearch", "");
+  const [sexFilter, setSexFilter] = usePersistedState<string[]>("deerDraw_sexFilter", ["All"]);
+  const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("deerDraw_seasonWeapons", ["Any"]);
+  const [hunterClass, setHunterClass] = usePersistedState("deerDraw_hunterClass", "A_R");
+  const [hunterClassManuallyChanged, setHunterClassManuallyChanged] = usePersistedState("deerDraw_hunterClassManuallyChanged", false);
+  const [ploFilter, setPloFilter] = usePersistedState("deerDraw_ploFilter", "all");
+  const [rfwFilter, setRfwFilter] = usePersistedState("deerDraw_rfwFilter", "all");
+  const [minPoints, setMinPoints] = usePersistedState("deerDraw_minPoints", 0);
+  const [maxPoints, setMaxPoints] = usePersistedState("deerDraw_maxPoints", 32);
   const [userPreferencePoints, setUserPreferencePoints] = useState(0);
-  const [showNoApplicants, setShowNoApplicants] = useState("no");
-  const [listFilter, setListFilter] = useState<string[]>(["Any"]);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYears, setShowPreviousYears] = useState(false);
-  const [showNoPointsOnly, setShowNoPointsOnly] = useState(false);
-  const [showHybridOnly, setShowHybridOnly] = useState(false);
+  const [showNoApplicants, setShowNoApplicants] = usePersistedState("deerDraw_showNoApplicants", "no");
+  const [listFilter, setListFilter] = usePersistedState<string[]>("deerDraw_listFilter", ["Any"]);
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("deerDraw_showFavoritesOnly", false);
+  const [showPreviousYears, setShowPreviousYears] = usePersistedState("deerDraw_showPreviousYears", false);
+  const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("deerDraw_showNoPointsOnly", false);
+  const [showHybridOnly, setShowHybridOnly] = usePersistedState("deerDraw_showHybridOnly", false);
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {

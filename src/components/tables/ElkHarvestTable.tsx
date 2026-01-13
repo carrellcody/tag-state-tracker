@@ -10,6 +10,7 @@ import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from '
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TableHeaderHelp } from './TableHeaderHelp';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 const ROWS_PER_PAGE = 50;
 
@@ -23,11 +24,11 @@ export function ElkHarvestTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [unitSearch, setUnitSearch] = useState('');
-  const [categoryFilters, setCategoryFilters] = useState<string[]>(['All manners of take']);
+  const [unitSearch, setUnitSearch] = usePersistedState('elkHarvest_unitSearch', '');
+  const [categoryFilters, setCategoryFilters] = usePersistedState<string[]>('elkHarvest_categoryFilters', ['All manners of take']);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('elkHarvest_showFavoritesOnly', false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = usePersistedState('elkHarvest_showPreviousYearStats', false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
@@ -73,8 +74,8 @@ export function ElkHarvestTable() {
       return a.localeCompare(b);
     });
   }, [data]);
-  const [minSuccessRate, setMinSuccessRate] = useState('');
-  const [minPublicLand, setMinPublicLand] = useState('');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('elkHarvest_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('elkHarvest_minPublicLand', '');
 
   // Reset to page 1 when filters change
   useEffect(() => {
