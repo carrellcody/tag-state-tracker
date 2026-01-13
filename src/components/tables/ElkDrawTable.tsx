@@ -58,7 +58,8 @@ export function ElkDrawTable() {
   const [rfwFilter, setRfwFilter] = usePersistedState('elkDraw_rfwFilter', 'all');
   const [minPoints, setMinPoints] = usePersistedState('elkDraw_minPoints', 0);
   const [maxPoints, setMaxPoints] = usePersistedState('elkDraw_maxPoints', 32);
-  const [userPreferencePoints, setUserPreferencePoints] = useState(0);
+  const [userPreferencePoints, setUserPreferencePoints] = usePersistedState('elkDraw_userPreferencePoints', 0);
+  const [pointsInitialized, setPointsInitialized] = usePersistedState('elkDraw_pointsInitialized', false);
   const [showNoApplicants, setShowNoApplicants] = usePersistedState('elkDraw_showNoApplicants', 'no');
   const [listFilter, setListFilter] = usePersistedState<string[]>('elkDraw_listFilter', ['Any']);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('elkDraw_showFavoritesOnly', false);
@@ -78,7 +79,6 @@ export function ElkDrawTable() {
     setCurrentPage(1);
   }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly]);
 
-  // Load user's elk preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
@@ -97,8 +97,13 @@ export function ElkDrawTable() {
 
         if (profile) {
           const points = profile.elk_preference_points || 0;
-          setUserPreferencePoints(points);
-          setMaxPoints(points);
+          
+          // Only set preference points and maxPoints on first load (not when returning to page)
+          if (!pointsInitialized) {
+            setUserPreferencePoints(points);
+            setMaxPoints(points);
+            setPointsInitialized(true);
+          }
 
           // Auto-set hunter class based on residency only once per session
           const sessionKey = `hunterClass_autoSet_elk_${user.id}`;
@@ -120,7 +125,7 @@ export function ElkDrawTable() {
     };
 
     loadPreferencePoints();
-  }, [user, hunterClassManuallyChanged]);
+  }, [user, hunterClassManuallyChanged, pointsInitialized]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {

@@ -68,7 +68,8 @@ export function DeerDrawTable() {
   const [rfwFilter, setRfwFilter] = usePersistedState("deerDraw_rfwFilter", "all");
   const [minPoints, setMinPoints] = usePersistedState("deerDraw_minPoints", 0);
   const [maxPoints, setMaxPoints] = usePersistedState("deerDraw_maxPoints", 32);
-  const [userPreferencePoints, setUserPreferencePoints] = useState(0);
+  const [userPreferencePoints, setUserPreferencePoints] = usePersistedState("deerDraw_userPreferencePoints", 0);
+  const [pointsInitialized, setPointsInitialized] = usePersistedState("deerDraw_pointsInitialized", false);
   const [showNoApplicants, setShowNoApplicants] = usePersistedState("deerDraw_showNoApplicants", "no");
   const [listFilter, setListFilter] = usePersistedState<string[]>("deerDraw_listFilter", ["Any"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("deerDraw_showFavoritesOnly", false);
@@ -88,7 +89,6 @@ export function DeerDrawTable() {
     setCurrentPage(1);
   }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly]);
 
-  // Load user's deer preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
@@ -103,8 +103,13 @@ export function DeerDrawTable() {
         }
         if (profile) {
           const points = profile.deer_preference_points || 0;
-          setUserPreferencePoints(points);
-          setMaxPoints(points);
+          
+          // Only set preference points and maxPoints on first load (not when returning to page)
+          if (!pointsInitialized) {
+            setUserPreferencePoints(points);
+            setMaxPoints(points);
+            setPointsInitialized(true);
+          }
 
           // Auto-set hunter class based on residency only once per session
           const sessionKey = `hunterClass_autoSet_deer_${user.id}`;
@@ -125,7 +130,7 @@ export function DeerDrawTable() {
       }
     };
     loadPreferencePoints();
-  }, [user, hunterClassManuallyChanged]);
+  }, [user, hunterClassManuallyChanged, pointsInitialized]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
