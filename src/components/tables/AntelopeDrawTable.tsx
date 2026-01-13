@@ -58,7 +58,8 @@ export function AntelopeDrawTable() {
   const [rfwFilter, setRfwFilter] = usePersistedState('antelopeDraw_rfwFilter', 'all');
   const [minPoints, setMinPoints] = usePersistedState('antelopeDraw_minPoints', 0);
   const [maxPoints, setMaxPoints] = usePersistedState('antelopeDraw_maxPoints', 32);
-  const [userPreferencePoints, setUserPreferencePoints] = useState(0);
+  const [userPreferencePoints, setUserPreferencePoints] = usePersistedState('antelopeDraw_userPreferencePoints', 0);
+  const [pointsInitialized, setPointsInitialized] = usePersistedState('antelopeDraw_pointsInitialized', false);
   const [showNoApplicants, setShowNoApplicants] = usePersistedState('antelopeDraw_showNoApplicants', 'no');
   const [listFilter, setListFilter] = usePersistedState<string[]>('antelopeDraw_listFilter', ['Any']);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('antelopeDraw_showFavoritesOnly', false);
@@ -78,7 +79,6 @@ export function AntelopeDrawTable() {
     setCurrentPage(1);
   }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly]);
 
-  // Load user's antelope preference points and set hunter class based on residency
   useEffect(() => {
     const loadPreferencePoints = async () => {
       if (!user) return;
@@ -97,8 +97,13 @@ export function AntelopeDrawTable() {
 
         if (profile) {
           const points = profile.antelope_preference_points || 0;
-          setUserPreferencePoints(points);
-          setMaxPoints(points);
+          
+          // Only set preference points and maxPoints on first load (not when returning to page)
+          if (!pointsInitialized) {
+            setUserPreferencePoints(points);
+            setMaxPoints(points);
+            setPointsInitialized(true);
+          }
 
           // Auto-set hunter class based on residency only once per session
           const sessionKey = `hunterClass_autoSet_antelope_${user.id}`;
@@ -120,7 +125,7 @@ export function AntelopeDrawTable() {
     };
 
     loadPreferencePoints();
-  }, [user, hunterClassManuallyChanged]);
+  }, [user, hunterClassManuallyChanged, pointsInitialized]);
 
   // Auto-hide RFW for non-residents
   useEffect(() => {
