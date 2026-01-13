@@ -10,6 +10,7 @@ import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from '
 import { TableWrapper } from './TableWrapper';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { TableHeaderHelp } from './TableHeaderHelp';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 const ROWS_PER_PAGE = 50;
 
@@ -23,11 +24,11 @@ export function DeerHarvestTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [unitSearch, setUnitSearch] = useState('');
-  const [categoryFilters, setCategoryFilters] = useState<string[]>(['All manners of take']);
+  const [unitSearch, setUnitSearch] = usePersistedState('deerHarvest_unitSearch', '');
+  const [categoryFilters, setCategoryFilters] = usePersistedState<string[]>('deerHarvest_categoryFilters', ['All manners of take']);
   const [showMoreCategories, setShowMoreCategories] = useState(false);
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('deerHarvest_showFavoritesOnly', false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = usePersistedState('deerHarvest_showPreviousYearStats', false);
 
   // Auto-disable "Show Favorites Only" when all favorites are removed
   useEffect(() => {
@@ -74,8 +75,8 @@ export function DeerHarvestTable() {
       return a.localeCompare(b);
     });
   }, [data]);
-  const [minSuccessRate, setMinSuccessRate] = useState('');
-  const [minPublicLand, setMinPublicLand] = useState('');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('deerHarvest_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('deerHarvest_minPublicLand', '');
 
   // Reset to page 1 when filters change
   useEffect(() => {

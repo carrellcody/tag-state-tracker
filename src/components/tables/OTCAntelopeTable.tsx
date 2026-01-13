@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter, TrendingUp, TrendingDown } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { usePersistedState } from '@/hooks/usePersistedState';
 
 const ROWS_PER_PAGE = 50;
 const FIXED_SEASON = 'Either Sex OTC Archery';
@@ -22,11 +23,11 @@ export function OTCAntelopeTable() {
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   
-  const [unitSearch, setUnitSearch] = useState('');
-  const [minSuccessRate, setMinSuccessRate] = useState('');
-  const [minPublicLand, setMinPublicLand] = useState('');
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
-  const [showPreviousYearStats, setShowPreviousYearStats] = useState(false);
+  const [unitSearch, setUnitSearch] = usePersistedState('otcAntelope_unitSearch', '');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('otcAntelope_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('otcAntelope_minPublicLand', '');
+  const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('otcAntelope_showFavoritesOnly', false);
+  const [showPreviousYearStats, setShowPreviousYearStats] = usePersistedState('otcAntelope_showPreviousYearStats', false);
 
   useEffect(() => {
     if (favorites.size === 0 && showFavoritesOnly) {
