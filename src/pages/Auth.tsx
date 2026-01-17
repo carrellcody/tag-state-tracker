@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useState, useEffect } from "react";
-import { Lock, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import taggoutLogo from "@/assets/Logo_Tallo-03.png";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -243,10 +244,11 @@ export default function Auth() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/10 p-4">
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
-          <div className="flex items-center gap-2">
-            <Lock className="h-8 w-8 text-primary" />
-            <h1 className="text-3xl font-bold">Colorado Draw Odds</h1>
-          </div>
+          <img 
+            src={taggoutLogo} 
+            alt="TalloTags Logo" 
+            className="h-16 sm:h-20"
+          />
         </div>
 
         <Card className="w-full max-w-md">
