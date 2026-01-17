@@ -1,11 +1,13 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import taggoutLogo from "@/assets/Logo_Tallo-03.png";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <WelcomeDialog />
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-10 px-1 flex items-center justify-center">
         <div>
