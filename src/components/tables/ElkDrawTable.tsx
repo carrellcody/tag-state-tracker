@@ -399,16 +399,11 @@ export function ElkDrawTable() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="elk-user-pp">Your Elk Preference Points</Label>
-          <Input
-            id="elk-user-pp"
-            type="number"
-            min="0"
-            max="32"
-            value={userPreferencePoints}
-            onChange={(e) => setUserPreferencePoints(Math.max(0, Math.min(32, parseInt(e.target.value) || 0)))}
-            placeholder="Enter your PP"
-          />
+          <Label>Your Elk Preference Points</Label>
+          <div className="flex items-center gap-2">
+            <span className="text-lg font-semibold">{userPreferencePoints}</span>
+            <span className="text-xs text-muted-foreground">(Set in your profile)</span>
+          </div>
         </div>
 
         <div className={`space-y-2 ${showNoPointsOnly || showHybridOnly ? 'opacity-50' : ''}`}>
