@@ -43,13 +43,12 @@ export default function WelcomeDialog() {
           
           {/* Welcome Text */}
           <p className="text-base sm:text-lg text-foreground leading-relaxed">
-            Welcome to TalloTags - Browse antelope stats for free to get a feel for the site and subscribe to see the deer and elk stats! Use code <span className="font-bold text-primary">YEARONE</span> to get $5 off your subscription!
+            Welcome to TalloTags - Browse antelope stats for free to get a feel for the site and subscribe to see the deer and elk stats! Use code <span className="font-bold text-primary">FIRSTYEAR</span> to get your first year free!
           </p>
           
           {/* Pricing */}
           <div className="flex items-center justify-center gap-3 text-xl sm:text-2xl font-bold">
-            <span className="line-through text-muted-foreground">$20/year</span>
-            <span className="text-primary">$15/year</span>
+            <span className="text-primary">First year free!</span>
           </div>
           
           {/* CTA Button */}
