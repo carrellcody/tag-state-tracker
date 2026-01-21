@@ -4,7 +4,7 @@ export const SUBSCRIPTION_TIERS = {
     name: 'Pro',
     price_id: 'price_1STOHIGlYFqs6eXAouMJSACQ',
     product_id: 'prod_TQEkp6iEC7tmTK',
-    price: '$20/year',
+    price: 'First year free!',
     features: ['Full access to Elk, Deer, and Antelope statistics']
   },
   free: {
