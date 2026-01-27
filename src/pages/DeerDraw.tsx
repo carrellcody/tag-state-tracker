@@ -3,6 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { getTierFromProductId, canAccessDeer } from "@/utils/subscriptionTiers";
+import { SEOHead } from '@/components/SEOHead';
 
 export default function DeerDraw() {
   const { subscriptionStatus, loading } = useAuth();
@@ -20,6 +21,11 @@ export default function DeerDraw() {
   }
   return (
     <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
+      <SEOHead 
+        title="Colorado Mule Deer Draw Odds 2025 | TalloTags"
+        description="Colorado mule deer draw odds and preference point statistics for 2025. Analyze draw success rates by unit, season, and weapon type."
+        canonicalPath="/deer"
+      />
       <div className="flex items-start gap-6 mb-2">
         <div className="flex-shrink-0">
           <h1 className="text-3xl font-bold mb-1">Deer Draw Statistics</h1>
