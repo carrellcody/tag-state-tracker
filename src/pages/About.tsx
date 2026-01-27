@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
+import { SEOHead } from '@/components/SEOHead';
 const contactSchema = z.object({
   name: z.string().trim().min(1, {
     message: "Name is required"
@@ -75,6 +76,11 @@ export default function About() {
     }
   };
   return <div className="container mx-auto px-4 py-12 max-w-4xl">
+      <SEOHead 
+        title="About TalloTags | Colorado Big Game Hunting Statistics"
+        description="Learn about TalloTags - your source for Colorado big game draw odds, harvest statistics, and preference point data. Contact us for questions or feedback."
+        canonicalPath="/about"
+      />
       <h1 className="text-4xl font-bold mb-8 text-center">About TalloTags</h1>
       
       <Card className="shadow-medium mb-8">

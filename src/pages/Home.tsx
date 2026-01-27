@@ -3,10 +3,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import taggoutLogo from "@/assets/Logo_Tallo-03.png";
 import WelcomeDialog from "@/components/WelcomeDialog";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <SEOHead 
+        title="TalloTags - Colorado Big Game Draw Odds & Harvest Statistics"
+        description="Colorado big game draw odds, harvest statistics, and preference point data for elk, mule deer, and pronghorn hunting. Free antelope stats, advanced filtering tools."
+        canonicalPath="/"
+      />
       <WelcomeDialog />
       {/* Hero Section */}
       <section className="gradient-primary py-12 sm:py-16 md:py-10 px-1 flex items-center justify-center">

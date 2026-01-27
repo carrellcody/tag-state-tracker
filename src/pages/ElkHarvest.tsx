@@ -3,6 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getTierFromProductId, canAccessElk } from '@/utils/subscriptionTiers';
+import { SEOHead } from '@/components/SEOHead';
 
 
 export default function ElkHarvest() {
@@ -24,6 +25,11 @@ export default function ElkHarvest() {
 
   return (
     <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
+      <SEOHead 
+        title="Colorado Elk Harvest Statistics 2024 | TalloTags"
+        description="Colorado elk harvest data and success rates for 2024. View hunter density, harvest numbers, and success percentages by unit."
+        canonicalPath="/elk-harvest"
+      />
       <div className="flex items-start gap-6 mb-2">
         <div className="flex-shrink-0">
           <h1 className="text-3xl font-bold mb-1">Elk Harvest Statistics</h1>
