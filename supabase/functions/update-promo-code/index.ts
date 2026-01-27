@@ -41,9 +41,9 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil" 
     });
 
-    // Retrieve the checkout session with discount details expanded
+    // Retrieve the checkout session (promo codes are represented as discounts)
     const session = await stripe.checkout.sessions.retrieve(session_id, {
-      expand: ['total_details.breakdown', 'discounts.promotion_code']
+      expand: ['discounts', 'discounts.promotion_code', 'discounts.coupon'],
     });
     logStep("Checkout session retrieved", { 
       payment_status: session.payment_status,
@@ -57,8 +57,12 @@ serve(async (req) => {
       throw new Error("Session does not belong to this user");
     }
 
-    // Sync stripe_customer_id if payment was successful
-    if (session.payment_status === "paid" && session.customer) {
+    // Sync stripe_customer_id if checkout completed.
+    // NOTE: 100% off promo codes can result in `no_payment_required`.
+    const checkoutCompleted =
+      session.payment_status === "paid" || session.payment_status === "no_payment_required";
+
+    if (checkoutCompleted && session.customer) {
       const updateData: Record<string, string | null> = {
         stripe_customer_id: session.customer as string,
       };
