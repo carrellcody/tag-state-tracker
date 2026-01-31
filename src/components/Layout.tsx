@@ -327,12 +327,18 @@ export default function Layout({ children }: LayoutProps) {
         <div className="container mx-auto px-4 py-[10px]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>© 2025 Tag Season. All rights reserved.</p>
-            <div className="flex gap-4">
+            <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
               <Link to="/about" className="hover:text-foreground transition-colors">
                 About
               </Link>
               <Link to="/about#contact" className="hover:text-foreground transition-colors">
                 Contact
+              </Link>
+              <Link to="/privacy-policy" className="hover:text-foreground transition-colors">
+                Privacy Policy
+              </Link>
+              <Link to="/terms" className="hover:text-foreground transition-colors">
+                Terms & Conditions
               </Link>
               <a
                 href="https://cpw.state.co.us"
