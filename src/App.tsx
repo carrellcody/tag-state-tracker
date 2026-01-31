@@ -24,6 +24,8 @@ import OTCDeer from "./pages/OTCDeer";
 import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsConditions from "./pages/TermsConditions";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +56,8 @@ const App = () => (
               <Route path="/otc-elk" element={<OTCElk />} />
               <Route path="/otc-antelope" element={<OTCAntelope />} />
               <Route path="/otc-deer" element={<OTCDeer />} />
+              <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+              <Route path="/terms" element={<TermsConditions />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
