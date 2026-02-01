@@ -6,12 +6,20 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import taggoutLogo from "@/assets/Logo_Tallo-03.png";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function WelcomeDialog() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { subscriptionStatus, loading } = useAuth();
 
   useEffect(() => {
+    // Don't show while loading subscription status
+    if (loading) return;
+    
+    // Don't show if user has an active subscription
+    if (subscriptionStatus?.subscribed) return;
+    
     // Only show if this is the first visit this session
     const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
     
@@ -23,7 +31,7 @@ export default function WelcomeDialog() {
       setOpen(true);
       sessionStorage.setItem("hasSeenWelcome", "true");
     }
-  }, []);
+  }, [loading, subscriptionStatus]);
 
   const handleCreateAccount = () => {
     setOpen(false);
