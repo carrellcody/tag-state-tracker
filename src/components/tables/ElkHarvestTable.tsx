@@ -90,8 +90,9 @@ export function ElkHarvestTable() {
         if (!favorites.has(key)) return false;
       }
       if (unitSearch) {
-        const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
-        if (!searchTerms.some(term => row.Unit?.toLowerCase().includes(term.toLowerCase()))) return false;
+        const searchTerms = unitSearch.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        const unitStr = String(row.Unit || '').toLowerCase();
+        if (!searchTerms.some(term => unitStr === term)) return false;
       }
       if (categoryFilters.length > 0 && !categoryFilters.includes(row.Category)) return false;
       if (minSuccessRate && parseFloat(row['Percent Success'] || 0) < parseFloat(minSuccessRate)) return false;

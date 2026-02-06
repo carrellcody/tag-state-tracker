@@ -91,8 +91,9 @@ export function DeerHarvestTable() {
         if (!favorites.has(key)) return false;
       }
       if (unitSearch) {
-        const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
-        if (!searchTerms.some(term => row.UnitList?.toLowerCase().includes(term.toLowerCase()))) {
+        const searchTerms = unitSearch.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        const units = String(row.UnitList || '').split(',').map(u => u.trim().toLowerCase());
+        if (!searchTerms.some(term => units.some(unit => unit === term))) {
           return false;
         }
       }
