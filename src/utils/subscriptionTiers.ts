@@ -1,4 +1,6 @@
 // Subscription tier definitions and access control
+export const PRO_PRODUCT_IDS = ['prod_TQEkp6iEC7tmTK', 'prod_Tlkqena8Ul3Ezu'];
+
 export const SUBSCRIPTION_TIERS = {
   pro: {
     name: 'Pro',
@@ -21,7 +23,7 @@ export type TierKey = 'pro' | 'free';
 export const getTierFromProductId = (productId: string | null): TierKey => {
   if (!productId) return 'free';
   
-  if (productId === SUBSCRIPTION_TIERS.pro.product_id) return 'pro';
+  if (PRO_PRODUCT_IDS.includes(productId)) return 'pro';
   
   return 'free';
 };
