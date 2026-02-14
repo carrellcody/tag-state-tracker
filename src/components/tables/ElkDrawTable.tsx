@@ -36,7 +36,7 @@ function isHybridEligible(row: any) {
 }
 
 export function ElkDrawTable() {
-  const { data, loading, error } = useCsvData('/data/Fullelk25Final.csv');
+  const { data, loading, error } = useCsvData('/data/Fullelk26Final.csv');
   const { data: harvestData } = useCsvData('/data/elkHarvest25.csv');
   const { data: codePages } = useCsvData('/data/elk25code_pages.csv');
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('elk_draw');
