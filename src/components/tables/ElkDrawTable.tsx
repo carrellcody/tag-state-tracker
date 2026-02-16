@@ -67,6 +67,7 @@ export function ElkDrawTable() {
   const [showPreviousYears, setShowPreviousYears] = usePersistedState('elkDraw_showPreviousYears', false);
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState('elkDraw_showNoPointsOnly', false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState('elkDraw_showHybridOnly', false);
+  const [showNewTags, setShowNewTags] = usePersistedState('elkDraw_showNewTags', true);
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
@@ -78,7 +79,7 @@ export function ElkDrawTable() {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -154,6 +155,10 @@ export function ElkDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      // New tags: always include if toggle is on and row is marked New
+      const isNewTag = String(row.New || '').trim() === 'New';
+      if (showNewTags && isNewTag) return true;
+
       // Hybrid-only mode: show only hybrid rows
       if (showHybridOnly && !isHybridEligible(row)) {
         return false;
@@ -223,7 +228,7 @@ export function ElkDrawTable() {
       
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -638,6 +643,16 @@ export function ElkDrawTable() {
               <Label htmlFor="elk-no-apps-no">No</Label>
             </div>
           </RadioGroup>
+        </div>
+
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label className="text-sm leading-tight">View New Tags?</Label>
+            <Switch
+              checked={showNewTags}
+              onCheckedChange={setShowNewTags}
+            />
+          </div>
         </div>
 
         <Button variant="outline" className="w-full" onClick={() => {
