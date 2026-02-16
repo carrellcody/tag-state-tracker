@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { CSV_VERSION } from '@/utils/csvVersion';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,7 @@ const ROWS_PER_PAGE = 50;
 const FIXED_SEASON = 'Either Sex OTC Archery';
 
 export function OTCAntelopeTable() {
-  const { data: harvestData, loading, error } = useCsvData('/data/antOTC24.csv');
+  const { data: harvestData, loading, error } = useCsvData(`/data/antOTC24.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_antelope');
   const isMobile = useIsMobile();
   

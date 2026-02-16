@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { CSV_VERSION } from '@/utils/csvVersion';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -25,7 +26,7 @@ const seasonOptions = [
 ];
 
 export function OTCElkTable() {
-  const { data: harvestData, loading, error } = useCsvData('/data/elkOTC24.csv');
+  const { data: harvestData, loading, error } = useCsvData(`/data/elkOTC24.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_elk');
   const isMobile = useIsMobile();
   

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, Fragment } from "react";
 import { useCsvData } from "@/hooks/useCsvData";
+import { CSV_VERSION } from "@/utils/csvVersion";
 import { useFavorites } from "@/hooks/useFavorites";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,13 +39,13 @@ export function DeerDrawTable() {
     data,
     loading,
     error
-  } = useCsvData("/data/FullDeer26Final.csv");
+  } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
   const {
     data: harvestData
-  } = useCsvData("/data/DeerHarvest24.csv");
+  } = useCsvData(`/data/DeerHarvest24.csv?v=${CSV_VERSION}`);
   const {
     data: codePages
-  } = useCsvData("/data/deer25code_pages.csv");
+  } = useCsvData(`/data/deer25code_pages.csv?v=${CSV_VERSION}`);
   const {
     favorites,
     toggleFavorite,

@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect, Fragment } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { CSV_VERSION } from '@/utils/csvVersion';
 import { useFavorites } from '@/hooks/useFavorites';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -36,9 +37,9 @@ function isHybridEligible(row: any) {
 }
 
 export function AntelopeDrawTable() {
-  const { data, loading, error } = useCsvData('/data/Fullant26Final.csv');
-  const { data: harvestData } = useCsvData('/data/antHarvest25.csv');
-  const { data: codePages } = useCsvData('/data/ant25code_pages.csv');
+  const { data, loading, error } = useCsvData(`/data/Fullant26Final.csv?v=${CSV_VERSION}`);
+  const { data: harvestData } = useCsvData(`/data/antHarvest25.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/ant25code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_draw');
   const { user } = useAuth();
   const isMobile = useIsMobile();
