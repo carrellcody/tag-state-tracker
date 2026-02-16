@@ -22,15 +22,15 @@ export default function DeerDraw() {
   return (
     <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
       <SEOHead 
-        title="Colorado Mule Deer Draw Odds 2025 | TalloTags"
-        description="Colorado mule deer draw odds and preference point statistics for 2025. Analyze draw success rates by unit, season, and weapon type."
+        title="Colorado Mule Deer Draw Odds 2026 | TalloTags"
+        description="Colorado mule deer draw odds and preference point statistics for 2026. Analyze draw success rates by unit, season, and weapon type."
         canonicalPath="/deer"
       />
       <div className="flex items-start gap-6 mb-2">
         <div className="flex-shrink-0">
           <h1 className="text-3xl font-bold mb-1">Deer Draw Statistics</h1>
           <p className="text-muted-foreground text-sm">
-            Data pulled from 2025 Big Game Brochure, 2025 draw odds and 2024 harvest statistics.
+            Data pulled from 2026 Big Game Brochure, 2026 draw odds and 2024 harvest statistics.
           </p>
         </div>
       </div>

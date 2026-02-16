@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useCsvData } from '@/hooks/useCsvData';
+import { CSV_VERSION } from '@/utils/csvVersion';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,7 +16,7 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 const ROWS_PER_PAGE = 50;
 
 export function AntelopeHarvestTable() {
-  const { data, loading, error } = useCsvData('/data/antHarvest25.csv');
+  const { data, loading, error } = useCsvData(`/data/antHarvest25.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_harvest');
   const isMobile = useIsMobile();
   
