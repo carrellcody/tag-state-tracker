@@ -1,12 +1,17 @@
 
 
-## Replace CSV Data Files
+## Fix: Elk Draw Subtable "Antlerless" Column
 
-Copy the three uploaded CSV files to replace the existing ones in `public/data/`:
+**Root Cause:** The elk harvest CSV (`elkHarvest25.csv`) has a column named `Antlerless`, but the code in `ElkDrawTable.tsx` references `harvestRow['Total Antlerless Harvest']`, which does not exist.
 
-1. `user-uploads://FullDeer26Final.csv` -> `public/data/FullDeer26Final.csv`
-2. `user-uploads://Fullelk26Final.csv` -> `public/data/Fullelk26Final.csv`
-3. `user-uploads://Fullant26Final.csv` -> `public/data/Fullant26Final.csv`
+**Fix:** Change the column accessor on line 877 of `ElkDrawTable.tsx` from:
+```
+harvestRow['Total Antlerless Harvest']
+```
+to:
+```
+harvestRow['Antlerless']
+```
 
-After copying, bump `CSV_VERSION` in `src/utils/csvVersion.ts` from `"2"` to `"3"` so the cache-busting parameter forces browsers to fetch the new files.
+This is a one-line change that will correctly pull the Antlerless harvest data from the CSV.
 
