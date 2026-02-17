@@ -155,15 +155,14 @@ export function ElkDrawTable() {
 
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
-      // New tags: always include if toggle is on and row is marked New
       const isNewTag = String(row.New || '').trim() === 'New';
-      if (showNewTags && isNewTag) return true;
+      const bypassPoints = showNewTags && isNewTag;
 
       // Hybrid-only mode: show only hybrid rows
       if (showHybridOnly && !isHybridEligible(row)) {
         return false;
       }
-      if (showNoPointsOnly && row.nopoints !== 'Y') return false;
+      if (!bypassPoints && showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch.split(',').map(s => s.trim()).filter(Boolean);
@@ -208,8 +207,8 @@ export function ElkDrawTable() {
       if (rfwFilter === 'only' && row.RFW !== 'Yes') return false;
       if (rfwFilter === 'none' && row.RFW === 'Yes') return false;
       
-      // Points sliders (skip when showHybridOnly or showNoPointsOnly is active)
-      if (!showHybridOnly && !showNoPointsOnly) {
+      // Points sliders (skip when showHybridOnly, showNoPointsOnly, or new tag bypass is active)
+      if (!showHybridOnly && !showNoPointsOnly && !bypassPoints) {
         const dolStr = String(row.Drawn_out_level || '').trim();
         const isLeftoverOrChoice = dolStr === 'Leftover' || dolStr.startsWith('Choice');
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || '0');
