@@ -874,7 +874,7 @@ export function ElkDrawTable() {
                                      </td>
                                     <td className="border p-1">{harvestRow.Category}</td>
                                     <td className="border p-1">{harvestRow.Bulls}</td>
-                                    <td className="border p-1">{harvestRow['Total Antlerless Harvest']}</td>
+                                    <td className="border p-1"><td className="border p-1">{harvestRow['Antlerless']}</td></td>
                                     <td className="border p-1">{harvestRow['Total Hunters']}</td>
                                     <td className="border p-1">{harvestRow['Percent Success']}</td>
                                     <td className="border p-1">{harvestRow.percent_public}</td>
