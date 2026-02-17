@@ -30,7 +30,7 @@ export default function DeerDraw() {
         <div className="flex-shrink-0">
           <h1 className="text-3xl font-bold mb-1">Deer Draw Statistics</h1>
           <p className="text-muted-foreground text-sm">
-            Data pulled from 2026 Big Game Brochure, 2026 draw odds and 2024 harvest statistics.
+            Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest stats from 2024.
           </p>
         </div>
       </div>

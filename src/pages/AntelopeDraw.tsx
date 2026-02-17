@@ -12,7 +12,7 @@ export default function AntelopeDraw() {
       <div className="flex items-start gap-6 mb-2">
         <div className="flex-shrink-0">
           <h1 className="text-3xl font-bold mb-1">Antelope Draw Statistics</h1>
-          <p className="text-muted-foreground text-sm">Explore Colorado antelope draw odds and statistics for 2026</p>
+          <p className="text-muted-foreground text-sm">Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest stats from 2024.</p>
         </div>
       </div>
       <AntelopeDrawTable />

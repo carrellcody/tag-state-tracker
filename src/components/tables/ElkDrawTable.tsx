@@ -289,7 +289,7 @@ export function ElkDrawTable() {
     "Tag": "Hunt Code",
     "List": "List",
     "Valid GMUs": "Valid Units",
-    "Dates": "Dates",
+    "Dates": "2026 Dates",
     "Quota": "Total tag quota",
     "Drawn_out_level23": "Drawn Out Level",
     "Chance_at_DOL23": "Chance at DOL",
