@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
-import taggoutLogo from "@/assets/Logo_Tallo-03.png";
+import taggoutLogo from "@/assets/longbluename.png";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import { SEOHead } from "@/components/SEOHead";
 

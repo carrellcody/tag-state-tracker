@@ -30,7 +30,7 @@ import {
 import { useAuth } from "@/contexts/AuthContext";
 import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
 
-import taggoutLogosmall from "@/assets/L4.png";
+import taggoutLogosmall from "@/assets/midgreen.png";
 interface LayoutProps {
   children: React.ReactNode;
 }
