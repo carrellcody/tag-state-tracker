@@ -8,107 +8,105 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Taggout brand colors - Teal, Brown, Gray */
+    /* TalloTags brand colors - Greens with yellow/blue accents */
     --background: 0 0% 100%;
-    --foreground: 0 0% 0%;
+    --foreground: 130 29% 12%;
 
     --card: 0 0% 98%;
-    --card-foreground: 0 0% 0%;
+    --card-foreground: 130 29% 12%;
 
     --popover: 0 0% 98%;
-    --popover-foreground: 0 0% 0%;
+    --popover-foreground: 130 29% 12%;
 
-    /* Teal primary brand color */
-    --primary: 180 30% 56.86%;
+    /* Mid green primary brand color #598749 */
+    --primary: 105 30% 41%;
     --primary-foreground: 0 0% 100%;
     
-    /* Darker teal for hunt code links */
-    --primary-dark: 176 100% 28%;
+    /* Darkest green for text/links on light backgrounds #223F1D */
+    --primary-dark: 111 37% 18%;
 
-    /* Brown secondary */
-    --secondary: 26.29, 46.6%, 37.45%;
-    --secondary-foreground: 0 0% 100%;
+    /* Dark green secondary #192816 */
+    --secondary: 130 29% 12%;
+    --secondary-foreground: 67 69% 89%;
 
-    --muted: 26.29, 46.6%, 37.45%;
-    --muted-foreground: 26°, 25%, 55%;
+    --muted: 105 10% 90%;
+    --muted-foreground: 130 15% 40%;
 
-    /* Gray accent */
-    --accent: 210 3% 66%;
-    --accent-foreground: 0 0% 0%;
+    /* Light blue accent #E3F3F6 */
+    --accent: 189 49% 93%;
+    --accent-foreground: 130 29% 12%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 210 3% 82%;
-    --input: 210 3% 82%;
-    --ring: 176 100% 33%;
+    --border: 105 10% 82%;
+    --input: 105 10% 82%;
+    --ring: 105 30% 41%;
     
-    /* Hybrid highlight - light brown */
-    --hybrid-highlight: 30 40% 85%;
+    /* Hybrid highlight - light yellow #F1F5D3 */
+    --hybrid-highlight: 67 69% 89%;
 
     --radius: 0.5rem;
 
     /* Gradients with brand colors */
-    --gradient-primary: linear-gradient(135deg, hsl(180, 30%, 56.86%), hsl(180, 30%, 56.86%));
-    --gradient-secondary: linear-gradient(135deg, hsl(26.29, 46.6%, 37.45%), hsl(26.29, 46.6%, 37.45%));
+    --gradient-primary: linear-gradient(135deg, hsl(111, 37%, 18%), hsl(105, 30%, 41%));
+    --gradient-secondary: linear-gradient(135deg, hsl(130, 29%, 12%), hsl(111, 37%, 18%));
 
     /* Shadows */
     --shadow-subtle: 0 2px 8px hsl(0 0% 0% / 0.08);
     --shadow-medium: 0 4px 16px hsl(0 0% 0% / 0.12);
 
     --sidebar-background: 0 0% 96%;
-    --sidebar-foreground: 0 0% 0%;
-    --sidebar-primary: 176 100% 33%;
+    --sidebar-foreground: 130 29% 12%;
+    --sidebar-primary: 105 30% 41%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 210 3% 90%;
-    --sidebar-accent-foreground: 0 0% 0%;
-    --sidebar-border: 210 3% 85%;
-    --sidebar-ring: 176 100% 33%;
+    --sidebar-accent: 189 49% 93%;
+    --sidebar-accent-foreground: 130 29% 12%;
+    --sidebar-border: 105 10% 85%;
+    --sidebar-ring: 105 30% 41%;
   }
 
   .dark {
-    --background: 0 0% 8%;
-    --foreground: 0 0% 95%;
+    --background: 130 29% 8%;
+    --foreground: 67 69% 89%;
 
-    --card: 0 0% 12%;
-    --card-foreground: 0 0% 95%;
+    --card: 130 29% 12%;
+    --card-foreground: 67 69% 89%;
 
-    --popover: 0 0% 12%;
-    --popover-foreground: 0 0% 95%;
+    --popover: 130 29% 12%;
+    --popover-foreground: 67 69% 89%;
 
-    --primary: 176 100% 38%;
-    --primary-foreground: 0 0% 0%;
+    --primary: 105 30% 41%;
+    --primary-foreground: 0 0% 100%;
     
-    /* Darker teal for hunt code links in dark mode */
-    --primary-dark: 176 100% 45%;
+    --primary-dark: 105 35% 55%;
 
-    --secondary: 25 40% 44%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 111 37% 18%;
+    --secondary-foreground: 67 69% 89%;
 
-    --muted: 210 3% 20%;
-    --muted-foreground: 210 3% 60%;
+    --muted: 130 15% 20%;
+    --muted-foreground: 105 10% 60%;
 
-    --accent: 210 3% 50%;
-    --accent-foreground: 0 0% 95%;
+    --accent: 189 30% 20%;
+    --accent-foreground: 189 49% 93%;
 
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 95%;
 
-    --border: 210 3% 25%;
-    --input: 210 3% 25%;
-    --ring: 176 100% 38%;
+    --border: 130 15% 25%;
+    --input: 130 15% 25%;
+    --ring: 105 30% 41%;
     
-    /* Hybrid highlight - light brown for dark mode */
-    --hybrid-highlight: 30 30% 30%;
+    --hybrid-highlight: 67 40% 25%;
 
-    --sidebar-background: 0 0% 10%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 176 100% 38%;
-    --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 0 0% 15%;
-    --sidebar-accent-foreground: 0 0% 95%;
-    --sidebar-border: 210 3% 20%;
-    --sidebar-ring: 176 100% 38%;
+    --sidebar-background: 130 29% 10%;
+    --sidebar-foreground: 67 69% 89%;
+    --sidebar-primary: 105 30% 41%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 130 15% 15%;
+    --sidebar-accent-foreground: 67 69% 89%;
+    --sidebar-border: 130 15% 20%;
+    --sidebar-ring: 105 30% 41%;
   }
 }
 
