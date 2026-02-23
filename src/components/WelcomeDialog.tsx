@@ -5,7 +5,7 @@ import {
   DialogContent,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import taggoutLogo from "@/assets/Logo_Tallo-03.png";
+import taggoutLogo from "@/assets/blacktext-logo.png";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function WelcomeDialog() {
