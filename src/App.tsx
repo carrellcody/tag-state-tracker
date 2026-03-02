@@ -8,6 +8,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import Layout from "./components/Layout";
 import Home from "./pages/Home";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import Learn from "./pages/Learn";
 import TableGuide from "./pages/TableGuide";
 import Auth from "./pages/Auth";
@@ -40,6 +41,7 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/learn" element={<Learn />} />
               <Route path="/table-guide" element={<TableGuide />} />
               <Route path="/auth" element={<Auth />} />
