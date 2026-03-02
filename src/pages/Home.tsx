@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import taggoutLogo from "@/assets/longbluename.png";
+import heroBg from "@/assets/hero-bg.jpg";
 import WelcomeDialog from "@/components/WelcomeDialog";
 import { SEOHead } from "@/components/SEOHead";
 
@@ -14,11 +15,25 @@ export default function Home() {
         canonicalPath="/"
       />
       <WelcomeDialog />
-      {/* Hero Section */}
-      <section className="gradient-primary py-12 sm:py-16 md:py-10 px-1 flex items-center justify-center">
-        <div>
-          <img src={taggoutLogo} alt="Taggout Logo" className="h-16 sm:h-20 md:h-24 lg:h-28 mx-auto" />
+      {/* Hero Image Section */}
+      <section
+        className="relative bg-cover bg-center py-20 sm:py-28 md:py-36 px-4 flex items-center justify-center"
+        style={{ backgroundImage: `url(${heroBg})` }}
+      >
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="relative z-10 text-center">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-white font-['Inter']">
+            Welcome to TalloTags
+          </h1>
+          <p className="mt-3 text-lg sm:text-xl md:text-2xl text-white/90 font-['Inter']">
+            Colorado draw odds and harvest stats for Colorado hunters
+          </p>
         </div>
+      </section>
+
+      {/* Logo Banner */}
+      <section className="gradient-primary py-6 sm:py-8 px-1 flex items-center justify-center">
+        <img src={taggoutLogo} alt="TalloTags Logo" className="h-14 sm:h-18 md:h-22 lg:h-26 mx-auto" />
       </section>
 
       {/* Statistics Section */}
