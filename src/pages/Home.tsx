@@ -15,6 +15,11 @@ export default function Home() {
         canonicalPath="/"
       />
       <WelcomeDialog />
+      {/* Promo Banner */}
+      <div className="bg-primary text-primary-foreground text-center py-2 px-4 text-sm sm:text-base font-medium">
+        Become an early adopter and try TalloTags <span className="font-bold italic">For Free</span> with promo code <span className="font-bold">FIRSTYEAR</span> through March 15th
+      </div>
+
       {/* Hero Image Section */}
       <section
         className="relative bg-cover bg-center py-20 sm:py-28 md:py-36 px-4 flex items-center justify-center"
