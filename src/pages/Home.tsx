@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import taggoutLogo from "@/assets/longbluename.png";
 import heroBg from "@/assets/hero-bg.jpg";
-import WelcomeDialog from "@/components/WelcomeDialog";
+
 import { SEOHead } from "@/components/SEOHead";
 
 export default function Home() {
@@ -14,7 +14,7 @@ export default function Home() {
         description="Colorado big game draw odds, harvest statistics, and preference point data for elk, mule deer, and pronghorn hunting. Free antelope stats, advanced filtering tools."
         canonicalPath="/"
       />
-      <WelcomeDialog />
+      
       {/* Promo Banner */}
       <div className="bg-primary text-primary-foreground text-center py-2 px-4 text-sm sm:text-base font-medium">
         <p>Become an early adopter and try TalloTags <span className="font-bold italic">For Free</span> with promo code <span className="font-bold">FIRSTYEAR</span> through March 15th</p>
