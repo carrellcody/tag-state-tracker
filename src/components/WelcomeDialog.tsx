@@ -56,8 +56,7 @@ export default function WelcomeDialog() {
           
           {/* Pricing */}
           <div className="flex flex-col items-center justify-center gap-1 text-xl sm:text-2xl font-bold">
-            <span className="text-primary">First year free!</span>
-            <span className="text-primary text-base sm:text-lg">Use Promocode FIRSTYEAR</span>
+            <span className="text-primary">First year free with promo code FIRSTYEAR</span>
           </div>
           
           {/* CTA Button */}
