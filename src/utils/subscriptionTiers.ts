@@ -6,7 +6,7 @@ export const SUBSCRIPTION_TIERS = {
     name: 'Pro',
     price_id: 'price_1SoDADGlYFqs6eXAyFexbyZC',
     product_id: 'prod_TQEkp6iEC7tmTK',
-    price: 'First year free!',
+    price: 'First year free with promo code FIRSTYEAR',
     features: ['Full access to Elk, Deer, and Antelope statistics']
   },
   free: {
