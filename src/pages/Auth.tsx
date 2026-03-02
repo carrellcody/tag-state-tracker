@@ -143,6 +143,7 @@ export default function Auth() {
           title: "Success",
           description: "Account created successfully! Please check your email to verify your account.",
         });
+        navigate('/subscription');
       }
     } catch (error: any) {
       toast({
