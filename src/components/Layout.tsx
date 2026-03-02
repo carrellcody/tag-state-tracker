@@ -41,18 +41,10 @@ export default function Layout({ children }: LayoutProps) {
   const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
   const { user, signOut, subscriptionStatus, loading } = useAuth();
   const navLinks = [
-    {
-      to: "/",
-      label: "Home",
-    },
-    {
-      to: "/learn",
-      label: "Learn",
-    },
-    {
-      to: "/about",
-      label: "About TalloTags",
-    },
+    { to: "/", label: "Home" },
+    { to: "/learn", label: "Learn" },
+    { to: "/about", label: "About TalloTags" },
+    { to: "/contact", label: "Contact" },
   ];
   const speciesMenus = [
     {
@@ -331,7 +323,7 @@ export default function Layout({ children }: LayoutProps) {
               <Link to="/about" className="hover:text-foreground transition-colors">
                 About
               </Link>
-              <Link to="/about#contact" className="hover:text-foreground transition-colors">
+              <Link to="/contact" className="hover:text-foreground transition-colors">
                 Contact
               </Link>
               <Link to="/privacy-policy" className="hover:text-foreground transition-colors">

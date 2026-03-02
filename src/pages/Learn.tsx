@@ -114,7 +114,22 @@ export default function Learn() {
           </CardContent>
         </Card>
 
-        <Card className="shadow-medium"></Card>
+        <Card className="shadow-medium">
+          <CardHeader>
+            <CardTitle>How to Use TalloTags</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="aspect-video rounded-lg overflow-hidden">
+              <iframe
+                className="w-full h-full"
+                src="https://www.youtube.com/embed/Gu5wuNdFANo"
+                title="How to use TalloTags"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowFullScreen
+              />
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="bg-muted/50 p-6 rounded-lg border border-border">
           <h3 className="font-semibold text-lg mb-3">Additional Resources</h3>
