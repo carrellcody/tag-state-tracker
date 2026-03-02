@@ -33,6 +33,9 @@ export default function Home() {
           <p className="mt-3 text-lg sm:text-xl md:text-2xl text-white/90 font-['Inter']">
             Colorado draw odds and harvest stats for Colorado hunters
           </p>
+          <Link to="/auth" className="mt-5 inline-block text-lg sm:text-xl text-white underline underline-offset-4 hover:text-white/80 font-['Inter'] transition-colors">
+            Create an account to get started
+          </Link>
         </div>
       </section>
 
