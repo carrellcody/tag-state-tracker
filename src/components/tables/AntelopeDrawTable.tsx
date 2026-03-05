@@ -351,12 +351,14 @@ export function AntelopeDrawTable() {
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
       <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
-        <Button 
-          onClick={() => setShowMobileFilters(false)} 
-          className="w-full mb-4 md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
-        >
-          Apply filters and view data
-        </Button>
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(false)} 
+            className="w-full mb-4 shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
+          >
+            Apply filters and view data
+          </Button>
+        )}
         <h3 className="font-semibold text-lg">Filters</h3>
         
         <div className="space-y-2">
@@ -655,12 +657,14 @@ export function AntelopeDrawTable() {
           Clear Favorites ({favorites.size})
         </Button>
         
-        <Button 
-          onClick={() => setShowMobileFilters(false)} 
-          className="w-full md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
-        >
-          Apply filters and view data
-        </Button>
+        {isMobile && (
+          <Button 
+            onClick={() => setShowMobileFilters(false)} 
+            className="w-full shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
+          >
+            Apply filters and view data
+          </Button>
+        )}
       </aside>
       )}
 
