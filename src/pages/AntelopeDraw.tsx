@@ -3,7 +3,7 @@ import { SEOHead } from '@/components/SEOHead';
 
 export default function AntelopeDraw() {
   return (
-    <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
+    <div className="container mx-auto pt-2 pb-10 h-auto lg:h-[calc(100vh-8rem)]">
       <SEOHead 
         title="Colorado Pronghorn Draw Odds 2026 | TalloTags"
         description="Colorado antelope and pronghorn draw odds for 2026. Free access to draw statistics, preference points, and unit analysis."

@@ -24,7 +24,7 @@ export default function ElkDraw() {
   }
 
   return (
-    <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
+    <div className="container mx-auto pt-2 pb-10 h-auto lg:h-[calc(100vh-8rem)]">
       <SEOHead 
         title="Colorado Elk Draw Odds 2026 | TalloTags"
         description="Colorado elk draw odds and preference point statistics for 2026. Analyze draw success rates by unit, season, and weapon type."

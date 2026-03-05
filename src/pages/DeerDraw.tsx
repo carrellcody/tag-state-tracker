@@ -20,7 +20,7 @@ export default function DeerDraw() {
     return null;
   }
   return (
-    <div className="container mx-auto pt-2 pb-10 h-[calc(100vh-8rem)]">
+    <div className="container mx-auto pt-2 pb-10 h-auto lg:h-[calc(100vh-8rem)]">
       <SEOHead 
         title="Colorado Mule Deer Draw Odds 2026 | TalloTags"
         description="Colorado mule deer draw odds and preference point statistics for 2026. Analyze draw success rates by unit, season, and weapon type."
