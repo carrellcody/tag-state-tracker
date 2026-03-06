@@ -334,12 +334,10 @@ export function DeerDrawTable() {
       </div>;
   };
   return <div className="flex flex-col lg:flex-row gap-4 h-full">
-      {(!isMobile || showMobileFilters) && <aside className="w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto">
-          {isMobile && (
-            <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4 shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all">
-              Apply filters and view data
-            </Button>
-          )}
+      <aside className={`w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto ${!showMobileFilters ? 'hidden' : 'block'} md:block`}>
+          <Button onClick={() => setShowMobileFilters(false)} className="w-full mb-4 md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all">
+            Apply filters and view data
+          </Button>
           <h3 className="font-semibold text-lg">Filters</h3>
 
           <div className="space-y-2">
@@ -659,18 +657,16 @@ export function DeerDrawTable() {
             Clear Favorites ({favorites.size})
           </Button>
 
-          {isMobile && (
-            <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4 shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all">
-              Apply filters and view data
-            </Button>
-          )}
-        </aside>}
+          <Button onClick={() => setShowMobileFilters(false)} className="w-full mt-4 md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all">
+            Apply filters and view data
+          </Button>
+        </aside>
 
-      {(!isMobile || !showMobileFilters) && <main className="flex-1 overflow-hidden flex flex-col">
-          {isMobile && <Button onClick={() => setShowMobileFilters(true)} className="mb-4" variant="outline">
-              <Filter className="w-4 h-4 mr-2" />
-              Filters
-            </Button>}
+      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'block'} md:block`}>
+          <Button onClick={() => setShowMobileFilters(true)} className="mb-4 md:hidden" variant="outline">
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
+          </Button>
           <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
             <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
             <div className="flex items-center gap-4">
@@ -858,6 +854,6 @@ export function DeerDrawTable() {
               </tbody>
             </table>
           </div>
-        </main>}
+        </main>
     </div>;
 }
