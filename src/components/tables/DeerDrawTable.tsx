@@ -662,7 +662,7 @@ export function DeerDrawTable() {
           </Button>
         </aside>
 
-      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'block'} md:block`}>
+      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'flex'} md:flex`}>
           <Button onClick={() => setShowMobileFilters(true)} className="mb-4 md:hidden" variant="outline">
             <Filter className="w-4 h-4 mr-2" />
             Filters
