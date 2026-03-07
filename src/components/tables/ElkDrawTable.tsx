@@ -673,7 +673,7 @@ export function ElkDrawTable() {
         </Button>
       </aside>
 
-      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'block'} md:block`}>
+      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'flex'} md:flex`}>
         <Button 
           onClick={() => setShowMobileFilters(true)} 
           className="mb-4 md:hidden"

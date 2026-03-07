@@ -662,7 +662,7 @@ export function AntelopeDrawTable() {
         </Button>
       </aside>
 
-      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'block'} md:block`}>
+      <main className={`flex-1 overflow-hidden flex flex-col ${showMobileFilters ? 'hidden' : 'flex'} md:flex`}>
         <Button 
           onClick={() => setShowMobileFilters(true)} 
           variant="outline"
