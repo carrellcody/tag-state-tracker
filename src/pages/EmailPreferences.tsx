@@ -221,7 +221,7 @@ export default function EmailPreferences() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )})}
         </div>
 
         <div className="mt-8 flex justify-end">
