@@ -111,6 +111,19 @@ export default function Profile() {
         state_residency: stateResidency || null
       }).eq('id', user.id);
       if (error) throw error;
+
+      // Clear pointsInitialized flags so draw tables re-fetch updated values
+      sessionStorage.removeItem('elkDraw_pointsInitialized');
+      sessionStorage.removeItem('antelopeDraw_pointsInitialized');
+      sessionStorage.removeItem('deerDraw_pointsInitialized');
+      // Also clear the cached preference point values
+      sessionStorage.removeItem('elkDraw_userPreferencePoints');
+      sessionStorage.removeItem('elkDraw_maxPoints');
+      sessionStorage.removeItem('antelopeDraw_userPreferencePoints');
+      sessionStorage.removeItem('antelopeDraw_maxPoints');
+      sessionStorage.removeItem('deerDraw_userPreferencePoints');
+      sessionStorage.removeItem('deerDraw_maxPoints');
+
       toast({
         title: "Success",
         description: "Profile updated successfully"
