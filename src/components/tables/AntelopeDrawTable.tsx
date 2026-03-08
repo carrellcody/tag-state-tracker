@@ -271,7 +271,7 @@ export function AntelopeDrawTable() {
     });
   };
 
-  if (loading) return <div className="p-8 text-center">Loading antelope draw data...</div>;
+  if (loading) return <div className="p-8 text-center">Loading pronghorn draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const visibleColumns = showPreviousYears 
@@ -311,7 +311,7 @@ export function AntelopeDrawTable() {
     : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Notes'];
 
   const helpText: Record<string, string> = {
-    Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag. The first letter specifies the species (e.g. A for Antelope), the second letter specifies the sex (M, F, E for Either), the next three numbers specify the unit – however, often times there are more than a single unit associated with a given hunt code, the next number-letter pair specifies the season (O1 = Season 1, etc.), and the final letter specifies the weapon (R= Rifle, etc.).",
+    Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag. The first letter specifies the species (e.g. A for Pronghorn), the second letter specifies the sex (M, F, E for Either), the next three numbers specify the unit – however, often times there are more than a single unit associated with a given hunt code, the next number-letter pair specifies the season (O1 = Season 1, etc.), and the final letter specifies the weapon (R= Rifle, etc.).",
     List: "Tag \"List\" tells you if you can draw more than one tag of a particular type. Only one A list tag can be purchased per species per year. If a tag is a B list tag, you can purchase up to two licenses for a given species (one A and one B, or two B's). If a tag is C list, you can purchase as many as you want along with your other A or B list tags (e.g. A+B+C+C+C)",
     "Valid GMUs": "These are the units that can legally be hunted if you hold the license for the associated hunt code",
     Drawn_out_level23: "These were the minimum number of points needed to have a chance at drawing the associated hunt code in the 2023 draw. Having this many points did NOT guarantee a tag. Instead, with this number of points the percent chance an applicant had at successfully drawing is listed in the next column (Chance at Drawn Out Level 2023). To guarantee a tag in 2023 (100% draw odds), an applicant would have needed one more point than what is listed here.",
@@ -395,7 +395,7 @@ export function AntelopeDrawTable() {
         </div>
 
         <div className="space-y-2">
-          <Label>Your Antelope Preference Points</Label>
+          <Label>Your Pronghorn Preference Points</Label>
           <div className="flex items-center gap-2">
             <span className="text-lg font-semibold">{userPreferencePoints}</span>
             <span className="text-xs text-muted-foreground">(Set in your profile)</span>

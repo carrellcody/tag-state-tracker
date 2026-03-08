@@ -136,7 +136,7 @@ export function AntelopeHarvestTable() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center">Loading antelope harvest data...</div>;
+  if (loading) return <div className="p-8 text-center">Loading pronghorn harvest data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const baseColumns = ["Unit", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];

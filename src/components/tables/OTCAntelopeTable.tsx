@@ -120,7 +120,7 @@ export function OTCAntelopeTable() {
     }
   };
 
-  if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
+  if (loading) return <div className="p-8 text-center">Loading OTC pronghorn data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const baseColumns = ["Unit", "OTCCat", "Category", "Bucks", "Antlerless", "Total Harvest", "Total Hunters"];

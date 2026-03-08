@@ -296,7 +296,7 @@ export default function Profile() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-semibold text-sm">Pro Plan</p>
-                  <p className="text-sm text-muted-foreground">$20/year. Access to Elk, Deer, and Antelope data.</p>
+                  <p className="text-sm text-muted-foreground">$20/year. Access to Elk, Deer, and Pronghorn data.</p>
                 </div>
                 {currentTier === 'pro' && (
                   <Badge variant="default" className="shrink-0">Current</Badge>
@@ -305,7 +305,7 @@ export default function Profile() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="font-semibold text-sm">Free Plan</p>
-                  <p className="text-sm text-muted-foreground">$0. Access to Antelope data only.</p>
+                  <p className="text-sm text-muted-foreground">$0. Access to Pronghorn data only.</p>
                 </div>
                 {currentTier === 'free' && (
                   <Badge variant="secondary" className="shrink-0">Current</Badge>
@@ -337,7 +337,7 @@ export default function Profile() {
               <Input id="elk-points" type="number" min="0" value={elkPoints} onChange={e => setElkPoints(Math.max(0, parseInt(e.target.value) || 0))} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="antelope-points">Antelope Preference Points</Label>
+              <Label htmlFor="antelope-points">Pronghorn Preference Points</Label>
               <Input id="antelope-points" type="number" min="0" value={antelopePoints} onChange={e => setAntelopePoints(Math.max(0, parseInt(e.target.value) || 0))} />
             </div>
             <Button onClick={handleSaveProfile} disabled={saveLoading} className="w-full">

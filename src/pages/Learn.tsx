@@ -26,10 +26,10 @@ export default function Learn() {
           </CardHeader>
           <CardContent className="space-y-4 text-muted-foreground leading-relaxed">
             <p>
-              Colorado uses a preference point system to allocate limited hunting licenses for deer, elk, and antelope.
+              Colorado uses a preference point system to allocate limited hunting licenses for deer, elk, and pronghorn.
               Other species such as sheep, moose and mountain goats use a weighted point system, but currently Taggout
-              is not set up to analyze draws other than Deer , Elk and Antelope. Not all units and seasons require a
-              draw - some elk and antelope tags are available over-the-counter (OTC) without having to go through the
+              is not set up to analyze draws other than Deer, Elk, and Pronghorn. Not all units and seasons require a
+              draw - some elk and pronghorn tags are available over-the-counter (OTC) without having to go through the
               draw.
             </p>
           </CardContent>

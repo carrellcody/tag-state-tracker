@@ -158,7 +158,7 @@ export default function Subscription() {
                   <Badge variant="outline">Checking...</Badge>
                 ) : currentTier === 'free' && <Badge>Your Plan</Badge>}
               </div>
-              <CardDescription>Basic access to antelope data</CardDescription>
+              <CardDescription>Basic access to pronghorn data</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.free.price}</div>
