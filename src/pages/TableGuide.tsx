@@ -60,7 +60,7 @@ export default function TableGuide() {
           <CardHeader>
             <CardTitle className="text-2xl">Draw Table Columns</CardTitle>
             <p className="text-sm text-muted-foreground">
-              These columns appear in the main draw statistics tables (Deer, Elk, Antelope)
+              These columns appear in the main draw statistics tables (Deer, Elk, Pronghorn)
             </p>
           </CardHeader>
           <CardContent>
@@ -130,7 +130,7 @@ export default function TableGuide() {
           <CardHeader>
             <CardTitle className="text-2xl">Harvest Table Columns</CardTitle>
             <p className="text-sm text-muted-foreground">
-              These columns appear in the harvest statistics tables (Deer, Elk, Antelope)
+              These columns appear in the harvest statistics tables (Deer, Elk, Pronghorn)
             </p>
           </CardHeader>
           <CardContent>

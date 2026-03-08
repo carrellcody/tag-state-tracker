@@ -11,8 +11,8 @@ export default function AntelopeHarvest() {
       />
       <div className="flex items-start gap-6 mb-2">
         <div className="flex-shrink-0">
-          <h1 className="text-3xl font-bold mb-1">Antelope Harvest Statistics</h1>
-          <p className="text-muted-foreground text-sm">View Colorado antelope harvest data by unit for 2025</p>
+          <h1 className="text-3xl font-bold mb-1">Pronghorn Harvest Statistics</h1>
+          <p className="text-muted-foreground text-sm">View Colorado pronghorn harvest data by unit for 2025</p>
         </div>
       </div>
       <AntelopeHarvestTable />

@@ -84,7 +84,7 @@ export default function Layout({ children }: LayoutProps) {
       ],
     },
     {
-      label: "Antelope",
+      label: "Pronghorn",
       type: "antelope" as const,
       items: [
         {

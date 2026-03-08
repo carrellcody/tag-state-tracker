@@ -11,7 +11,7 @@ export default function Home() {
     <div className="min-h-screen">
       <SEOHead 
         title="TalloTags - Colorado Big Game Draw Odds & Harvest Statistics"
-        description="Colorado big game draw odds, harvest statistics, and preference point data for elk, mule deer, and pronghorn hunting. Free antelope stats, advanced filtering tools."
+        description="Colorado big game draw odds, harvest statistics, and preference point data for elk, mule deer, and pronghorn hunting. Free pronghorn stats, advanced filtering tools."
         canonicalPath="/"
       />
       
@@ -75,7 +75,7 @@ export default function Home() {
                 <Link to="/antelope" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
                     </CardHeader>
                   </Card>
                 </Link>
@@ -109,7 +109,7 @@ export default function Home() {
                 <Link to="/antelope-harvest" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
                     </CardHeader>
                   </Card>
                 </Link>
@@ -143,7 +143,7 @@ export default function Home() {
                 <Link to="/otc-antelope" className="w-1/2">
                   <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
                     <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Antelope</CardTitle>
+                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
                     </CardHeader>
                   </Card>
                 </Link>
@@ -189,7 +189,7 @@ export default function Home() {
               rel="noopener noreferrer"
             >
               <Button variant="outline" className="w-full h-20">
-                Antelope Statistics
+                Pronghorn Statistics
               </Button>
             </a>
           </div>

@@ -28,7 +28,7 @@ export default function EmailPreferences() {
   const [preferences, setPreferences] = useState<EmailPreference[]>([
     { species: "deer", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
     { species: "elk", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
-    { species: "antelope", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
+    { species: "pronghorn", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
   ]);
 
   useEffect(() => {
