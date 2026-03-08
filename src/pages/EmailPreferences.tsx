@@ -28,7 +28,7 @@ export default function EmailPreferences() {
   const [preferences, setPreferences] = useState<EmailPreference[]>([
     { species: "deer", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
     { species: "elk", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
-    { species: "pronghorn", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
+    { species: "antelope", draw_reminders: true, new_data_alerts: true, reminder_days_before: 7 },
   ]);
 
   useEffect(() => {
@@ -155,12 +155,14 @@ export default function EmailPreferences() {
         </div>
 
         <div className="space-y-6">
-          {preferences.map((pref) => (
+          {preferences.map((pref) => {
+            const displayName = pref.species === 'antelope' ? 'Pronghorn' : pref.species;
+            return (
             <Card key={pref.species}>
               <CardHeader>
-                <CardTitle className="capitalize">{pref.species}</CardTitle>
+                <CardTitle className="capitalize">{displayName}</CardTitle>
                 <CardDescription>
-                  Configure notifications for {pref.species} hunting data
+                  Configure notifications for {displayName.toLowerCase()} hunting data
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
@@ -219,7 +221,7 @@ export default function EmailPreferences() {
                 </div>
               </CardContent>
             </Card>
-          ))}
+          )})}
         </div>
 
         <div className="mt-8 flex justify-end">
