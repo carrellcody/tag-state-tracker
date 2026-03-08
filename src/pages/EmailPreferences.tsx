@@ -155,12 +155,14 @@ export default function EmailPreferences() {
         </div>
 
         <div className="space-y-6">
-          {preferences.map((pref) => (
+          {preferences.map((pref) => {
+            const displayName = pref.species === 'antelope' ? 'Pronghorn' : pref.species;
+            return (
             <Card key={pref.species}>
               <CardHeader>
-                <CardTitle className="capitalize">{pref.species}</CardTitle>
+                <CardTitle className="capitalize">{displayName}</CardTitle>
                 <CardDescription>
-                  Configure notifications for {pref.species} hunting data
+                  Configure notifications for {displayName.toLowerCase()} hunting data
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
