@@ -18,7 +18,7 @@ export default function Home() {
       {/* Promo Banner */}
       <div className="bg-primary text-primary-foreground text-center py-2 px-4 text-sm sm:text-base font-medium">
         <p>Become an early adopter and try TalloTags <span className="font-bold italic">For Free</span> with promo code <span className="font-bold">FIRSTYEAR</span> through March 15th</p>
-        <Link to="/auth" className="underline underline-offset-2 hover:text-primary-foreground/80 transition-colors">
+        <Link to="/auth" className="inline-block mt-1 px-4 py-1.5 text-base font-bold border-2 border-primary-foreground rounded-md hover:bg-primary-foreground hover:text-primary transition-colors">
           Create an account to get started
         </Link>
       </div>
