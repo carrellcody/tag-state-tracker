@@ -44,112 +44,20 @@ export default function Home() {
         <img src={taggoutLogo} alt="TalloTags Logo" className="h-14 sm:h-18 md:h-22 lg:h-26 mx-auto" />
       </section>
 
-      {/* Statistics Section */}
-      <section id="draw-stats" className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-3 gap-6 sm:gap-8">
-            {/* Draw Statistics */}
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">
-                Draw Statistics 2025
-              </h2>
-              <div className="flex flex-col items-center gap-4">
-                <div className="grid grid-cols-2 gap-4 w-full">
-                  <Link to="/deer">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Deer</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-
-                  <Link to="/elk">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Elk</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                </div>
-
-                <Link to="/antelope" className="w-1/2">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              </div>
-            </div>
-
-            {/* Harvest Statistics */}
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">
-                Harvest Statistics 2024
-              </h2>
-              <div className="flex flex-col items-center gap-4">
-                <div className="grid grid-cols-2 gap-4 w-full">
-                  <Link to="/deer-harvest">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Deer</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-
-                  <Link to="/elk-harvest">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Elk</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                </div>
-
-                <Link to="/antelope-harvest" className="w-1/2">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              </div>
-            </div>
-
-            {/* OTC Statistics */}
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center min-h-[4rem] flex items-center justify-center">
-                OTC Statistics 2024
-              </h2>
-              <div className="flex flex-col items-center gap-4">
-                <div className="grid grid-cols-2 gap-4 w-full">
-                  <Link to="/otc-deer">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Deer</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-
-                  <Link to="/otc-elk">
-                    <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                      <CardHeader className="text-center">
-                        <CardTitle className="text-2xl">Elk</CardTitle>
-                      </CardHeader>
-                    </Card>
-                  </Link>
-                </div>
-
-                <Link to="/otc-antelope" className="w-1/2">
-                  <Card className="shadow-subtle hover:shadow-medium transition-all hover:scale-105 cursor-pointer">
-                    <CardHeader className="text-center">
-                      <CardTitle className="text-2xl">Pronghorn</CardTitle>
-                    </CardHeader>
-                  </Card>
-                </Link>
-              </div>
-            </div>
-          </div>
+      {/* Welcome Text Section */}
+      <section className="py-10 sm:py-14 md:py-16 px-4 bg-muted/30">
+        <div className="container mx-auto max-w-3xl text-center">
+          <p className="text-lg sm:text-xl leading-relaxed text-foreground">
+            Welcome to TalloTags, the newest, fastest, and most affordable way to sort and filter through the Colorado big game draw odds and harvest statistics. TalloTags has taken the hunting and harvest stats, drawn out reports, and unit information from thousands of pages of CPW documents, and combined them in a simple and easy to use table, where you can sort and filter through every big game tag and unit that Colorado offers for elk, mule deer, and pronghorn.{" "}
+            <Link to="/auth" className="text-primary font-semibold underline underline-offset-2 hover:text-primary/80 transition-colors">
+              Start exploring today
+            </Link>{" "}
+            to find your next hunt! Head to the{" "}
+            <Link to="/learn" className="text-primary font-semibold underline underline-offset-2 hover:text-primary/80 transition-colors">
+              learn page
+            </Link>{" "}
+            to watch a video explaining all the features.
+          </p>
         </div>
       </section>
 
