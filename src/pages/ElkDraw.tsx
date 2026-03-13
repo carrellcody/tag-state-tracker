@@ -30,8 +30,8 @@ export default function ElkDraw() {
         description="Colorado elk draw odds and preference point statistics for 2026. Analyze draw success rates by unit, season, and weapon type."
         canonicalPath="/elk"
       />
-      <div className="flex items-start gap-6 mb-2">
-        <div className="flex-shrink-0">
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">Elk Draw Statistics</h1>
           <p className="text-muted-foreground text-sm">Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest stats from 2024.</p>
         </div>

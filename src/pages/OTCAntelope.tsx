@@ -9,8 +9,8 @@ export default function OTCAntelope() {
         description="Colorado over-the-counter pronghorn tag harvest statistics. Free access to OTC unit success rates and harvest data."
         canonicalPath="/otc-antelope"
       />
-      <div className="flex items-start gap-6 mb-2">
-        <div className="flex-shrink-0">
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">OTC Pronghorn Units</h1>
           <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter pronghorn harvest statistics by unit and season.</p>
         </div>

@@ -30,8 +30,8 @@ export default function DeerHarvest() {
         description="Colorado mule deer harvest data and success rates for 2024. View hunter density, harvest numbers, and success percentages by unit."
         canonicalPath="/deer-harvest"
       />
-      <div className="flex items-start gap-6 mb-2">
-        <div className="flex-shrink-0">
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">Deer Harvest Statistics</h1>
           <p className="text-muted-foreground text-sm">View Colorado deer harvest data by unit for 2025</p>
         </div>
