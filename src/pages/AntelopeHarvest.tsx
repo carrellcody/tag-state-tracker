@@ -9,8 +9,8 @@ export default function AntelopeHarvest() {
         description="Colorado pronghorn harvest data for 2024. Free access to success rates, hunter density, and harvest statistics by unit."
         canonicalPath="/antelope-harvest"
       />
-      <div className="flex items-start gap-6 mb-2">
-        <div className="flex-shrink-0">
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">Pronghorn Harvest Statistics</h1>
           <p className="text-muted-foreground text-sm">View Colorado pronghorn harvest data by unit for 2025</p>
         </div>

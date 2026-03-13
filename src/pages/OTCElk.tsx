@@ -29,8 +29,8 @@ export default function OTCElk() {
         description="Colorado over-the-counter elk tag harvest statistics. View OTC unit success rates, hunter density, and harvest data by season."
         canonicalPath="/otc-elk"
       />
-      <div className="flex items-start gap-6 mb-2">
-        <div className="flex-shrink-0">
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">OTC Elk Units</h1>
           <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter elk harvest statistics by unit and season.</p>
         </div>
