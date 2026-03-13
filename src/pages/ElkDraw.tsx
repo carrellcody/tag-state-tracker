@@ -1,10 +1,9 @@
-import { ElkDrawTable } from '@/components/tables/ElkDrawTable';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { getTierFromProductId, canAccessElk } from '@/utils/subscriptionTiers';
-import { SEOHead } from '@/components/SEOHead';
-
+import { ElkDrawTable } from "@/components/tables/ElkDrawTable";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { getTierFromProductId, canAccessElk } from "@/utils/subscriptionTiers";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function ElkDraw() {
   const { subscriptionStatus, loading } = useAuth();
@@ -14,7 +13,7 @@ export default function ElkDraw() {
   useEffect(() => {
     // Wait for auth to finish loading before checking access
     if (!loading && !canAccessElk(currentTier)) {
-      navigate('/subscription');
+      navigate("/subscription");
     }
   }, [currentTier, navigate, loading]);
 
@@ -25,15 +24,18 @@ export default function ElkDraw() {
 
   return (
     <div className="container mx-auto pt-2 pb-10 h-auto lg:h-[calc(100vh-8rem)]">
-      <SEOHead 
-        title="Colorado Elk Draw Odds 2026 | TalloTags"
-        description="Colorado elk draw odds and preference point statistics for 2026. Analyze draw success rates by unit, season, and weapon type."
+      <SEOHead
+        title="Colorado Elk Hunting Draw Odds 2026 | TalloTags"
+        description="Colorado elk draw odds and preference point statistics for 2026 hunting season. Analyze draw success rates by unit, season, and weapon type."
         canonicalPath="/elk"
       />
       <div className="mb-2 px-1">
         <div>
-          <h1 className="text-3xl font-bold mb-1">Elk Draw Statistics</h1>
-          <p className="text-muted-foreground text-sm">Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest stats from 2024.</p>
+          <h1 className="text-3xl font-bold mb-1">Colorado Elk Draw Odds</h1>
+          <p className="text-muted-foreground text-sm">
+            Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest
+            stats from 2024.
+          </p>
         </div>
       </div>
       <ElkDrawTable />
