@@ -124,22 +124,20 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Desktop Navigation */}
             <nav className="hidden md:flex items-center space-x-2">
-              {/* Primary links */}
+              {/* Home link */}
               <NavigationMenu>
                 <NavigationMenuList>
-                  {navLinks.map((link) => (
-                    <NavigationMenuItem key={link.to}>
-                      <Link to={link.to}>
-                        <Button variant={isActive(link.to) ? "default" : "ghost"} size="sm" className="font-medium">
-                          {link.label}
-                        </Button>
-                      </Link>
-                    </NavigationMenuItem>
-                  ))}
+                  <NavigationMenuItem>
+                    <Link to="/">
+                      <Button variant={isActive("/") ? "default" : "ghost"} size="sm" className="font-medium">
+                        Home
+                      </Button>
+                    </Link>
+                  </NavigationMenuItem>
                 </NavigationMenuList>
               </NavigationMenu>
 
-              {/* Species menus - separate roots so each dropdown anchors under its own trigger */}
+              {/* Species menus right after Home */}
               {speciesMenus.map((menu) => {
                 const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
                 return (
@@ -182,6 +180,21 @@ export default function Layout({ children }: LayoutProps) {
                   </NavigationMenu>
                 );
               })}
+
+              {/* Right-side links: Learn, About, Contact */}
+              <NavigationMenu>
+                <NavigationMenuList>
+                  {navLinks.filter(link => link.to !== "/").map((link) => (
+                    <NavigationMenuItem key={link.to}>
+                      <Link to={link.to}>
+                        <Button variant={isActive(link.to) ? "default" : "ghost"} size="sm" className="font-medium">
+                          {link.label}
+                        </Button>
+                      </Link>
+                    </NavigationMenuItem>
+                  ))}
+                </NavigationMenuList>
+              </NavigationMenu>
             </nav>
 
             {/* Auth Button / User Menu */}
