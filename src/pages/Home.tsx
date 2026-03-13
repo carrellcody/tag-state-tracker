@@ -48,11 +48,7 @@ export default function Home() {
       <section className="py-10 sm:py-14 md:py-16 px-4 bg-muted/30">
         <div className="container mx-auto max-w-3xl text-center">
           <p className="text-lg sm:text-xl leading-relaxed text-foreground">
-            Welcome to TalloTags, the newest, fastest, and most affordable way to sort and filter through the Colorado big game draw odds and harvest statistics. TalloTags has taken the hunting and harvest stats, drawn out reports, and unit information from thousands of pages of CPW documents, and combined them in a simple and easy to use table, where you can sort and filter through every big game tag and unit that Colorado offers for elk, mule deer, and pronghorn.{" "}
-            <Link to="/auth" className="text-primary font-semibold underline underline-offset-2 hover:text-primary/80 transition-colors">
-              Start exploring today
-            </Link>{" "}
-            to find your next hunt! Head to the{" "}
+            Welcome to TalloTags, the newest, fastest, and most affordable way to sort and filter through the Colorado big game draw odds and harvest statistics. TalloTags has taken the hunting and harvest stats, drawn out reports, and unit information from thousands of pages of CPW documents, and combined them in a simple and easy to use table, where you can sort and filter through every big game tag and unit that Colorado offers for elk, mule deer, and pronghorn. Head to the{" "}
             <Link to="/learn" className="text-primary font-semibold underline underline-offset-2 hover:text-primary/80 transition-colors">
               learn page
             </Link>{" "}
