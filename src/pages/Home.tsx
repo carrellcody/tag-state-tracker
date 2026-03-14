@@ -70,7 +70,7 @@ export default function Home() {
               rel="noopener noreferrer"
             >
               <Button variant="outline" className="w-full h-20">
-                2025 Big Game Brochure
+                2026 Big Game Brochure
               </Button>
             </a>
             <a href="https://cpw.state.co.us/hunting/big-game/elk/statistics" target="_blank" rel="noopener noreferrer">
