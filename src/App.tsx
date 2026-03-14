@@ -27,6 +27,7 @@ import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
+import Welcome from "./pages/Welcome";
 
 const queryClient = new QueryClient();
 
