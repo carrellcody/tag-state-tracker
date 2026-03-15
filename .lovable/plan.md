@@ -1,54 +1,57 @@
 
+Goal: make mobile filter workflow on draw pages behave correctly on real Android Chrome even when JS mobile detection is unreliable on the custom domain.
 
-## Plan: Move CSVs to Private Storage + Serve via Edge Function
+What I found:
+- The draw tables still gate the mobile workflow with `isMobile` for:
+  - whether filter panel vs table panel is shown
+  - whether the “Apply filters and view data” / “Filters” buttons render
+- Your symptom (“stats under filters” + missing Apply button) matches `isMobile === false` on phone.
+- Since preview works but custom domain fails, we should make draw-page panel visibility CSS-driven (media query) instead of JS-device-detection-driven.
 
-### Overview
-Move all CSV files from `public/data/` into a private storage bucket, create an edge function to serve them to authenticated users, and update the `useCsvData` hook to fetch through the edge function.
+Implementation plan:
 
-### Steps
+1) Update draw-table panel visibility to CSS-first (robust on real devices)
+- Files:
+  - `src/components/tables/AntelopeDrawTable.tsx`
+  - `src/components/tables/DeerDrawTable.tsx`
+  - `src/components/tables/ElkDrawTable.tsx`
+- Replace conditions:
+  - From: `(!isMobile || showMobileFilters)` and `(!isMobile || !showMobileFilters)`
+  - To: always render both containers but control visibility by responsive classes + `showMobileFilters`:
+    - Filters panel: visible on desktop always; on mobile only when `showMobileFilters` is true
+    - Data panel: visible on desktop always; on mobile only when `showMobileFilters` is false
+- This removes dependency on `useIsMobile()` for the core mobile workflow while preserving desktop layout.
 
-**1. Create private storage bucket via SQL migration**
-- Create a `csv-data` bucket with `public = false`
-- Add RLS policy allowing only authenticated users to read from it
+2) Make mobile action buttons strictly CSS-responsive
+- In the same 3 draw files:
+  - Render “Apply filters and view data” buttons with `md:hidden` (not `{isMobile && ...}`)
+  - Render “Filters” button at top of data panel with `md:hidden`
+- Keep button handlers identical:
+  - Apply: `setShowMobileFilters(false)`
+  - Filters: `setShowMobileFilters(true)`
 
-**2. Upload CSV files to the private bucket**
-- All 19 CSV files from `public/data/` need to be uploaded to the `csv-data` bucket
-- You'll need to do this manually through the backend storage UI after the bucket is created — I'll guide you through it
+3) Keep existing `useIsMobile` for non-workflow behavior only
+- Do not change `src/hooks/use-mobile.tsx` further in this iteration.
+- Continue using `isMobile` where it affects minor behavior (e.g., link behavior inside rows), but not for panel-switching visibility.
 
-**3. Create `serve-csv` edge function**
-- Validates the user's auth token
-- Accepts a `filename` query parameter
-- Validates filename against an allowlist of known CSV files (prevents path traversal)
-- Fetches the file from the private `csv-data` bucket using the service role key
-- Returns the raw CSV content with appropriate headers
-- No subscription check — all authenticated users can access (tables already handle access gating)
+4) Verify consistency with harvest/OTC UX
+- Confirm draw pages now mirror expected interaction sequence:
+  - Mobile default: filters shown + apply button visible
+  - Tap apply: filter panel hides, data panel shows with “Filters” button
+  - Tap filters: return to filter panel
 
-**4. Update `useCsvData` hook**
-- Instead of using PapaParse's `download: true` with a static path, fetch from the edge function URL with the user's auth token in the Authorization header
-- Parse the response text with PapaParse locally
-- Fall back gracefully if not authenticated
+5) Validation checklist
+- Test in preview at mobile width on:
+  - `/antelope`
+  - `/deer` (with access)
+  - `/elk` (with access)
+- Test desktop width to confirm side-by-side experience remains unchanged.
+- Publish and re-test on custom domain routes directly.
+- If custom-domain edge cache lags, append a cache-buster once when testing (e.g. `?v=mobilefix1`) to confirm newest bundle is loaded.
 
-**5. Delete CSV files from `public/data/`**
-- Remove all `.csv` files from the public directory
-- Keep the `public/data/` folder if needed for non-sensitive assets, or remove it entirely
+Technical details:
+- Reason for this approach: CSS media queries (`md:hidden`, `md:block`) are more reliable across mobile browsers than runtime width detection for first render and domain-specific delivery quirks.
+- Scope is intentionally limited to draw pages because that’s where regression appears, minimizing risk to harvest/OTC pages that already behave correctly for you.
 
-**6. Update `supabase/config.toml`**
-- Add `[functions.serve-csv]` with `verify_jwt = false` (we validate manually in the function to return proper error messages)
-
-### Files to create/modify
-| File | Action |
-|------|--------|
-| SQL migration | Create `csv-data` private bucket + RLS |
-| `supabase/functions/serve-csv/index.ts` | New edge function |
-| `src/hooks/useCsvData.ts` | Update to fetch from edge function with auth |
-| `public/data/*.csv` | Delete all 19 CSV files |
-
-### Performance notes
-- The edge function adds ~100-300ms on cold start, negligible on warm calls
-- Browser caching via `Cache-Control` headers will make repeat visits fast
-- PapaParse still handles parsing client-side, so table rendering speed is unchanged
-
-### Workflow impact
-- You'll continue pushing CSV files to GitHub as before, but they'll live outside `public/` (e.g., in a `data/` folder at root) for version control
-- When you want to update live data, you'll upload the new CSV to the private storage bucket — I can build an admin upload page for this later if you'd like
-
+Expected outcome:
+- On real Android Chrome, draw pages will always show the mobile “Apply filters and view data” workflow correctly, matching the harvest/OTC interaction pattern.
