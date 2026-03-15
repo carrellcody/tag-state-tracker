@@ -22,6 +22,8 @@ import AntelopeHarvest from "./pages/AntelopeHarvest";
 import OTCElk from "./pages/OTCElk";
 import OTCAntelope from "./pages/OTCAntelope";
 import OTCDeer from "./pages/OTCDeer";
+import DeerDrawNew from "./pages/DeerDrawNew";
+import OTCDeerNew from "./pages/OTCDeerNew";
 import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
