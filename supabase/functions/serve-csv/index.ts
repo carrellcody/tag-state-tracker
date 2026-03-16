@@ -82,17 +82,6 @@ serve(async (req) => {
       }
     }
 
-    // Fetch from private storage
-    const url = new URL(req.url);
-    const filename = url.searchParams.get("file");
-
-    if (!filename || !ALLOWED_FILES.has(filename)) {
-      return new Response(JSON.stringify({ error: "Invalid file" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
     // Fetch from private storage using service role
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
