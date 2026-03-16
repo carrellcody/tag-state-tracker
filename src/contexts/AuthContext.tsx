@@ -275,6 +275,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.error('Supabase sign out error:', error);
       // proceed anyway
     } finally {
+      await clearLocalAuthState();
       setUser(null);
       setSession(null);
       setSubscriptionStatus(null);
