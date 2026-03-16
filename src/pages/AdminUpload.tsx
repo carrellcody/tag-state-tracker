@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, CheckCircle, XCircle, Loader2, Trash2, FileText } from 'lucide-react';
-import SEOHead from '@/components/SEOHead';
+import { SEOHead } from '@/components/SEOHead';
 
 const ALLOWED_FILES = [
   "DeerDraw25Subtable.csv",
