@@ -51,12 +51,12 @@ export default function WelcomeDialog() {
           
           {/* Welcome Text */}
           <p className="text-base sm:text-lg text-foreground leading-relaxed">
-            Welcome to TalloTags - Browse pronghorn stats for free to get a feel for the site and subscribe to see the deer and elk stats! Use code <span className="font-bold text-primary">FIRSTYEAR</span> to get your first year free! <span className="text-muted-foreground text-sm">(Offer expires end of February)</span>
+            Welcome to TalloTags - Browse pronghorn stats for free to get a feel for the site and subscribe to see the deer and elk stats!
           </p>
           
           {/* Pricing */}
           <div className="flex flex-col items-center justify-center gap-1 text-xl sm:text-2xl font-bold">
-            <span className="text-primary">First year free with promo code FIRSTYEAR</span>
+            <span className="text-primary">$20/year</span>
           </div>
           
           {/* CTA Button */}
