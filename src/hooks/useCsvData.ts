@@ -21,18 +21,16 @@ export function useCsvData<T = any>(csvPath: string) {
         }
 
         const { data: { session } } = await supabase.auth.getSession();
-        if (!session?.access_token) {
-          throw new Error('Not authenticated');
-        }
 
         const projectId = import.meta.env.VITE_SUPABASE_PROJECT_ID;
+        const headers: Record<string, string> = {};
+        if (session?.access_token) {
+          headers['Authorization'] = `Bearer ${session.access_token}`;
+        }
+
         const response = await fetch(
           `https://${projectId}.supabase.co/functions/v1/serve-csv?file=${encodeURIComponent(filename)}`,
-          {
-            headers: {
-              Authorization: `Bearer ${session.access_token}`,
-            },
-          }
+          { headers }
         );
 
         if (!response.ok) {
