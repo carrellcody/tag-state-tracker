@@ -28,3 +28,6 @@ verify_jwt = true
 [functions.send-contact-email]
 verify_jwt = false
 
+[functions.serve-csv]
+verify_jwt = false
+
