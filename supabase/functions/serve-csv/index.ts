@@ -29,37 +29,60 @@ const ALLOWED_FILES = new Set([
   "elkHarvest25.csv",
 ]);
 
+// Files that can be accessed without authentication (free tier content)
+const PUBLIC_FILES = new Set([
+  "Fullant26Final.csv",
+  "antHarvest25.csv",
+  "ant25code_pages.csv",
+  "antOTC24.csv",
+]);
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Validate auth
+    // Get filename from query params first to check if auth is needed
+    const url = new URL(req.url);
+    const filename = url.searchParams.get("file");
+
+    if (!filename || !ALLOWED_FILES.has(filename)) {
+      return new Response(JSON.stringify({ error: "Invalid file" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const isPublicFile = PUBLIC_FILES.has(filename);
+
+    // Validate auth for non-public files
     const authHeader = req.headers.get("Authorization");
-    if (!authHeader?.startsWith("Bearer ")) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (!isPublicFile) {
+      if (!authHeader?.startsWith("Bearer ")) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_ANON_KEY")!,
+        { global: { headers: { Authorization: authHeader } } }
+      );
+
+      const token = authHeader.replace("Bearer ", "");
+      const { data: userData, error: userError } = await supabase.auth.getUser(token);
+      if (userError || !userData?.user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
 
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_ANON_KEY")!,
-      { global: { headers: { Authorization: authHeader } } }
-    );
-
-    const token = authHeader.replace("Bearer ", "");
-    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
-    if (claimsError || !claimsData?.claims) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
-
-    // Get filename from query params
+    // Fetch from private storage
     const url = new URL(req.url);
     const filename = url.searchParams.get("file");
 
