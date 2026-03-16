@@ -27,6 +27,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  const isAuthSessionError = (message: string) => {
+    return /auth session missing|session not found|unauthorized|invalid jwt|jwt/i.test(message);
+  };
+
+  const clearLocalAuthState = async () => {
+    try {
+      await supabase.auth.signOut({ scope: 'local' });
+    } catch {
+      // ignore
+    }
+
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('sb-') && key.endsWith('-auth-token')) {
+        localStorage.removeItem(key);
+      }
+    });
+  };
+
   const checkSubscription = async () => {
     try {
       // Always fetch fresh session to avoid stale closures
@@ -47,6 +65,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) {
+        const combinedError = `${error.message ?? ''} ${typeof data === 'object' && data && 'error' in data ? String((data as { error?: unknown }).error ?? '') : ''}`.trim();
+
+        if (isAuthSessionError(combinedError)) {
+          console.warn('[CHECK-SUB] Stale/invalid auth session detected, clearing local auth state');
+          await clearLocalAuthState();
+          setUser(null);
+          setSession(null);
+          setSubscriptionStatus(null);
+          return;
+        }
+
         console.error('[CHECK-SUB] Edge function error:', error);
         // Set default free tier if no status exists yet
         setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
@@ -61,12 +90,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('[CHECK-SUB] Success, updating status:', data);
       setSubscriptionStatus(data);
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+
+      if (isAuthSessionError(errorMessage)) {
+        console.warn('[CHECK-SUB] Stale/invalid auth session exception, clearing local auth state');
+        await clearLocalAuthState();
+        setUser(null);
+        setSession(null);
+        setSubscriptionStatus(null);
+        return;
+      }
+
       console.error('[CHECK-SUB] Exception:', error);
       // Set default free tier if no status exists yet
       setSubscriptionStatus(prev => prev || { subscribed: false, product_id: null, subscription_end: null });
       toast({
         title: "Subscription check failed",
-        description: error instanceof Error ? error.message : "Using cached subscription status",
+        description: errorMessage || "Using cached subscription status",
         variant: "default",
       });
     }
