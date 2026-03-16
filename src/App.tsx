@@ -30,6 +30,7 @@ import EmailPreferences from "./pages/EmailPreferences";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Welcome from "./pages/Welcome";
+import AdminUpload from "./pages/AdminUpload";
 
 const queryClient = new QueryClient();
 
@@ -66,6 +67,7 @@ const App = () => (
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/welcome" element={<Welcome />} />
+              <Route path="/admin/upload" element={<AdminUpload />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
