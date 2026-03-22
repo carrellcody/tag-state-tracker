@@ -31,6 +31,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Welcome from "./pages/Welcome";
 import AdminUpload from "./pages/AdminUpload";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
