@@ -69,6 +69,7 @@ const App = () => (
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/admin/upload" element={<AdminUpload />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
