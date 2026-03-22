@@ -31,6 +31,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermsConditions from "./pages/TermsConditions";
 import Welcome from "./pages/Welcome";
 import AdminUpload from "./pages/AdminUpload";
+import ResetPassword from "./pages/ResetPassword";
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/welcome" element={<Welcome />} />
               <Route path="/admin/upload" element={<AdminUpload />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
