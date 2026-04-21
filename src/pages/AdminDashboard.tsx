@@ -5,7 +5,7 @@ import { Link, Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Users, CreditCard, FileText, Upload, Eye } from "lucide-react";
+import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 
@@ -69,6 +69,33 @@ const AdminDashboard: React.FC = () => {
       }
     })();
   }, [isAdmin, toast]);
+
+  const downloadFile = async (name: string) => {
+    try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      const url = `https://nbkybwnjjzmwyiiciffm.supabase.co/functions/v1/serve-csv?file=${encodeURIComponent(name)}`;
+      const res = await fetch(url, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) throw new Error(`Failed to fetch (${res.status})`);
+      const blob = await res.blob();
+      const downloadUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
+    } catch (err: any) {
+      toast({
+        title: "Download failed",
+        description: err.message ?? "Unknown error",
+        variant: "destructive",
+      });
+    }
+  };
 
   const viewFile = async (name: string) => {
     setViewingFile(name);
@@ -186,6 +213,10 @@ const AdminDashboard: React.FC = () => {
                     <Button variant="ghost" size="sm" onClick={() => viewFile(f.name)}>
                       <Eye className="h-4 w-4 mr-1" />
                       View
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => downloadFile(f.name)}>
+                      <Download className="h-4 w-4 mr-1" />
+                      Download
                     </Button>
                   </div>
                 ))}
