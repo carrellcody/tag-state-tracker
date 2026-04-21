@@ -27,6 +27,12 @@ const ALLOWED_FILES = new Set([
   "antHarvest25.csv",
   "antOTC24.csv",
   "elkHarvest25.csv",
+  "ElkDraw25Subtable.csv",
+  "elkHarvest24.csv",
+  "elkOTC25.csv",
+  "AntDraw25Subtable.csv",
+  "antHarvest24.csv",
+  "antOTC25Test.csv",
 ]);
 
 // Files that can be accessed without authentication (free tier content)

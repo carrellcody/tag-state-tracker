@@ -28,6 +28,12 @@ const ALLOWED_FILES = [
   "antHarvest25.csv",
   "antOTC24.csv",
   "elkHarvest25.csv",
+  "ElkDraw25Subtable.csv",
+  "elkHarvest24.csv",
+  "elkOTC25.csv",
+  "AntDraw25Subtable.csv",
+  "antHarvest24.csv",
+  "antOTC25Test.csv",
 ];
 
 interface UploadResult {
