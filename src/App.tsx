@@ -25,6 +25,8 @@ import OTCAntelope from "./pages/OTCAntelope";
 import OTCDeer from "./pages/OTCDeer";
 import DeerDrawNew from "./pages/DeerDrawNew";
 import OTCDeerNew from "./pages/OTCDeerNew";
+import DeerUnits from "./pages/DeerUnits";
+import DeerLeftovers from "./pages/DeerLeftovers";
 import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
@@ -68,6 +70,8 @@ const App = () => (
               <Route path="/otc-deer" element={<OTCDeer />} />
               <Route path="/deerdrawnew" element={<DeerDrawNew />} />
               <Route path="/OTCDeerNew" element={<OTCDeerNew />} />
+              <Route path="/Deer-Units" element={<DeerUnits />} />
+              <Route path="/Deer-Leftovers" element={<DeerLeftovers />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/welcome" element={<Welcome />} />
