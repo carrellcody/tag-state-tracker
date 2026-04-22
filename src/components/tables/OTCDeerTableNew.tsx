@@ -182,8 +182,8 @@ export function OTCDeerTableNew() {
           </div>
 
           <div className="space-y-2">
-            <Label>Minimum success rate</Label>
-            <Input type="number" placeholder="Min Success Rate" value={minSuccessRate} onChange={(e) => setMinSuccessRate(e.target.value)} />
+            <Label>Minimum Buck:Doe ratio</Label>
+            <Input type="number" placeholder="Min Buck:Doe" value={minBuckDoe} onChange={(e) => setMinBuckDoe(e.target.value)} />
           </div>
 
           <div className="space-y-2">
@@ -191,7 +191,7 @@ export function OTCDeerTableNew() {
             <Input type="number" placeholder="Min Public %" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinSuccessRate(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
+          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinBuckDoe(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
             Clear Filters
           </Button>
 
