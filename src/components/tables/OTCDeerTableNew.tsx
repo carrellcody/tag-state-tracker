@@ -25,6 +25,8 @@ export function OTCDeerTableNew() {
   const [unitSearch, setUnitSearch] = usePersistedState('otcDeerNew_unitSearch', '');
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('otcDeerNew_showFavoritesOnly', false);
   const [selectedSeason, setSelectedSeason] = usePersistedState('otcDeerNew_selectedSeason', '');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('otcDeerNew_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('otcDeerNew_minPublicLand', '');
 
   // Get unique OTC seasons from data
   const otcSeasons = useMemo(() => {
