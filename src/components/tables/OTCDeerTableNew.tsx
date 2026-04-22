@@ -93,7 +93,7 @@ export function OTCDeerTableNew() {
 
       return true;
     });
-  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minSuccessRate, minPublicLand]);
+  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minBuckDoe, minPublicLand]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
