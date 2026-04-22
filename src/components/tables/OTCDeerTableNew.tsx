@@ -81,9 +81,9 @@ export function OTCDeerTableNew() {
         if (!searchUnits.some(u => unitStr === u)) return false;
       }
 
-      if (minSuccessRate) {
-        const sv = parseFloat(String(row.Success_DAU || '').replace(/[%, ]/g, ''));
-        if (isNaN(sv) || sv < parseFloat(minSuccessRate)) return false;
+      if (minBuckDoe) {
+        const bv = parseFloat(String(row['Buck/ Doe ratio (per 100)'] || '').replace(/[, ]/g, ''));
+        if (isNaN(bv) || bv < parseFloat(minBuckDoe)) return false;
       }
 
       if (minPublicLand) {
