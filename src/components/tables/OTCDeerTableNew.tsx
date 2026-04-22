@@ -25,7 +25,7 @@ export function OTCDeerTableNew() {
   const [unitSearch, setUnitSearch] = usePersistedState('otcDeerNew_unitSearch', '');
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('otcDeerNew_showFavoritesOnly', false);
   const [selectedSeason, setSelectedSeason] = usePersistedState('otcDeerNew_selectedSeason', '');
-  const [minSuccessRate, setMinSuccessRate] = usePersistedState('otcDeerNew_minSuccessRate', '');
+  const [minBuckDoe, setMinBuckDoe] = usePersistedState('otcDeerNew_minBuckDoe', '');
   const [minPublicLand, setMinPublicLand] = usePersistedState('otcDeerNew_minPublicLand', '');
 
   // Get unique OTC seasons from data
@@ -55,7 +55,7 @@ export function OTCDeerTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, showFavoritesOnly, selectedSeason, minSuccessRate, minPublicLand]);
+  }, [unitSearch, showFavoritesOnly, selectedSeason, minBuckDoe, minPublicLand]);
 
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${selectedSeason}`;
@@ -81,9 +81,9 @@ export function OTCDeerTableNew() {
         if (!searchUnits.some(u => unitStr === u)) return false;
       }
 
-      if (minSuccessRate) {
-        const sv = parseFloat(String(row.Success_DAU || '').replace(/[%, ]/g, ''));
-        if (isNaN(sv) || sv < parseFloat(minSuccessRate)) return false;
+      if (minBuckDoe) {
+        const bv = parseFloat(String(row['Buck/ Doe ratio (per 100)'] || '').replace(/[, ]/g, ''));
+        if (isNaN(bv) || bv < parseFloat(minBuckDoe)) return false;
       }
 
       if (minPublicLand) {
@@ -93,7 +93,7 @@ export function OTCDeerTableNew() {
 
       return true;
     });
-  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minSuccessRate, minPublicLand]);
+  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minBuckDoe, minPublicLand]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -126,7 +126,7 @@ export function OTCDeerTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC deer data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'Buck/ Doe ratio (per 100)', 'Total_Harvest_estimate', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'AnimalDAUDensity', 'Buck/ Doe ratio (per 100)', 'BuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
@@ -134,7 +134,9 @@ export function OTCDeerTableNew() {
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
     'Post Hunt Estimate': 'DAU Population Estimate',
+    'AnimalDAUDensity': 'DAU Deer Density (Population/Acres)',
     'Buck/ Doe ratio (per 100)': 'DAU Buck:Doe ratio',
+    'BuckDensity': 'DAU Buck Density (Deer Density x Buck:Doe ratio)',
     'Total_Harvest_estimate': 'DAU Harvest',
     'Success_DAU': 'DAU % Success',
   };
@@ -182,8 +184,8 @@ export function OTCDeerTableNew() {
           </div>
 
           <div className="space-y-2">
-            <Label>Minimum success rate</Label>
-            <Input type="number" placeholder="Min Success Rate" value={minSuccessRate} onChange={(e) => setMinSuccessRate(e.target.value)} />
+            <Label>Minimum Buck:Doe ratio</Label>
+            <Input type="number" placeholder="Min Buck:Doe" value={minBuckDoe} onChange={(e) => setMinBuckDoe(e.target.value)} />
           </div>
 
           <div className="space-y-2">
@@ -191,7 +193,7 @@ export function OTCDeerTableNew() {
             <Input type="number" placeholder="Min Public %" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinSuccessRate(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
+          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinBuckDoe(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
             Clear Filters
           </Button>
 
