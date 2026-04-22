@@ -55,7 +55,7 @@ export function OTCDeerTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, showFavoritesOnly, selectedSeason]);
+  }, [unitSearch, showFavoritesOnly, selectedSeason, minSuccessRate, minPublicLand]);
 
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${selectedSeason}`;
