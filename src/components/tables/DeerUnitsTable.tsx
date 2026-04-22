@@ -234,23 +234,23 @@ export function DeerUnitsTable() {
           Showing {paginated.length} of {sorted.length} units
         </div>
 
-        <div className="flex-1 overflow-auto border rounded-lg bg-card">
-          <table className="w-full text-sm">
-            <thead className="sticky top-0 bg-muted z-10">
+        <div className="flex-1 overflow-auto">
+          <table className="w-full border-collapse bg-card relative">
+            <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 {COLUMNS.map((col) => (
                   <th
                     key={col.key}
                     onClick={() => handleSort(col.key)}
-                    className="px-3 py-2 text-left font-semibold cursor-pointer hover:bg-muted/70 border-b align-top"
+                    className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
                   >
                     <div className="flex items-center gap-1">
                       <span>{col.label}</span>
                       {sortColumn === col.key &&
                         (sortDirection === "asc" ? (
-                          <ChevronUp className="h-3 w-3" />
+                          <ChevronUp className="w-4 h-4" />
                         ) : (
-                          <ChevronDown className="h-3 w-3" />
+                          <ChevronDown className="w-4 h-4" />
                         ))}
                     </div>
                   </th>
@@ -259,17 +259,23 @@ export function DeerUnitsTable() {
             </thead>
             <tbody>
               {paginated.map((row: any, idx) => (
-                <tr key={idx} className="border-b hover:bg-blue-50 group">
+                <tr key={idx} className="group hover:bg-accent">
                   {COLUMNS.map((col) => (
-                    <td key={col.key} className="px-3 py-2 align-top">
-                      {formatCell(col.key, row[col.key])}
+                    <td key={col.key} className="border border-border p-2">
+                      {col.key === "Unit" ? (
+                        <span className="text-primary-dark group-hover:text-primary">
+                          {formatCell(col.key, row[col.key])}
+                        </span>
+                      ) : (
+                        formatCell(col.key, row[col.key])
+                      )}
                     </td>
                   ))}
                 </tr>
               ))}
               {paginated.length === 0 && (
                 <tr>
-                  <td colSpan={COLUMNS.length} className="px-3 py-8 text-center text-muted-foreground">
+                  <td colSpan={COLUMNS.length} className="border border-border p-8 text-center text-muted-foreground">
                     No units match your filters.
                   </td>
                 </tr>
