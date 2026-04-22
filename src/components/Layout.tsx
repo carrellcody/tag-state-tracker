@@ -74,16 +74,20 @@ export default function Layout({ children }: LayoutProps) {
       type: "elk" as const,
       items: [
         {
-          to: "/elk",
+          to: "/elkdrawnew",
           label: "Draw Stats",
         },
         {
-          to: "/elk-harvest",
-          label: "Harvest Stats",
+          to: "/OTCElkNew",
+          label: "OTC Stats",
         },
         {
-          to: "/otc-elk",
-          label: "OTC Stats",
+          to: "/Elk-Units",
+          label: "Unit Information",
+        },
+        {
+          to: "/Elk-Leftovers",
+          label: "Secondary / Leftover Draws",
         },
       ],
     },
@@ -92,16 +96,20 @@ export default function Layout({ children }: LayoutProps) {
       type: "antelope" as const,
       items: [
         {
-          to: "/antelope",
+          to: "/antelopedrawnew",
           label: "Draw Stats",
         },
         {
-          to: "/antelope-harvest",
-          label: "Harvest Stats",
+          to: "/OTCAntelopeNew",
+          label: "OTC Stats",
         },
         {
-          to: "/otc-antelope",
-          label: "OTC Stats",
+          to: "/Antelope-Units",
+          label: "Unit Information",
+        },
+        {
+          to: "/Antelope-Leftovers",
+          label: "Secondary / Leftover Draws",
         },
       ],
     },
