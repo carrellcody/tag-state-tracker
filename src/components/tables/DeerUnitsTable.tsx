@@ -24,9 +24,9 @@ const COLUMNS: { key: string; label: string }[] = [
   { key: "DAU", label: "DAU #" },
   { key: "Herd Name", label: "Herd Name" },
   { key: "Post Hunt Estimate", label: "DAU Population" },
-  { key: "AnimalDAUDensity", label: "DAU Deer Density (Population/Acres)" },
+  { key: "DAUAnimalDensity", label: "DAU Deer Density (Population/Acres)" },
   { key: "Buck/ Doe ratio (per 100)", label: "DAU Buck:Doe ratio (per 100)" },
-  { key: "BuckDensity", label: "DAU Buck Density (Deer Density x Buck:Doe ratio)" },
+  { key: "DAUBuckDensity", label: "DAU Buck Density (Deer Density x Buck:Doe ratio)" },
 ];
 
 function parseNumeric(val: any): number {
@@ -45,7 +45,7 @@ function formatCell(key: string, val: any): string {
       return `${pct.toFixed(1)}%`;
     }
   }
-  if (key === "AnimalDAUDensity" || key === "BuckDensity") {
+  if (key === "DAUAnimalDensity" || key === "DAUBuckDensity") {
     const n = parseNumeric(str);
     if (!isNaN(n)) return n.toFixed(4);
   }
