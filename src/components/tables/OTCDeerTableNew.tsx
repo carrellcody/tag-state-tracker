@@ -129,7 +129,9 @@ export function OTCDeerTableNew() {
   const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
-...
+    'Unit': 'Unit',
+    'Acres': 'Acres',
+    'Acres Public': 'Public Acres',
     'DAU': 'DAU',
     'Post Hunt Estimate': 'DAU Population Estimate',
     'DAUAnimalDensity': 'DAU Deer Density (Population/Acres)',
