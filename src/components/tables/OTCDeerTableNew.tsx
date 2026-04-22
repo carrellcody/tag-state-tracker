@@ -81,9 +81,19 @@ export function OTCDeerTableNew() {
         if (!searchUnits.some(u => unitStr === u)) return false;
       }
 
+      if (minSuccessRate) {
+        const sv = parseFloat(String(row.Success_DAU || '').replace(/[%, ]/g, ''));
+        if (isNaN(sv) || sv < parseFloat(minSuccessRate)) return false;
+      }
+
+      if (minPublicLand) {
+        const pv = parseFloat(String(row.percent_public || '').replace(/[%, ]/g, ''));
+        if (isNaN(pv) || pv < parseFloat(minPublicLand)) return false;
+      }
+
       return true;
     });
-  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason]);
+  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minSuccessRate, minPublicLand]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
