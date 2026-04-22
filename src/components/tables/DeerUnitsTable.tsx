@@ -4,13 +4,8 @@ import { CSV_VERSION } from "@/utils/csvVersion";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 
@@ -62,7 +57,7 @@ export function DeerUnitsTable() {
   const [unitSearch, setUnitSearch] = usePersistedState("deerUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("deerUnits_minPublicPercent", "");
   const [minBuckDoe, setMinBuckDoe] = usePersistedState("deerUnits_minBuckDoe", "");
-  const [dauFilter, setDauFilter] = usePersistedState("deerUnits_dauFilter", "all");
+  const [dauFilter, setDauFilter] = usePersistedState<string[]>("deerUnits_dauFilter", []);
   const [showMobileFilters, setShowMobileFilters] = useState(true);
 
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -103,8 +98,8 @@ export function DeerUnitsTable() {
         const bd = parseNumeric(row["Buck/ Doe ratio (per 100)"]);
         if (isNaN(bd) || bd < minBD) return false;
       }
-      if (dauFilter !== "all") {
-        if (String(row.DAU || "").trim() !== dauFilter) return false;
+      if (Array.isArray(dauFilter) && dauFilter.length > 0) {
+        if (!dauFilter.includes(String(row.DAU || "").trim())) return false;
       }
       return true;
     });
@@ -192,19 +187,56 @@ export function DeerUnitsTable() {
 
         <div className="space-y-2">
           <Label>DAU</Label>
-          <Select value={dauFilter} onValueChange={setDauFilter}>
-            <SelectTrigger>
-              <SelectValue placeholder="Select DAU" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All DAUs</SelectItem>
-              {dauOptions.map((dau) => (
-                <SelectItem key={dau} value={dau}>
-                  {dau}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full justify-between font-normal">
+                <span className="truncate">
+                  {dauFilter.length === 0
+                    ? "All DAUs"
+                    : dauFilter.length === 1
+                    ? dauFilter[0]
+                    : `${dauFilter.length} selected`}
+                </span>
+                <ChevronDown className="w-4 h-4 opacity-50 shrink-0 ml-2" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-2 max-h-72 overflow-y-auto bg-popover z-50">
+              <div className="flex items-center justify-between px-1 pb-2 border-b mb-1">
+                <button
+                  type="button"
+                  className="text-xs text-primary hover:underline"
+                  onClick={() => setDauFilter(dauOptions)}
+                >
+                  Select all
+                </button>
+                <button
+                  type="button"
+                  className="text-xs text-muted-foreground hover:underline"
+                  onClick={() => setDauFilter([])}
+                >
+                  Clear
+                </button>
+              </div>
+              {dauOptions.map((dau) => {
+                const checked = dauFilter.includes(dau);
+                return (
+                  <label
+                    key={dau}
+                    className="flex items-center gap-2 px-2 py-1.5 hover:bg-accent rounded cursor-pointer text-sm"
+                  >
+                    <Checkbox
+                      checked={checked}
+                      onCheckedChange={(v) => {
+                        if (v) setDauFilter([...dauFilter, dau]);
+                        else setDauFilter(dauFilter.filter((d) => d !== dau));
+                      }}
+                    />
+                    <span>{dau}</span>
+                  </label>
+                );
+              })}
+            </PopoverContent>
+          </Popover>
         </div>
 
         <Button
@@ -214,7 +246,7 @@ export function DeerUnitsTable() {
             setUnitSearch("");
             setMinPublicPercent("");
             setMinBuckDoe("");
-            setDauFilter("all");
+            setDauFilter([]);
           }}
         >
           Reset Filters
