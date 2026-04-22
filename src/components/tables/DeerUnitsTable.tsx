@@ -45,7 +45,7 @@ function formatCell(key: string, val: any): string {
       return `${pct.toFixed(1)}%`;
     }
   }
-  if (key === "AnimalDAUDensity" || key === "BuckDensity") {
+  if (key === "DAUAnimalDensity" || key === "DAUBuckDensity") {
     const n = parseNumeric(str);
     if (!isNaN(n)) return n.toFixed(4);
   }
