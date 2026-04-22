@@ -52,16 +52,20 @@ export default function Layout({ children }: LayoutProps) {
       type: "deer" as const,
       items: [
         {
-          to: "/deer",
+          to: "/deerdrawnew",
           label: "Draw Stats",
         },
         {
-          to: "/deer-harvest",
-          label: "Harvest Stats",
+          to: "/OTCDeerNew",
+          label: "OTC Stats",
         },
         {
-          to: "/otc-deer",
-          label: "OTC Stats",
+          to: "/Deer-Units",
+          label: "Unit Information",
+        },
+        {
+          to: "/Deer-Leftovers",
+          label: "Secondary / Leftover Draws",
         },
       ],
     },
