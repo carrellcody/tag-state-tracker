@@ -27,6 +27,14 @@ import DeerDrawNew from "./pages/DeerDrawNew";
 import OTCDeerNew from "./pages/OTCDeerNew";
 import DeerUnits from "./pages/DeerUnits";
 import DeerLeftovers from "./pages/DeerLeftovers";
+import ElkDrawNew from "./pages/ElkDrawNew";
+import OTCElkNew from "./pages/OTCElkNew";
+import ElkUnits from "./pages/ElkUnits";
+import ElkLeftovers from "./pages/ElkLeftovers";
+import AntelopeDrawNew from "./pages/AntelopeDrawNew";
+import OTCAntelopeNew from "./pages/OTCAntelopeNew";
+import AntelopeUnits from "./pages/AntelopeUnits";
+import AntelopeLeftovers from "./pages/AntelopeLeftovers";
 import Subscription from "./pages/Subscription";
 import Profile from "./pages/Profile";
 import EmailPreferences from "./pages/EmailPreferences";
@@ -72,6 +80,14 @@ const App = () => (
               <Route path="/OTCDeerNew" element={<OTCDeerNew />} />
               <Route path="/Deer-Units" element={<DeerUnits />} />
               <Route path="/Deer-Leftovers" element={<DeerLeftovers />} />
+              <Route path="/elkdrawnew" element={<ElkDrawNew />} />
+              <Route path="/OTCElkNew" element={<OTCElkNew />} />
+              <Route path="/Elk-Units" element={<ElkUnits />} />
+              <Route path="/Elk-Leftovers" element={<ElkLeftovers />} />
+              <Route path="/antelopedrawnew" element={<AntelopeDrawNew />} />
+              <Route path="/OTCAntelopeNew" element={<OTCAntelopeNew />} />
+              <Route path="/Antelope-Units" element={<AntelopeUnits />} />
+              <Route path="/Antelope-Leftovers" element={<AntelopeLeftovers />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
               <Route path="/terms" element={<TermsConditions />} />
               <Route path="/welcome" element={<Welcome />} />
