@@ -43,7 +43,6 @@ const PUBLIC_FILES = new Set([
   "ant25code_pages.csv",
   "antOTC24.csv",
   "AntDraw25Subtable.csv",
-  "ElkDraw25Subtable.csv",
 ]);
 
 serve(async (req) => {
