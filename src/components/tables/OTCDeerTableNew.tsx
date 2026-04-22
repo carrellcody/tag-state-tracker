@@ -181,7 +181,17 @@ export function OTCDeerTableNew() {
             <Input placeholder="Separate units by commas" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setSelectedSeason(otcSeasons[0] || ''); }}>
+          <div className="space-y-2">
+            <Label>Minimum success rate</Label>
+            <Input type="number" placeholder="Min Success Rate" value={minSuccessRate} onChange={(e) => setMinSuccessRate(e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Minimum Percent Public Land</Label>
+            <Input type="number" placeholder="Min Public %" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
+          </div>
+
+          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinSuccessRate(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
             Clear Filters
           </Button>
 
