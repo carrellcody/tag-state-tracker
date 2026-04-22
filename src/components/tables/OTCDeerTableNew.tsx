@@ -25,6 +25,8 @@ export function OTCDeerTableNew() {
   const [unitSearch, setUnitSearch] = usePersistedState('otcDeerNew_unitSearch', '');
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState('otcDeerNew_showFavoritesOnly', false);
   const [selectedSeason, setSelectedSeason] = usePersistedState('otcDeerNew_selectedSeason', '');
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState('otcDeerNew_minSuccessRate', '');
+  const [minPublicLand, setMinPublicLand] = usePersistedState('otcDeerNew_minPublicLand', '');
 
   // Get unique OTC seasons from data
   const otcSeasons = useMemo(() => {
@@ -53,7 +55,7 @@ export function OTCDeerTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, showFavoritesOnly, selectedSeason]);
+  }, [unitSearch, showFavoritesOnly, selectedSeason, minSuccessRate, minPublicLand]);
 
   const toggleFavorite = (unit: string) => {
     const key = `${unit}-${selectedSeason}`;
@@ -79,9 +81,19 @@ export function OTCDeerTableNew() {
         if (!searchUnits.some(u => unitStr === u)) return false;
       }
 
+      if (minSuccessRate) {
+        const sv = parseFloat(String(row.Success_DAU || '').replace(/[%, ]/g, ''));
+        if (isNaN(sv) || sv < parseFloat(minSuccessRate)) return false;
+      }
+
+      if (minPublicLand) {
+        const pv = parseFloat(String(row.percent_public || '').replace(/[%, ]/g, ''));
+        if (isNaN(pv) || pv < parseFloat(minPublicLand)) return false;
+      }
+
       return true;
     });
-  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason]);
+  }, [data, unitSearch, showFavoritesOnly, favorites, selectedSeason, minSuccessRate, minPublicLand]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -169,7 +181,17 @@ export function OTCDeerTableNew() {
             <Input placeholder="Separate units by commas" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
           </div>
 
-          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setSelectedSeason(otcSeasons[0] || ''); }}>
+          <div className="space-y-2">
+            <Label>Minimum success rate</Label>
+            <Input type="number" placeholder="Min Success Rate" value={minSuccessRate} onChange={(e) => setMinSuccessRate(e.target.value)} />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Minimum Percent Public Land</Label>
+            <Input type="number" placeholder="Min Public %" value={minPublicLand} onChange={(e) => setMinPublicLand(e.target.value)} />
+          </div>
+
+          <Button variant="outline" className="w-full" onClick={() => { setUnitSearch(''); setMinSuccessRate(''); setMinPublicLand(''); setSelectedSeason(otcSeasons[0] || ''); }}>
             Clear Filters
           </Button>
 
