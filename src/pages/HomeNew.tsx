@@ -55,6 +55,27 @@ export default function HomeNew() {
         </div>
       </section>
 
+      {/* Deer Quick Links */}
+      <section className="py-8 sm:py-10 px-4">
+        <div className="container mx-auto max-w-5xl">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-6 text-center">Deer</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Link to="/deerdrawnew">
+              <Button variant="outline" className="w-full h-20">Draw Stats</Button>
+            </Link>
+            <Link to="/OTCDeerNew">
+              <Button variant="outline" className="w-full h-20">OTC Stats</Button>
+            </Link>
+            <Link to="/Deer-Units">
+              <Button variant="outline" className="w-full h-20">Unit Information</Button>
+            </Link>
+            <Link to="/Deer-Leftovers">
+              <Button variant="outline" className="w-full h-20">Secondary / Leftover Draws</Button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Colorado Resources */}
       <section className="py-8 sm:py-10 md:py-12 px-4 bg-muted/30">
         <div className="container mx-auto">
