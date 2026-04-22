@@ -126,17 +126,15 @@ export function OTCDeerTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC deer data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'AnimalDAUDensity', 'Buck/ Doe ratio (per 100)', 'BuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
-    'Unit': 'Unit',
-    'Acres': 'Acres',
-    'Acres Public': 'Public Acres',
+...
     'DAU': 'DAU',
     'Post Hunt Estimate': 'DAU Population Estimate',
-    'AnimalDAUDensity': 'DAU Deer Density (Population/Acres)',
+    'DAUAnimalDensity': 'DAU Deer Density (Population/Acres)',
     'Buck/ Doe ratio (per 100)': 'DAU Buck:Doe ratio',
-    'BuckDensity': 'DAU Buck Density (Deer Density x Buck:Doe ratio)',
+    'DAUBuckDensity': 'DAU Buck Density (Deer Density x Buck:Doe ratio)',
     'Total_Harvest_estimate': 'DAU Harvest',
     'Success_DAU': 'DAU % Success',
   };
