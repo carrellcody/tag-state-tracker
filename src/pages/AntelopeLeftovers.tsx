@@ -1,4 +1,7 @@
 import { SEOHead } from "@/components/SEOHead";
+import { Button } from "@/components/ui/button";
+import { Bell } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function AntelopeLeftovers() {
   return (
@@ -9,7 +12,13 @@ export default function AntelopeLeftovers() {
         canonicalPath="/Antelope-Leftovers"
       />
       <h1 className="text-4xl font-bold mb-4">Secondary / Leftover Draws</h1>
-      <p className="text-xl text-muted-foreground">Stay tuned - coming soon!</p>
+      <p className="text-xl text-muted-foreground mb-6">Stay tuned - coming soon!</p>
+      <Button asChild size="lg">
+        <Link to="/profile#tag-alerts">
+          <Bell className="mr-2 h-5 w-5" />
+          Sign up for tag alerts
+        </Link>
+      </Button>
     </div>
   );
 }

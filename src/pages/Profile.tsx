@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, CheckCircle2 } from 'lucide-react';
 import { SUBSCRIPTION_TIERS } from '@/utils/subscriptionTiers';
+import TagAlertsSection from '@/components/TagAlertsSection';
 
 const US_STATES = [
   "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
@@ -402,6 +403,9 @@ export default function Profile() {
             </div>
           </CardContent>
         </Card>
+
+        {/* Tag Alerts */}
+        <TagAlertsSection />
 
         {/* Email Settings */}
         <Card>
