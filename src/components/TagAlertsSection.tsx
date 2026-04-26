@@ -187,7 +187,7 @@ export default function TagAlertsSection() {
                   {SEGMENTS.map((seg, idx) => (
                     <input
                       key={idx}
-                      ref={el => (inputRefs.current[idx] = el)}
+                      ref={el => { inputRefs.current[idx] = el; }}
                       value={segments[idx]}
                       onChange={e => handleSegmentChange(idx, e.target.value)}
                       onKeyDown={e => handleKeyDown(idx, e)}
