@@ -206,7 +206,7 @@ export default function TagAlertsSection() {
                   ))}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Format: Letter • Letter • 3 Numbers • 1 Letter + 1 Number • Letter
+                  Format: Letter • Letter • 3 Numbers • 1 Letter + 1 Number • Letter (e.g. D-M-044-O4-R)
                 </p>
                 <Button onClick={handleAdd} disabled={!allValid || adding} className="w-full sm:w-auto">
                   {adding ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Adding…</> : 'Add'}
