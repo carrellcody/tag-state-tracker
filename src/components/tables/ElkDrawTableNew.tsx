@@ -245,7 +245,7 @@ export function ElkDrawTableNew() {
     "Total_Acres": "Total Acres",
     "Public_Acres": "Public Acres",
     "Public_Percent": "Percent Public Land",
-    "Hunters_per_Public_Acre_norm": "Hunters per public acre",
+    "Hunters_per_Public_Acre_norm": "Hunters per public acre - Normalized",
   };
 
   const yearGroupedColumns = {
