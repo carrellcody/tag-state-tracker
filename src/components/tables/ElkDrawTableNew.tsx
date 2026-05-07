@@ -220,8 +220,8 @@ export function ElkDrawTableNew() {
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const visibleColumns = showPreviousYears
-    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre", "Notes"]
-    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre", "Notes"];
+    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"];
 
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
@@ -245,7 +245,7 @@ export function ElkDrawTableNew() {
     "Total_Acres": "Total Acres",
     "Public_Acres": "Public Acres",
     "Public_Percent": "Percent Public Land",
-    "Hunters_per_Public_Acre": "Hunters per public acre",
+    "Hunters_per_Public_Acre_norm": "Hunters per public acre",
   };
 
   const yearGroupedColumns = {
@@ -256,8 +256,8 @@ export function ElkDrawTableNew() {
 
   const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
   const nonGroupedColumnsAfter = showPreviousYears
-    ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre', 'Notes']
-    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre', 'Notes'];
+    ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
+    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes'];
 
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag.",
@@ -270,7 +270,8 @@ export function ElkDrawTableNew() {
     Drawn_out_level: "Minimum points needed to have a chance at drawing in the 2025 draw.",
     Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2025.",
     slope: "Trend of points required over the last three draws. Green down = easier, Red up = harder.",
-    Chance_with_First_choice: "Your odds of drawing with your preference points if this were your first choice in the 2025 draw."
+    Chance_with_First_choice: "Your odds of drawing with your preference points if this were your first choice in the 2025 draw.",
+    Hunters_per_Public_Acre_norm: "Higher numbers here means more hunters per public acre. A 1 is indicates that this tag has the highest density of hunters of all tags, and a 0 indicates that the unit has the lowest density of hunters among all tags. A 0.5 would indicate that the hunter density is half that of the most dense tag."
   };
 
   const renderTrendArrow = (value: any) => {
