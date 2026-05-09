@@ -53,6 +53,7 @@ export function DeerDrawTableNew() {
   const [rfwFilter, setRfwFilter] = usePersistedState("deerDrawNew_rfwFilter", "all");
   const [minPoints, setMinPoints] = usePersistedState("deerDrawNew_minPoints", 0);
   const [maxPoints, setMaxPoints] = usePersistedState("deerDrawNew_maxPoints", 32);
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState("deerDrawNew_minSuccessRate", 0);
   const [userPreferencePoints, setUserPreferencePoints] = usePersistedState("deerDrawNew_userPreferencePoints", 0);
   const [pointsInitialized, setPointsInitialized] = usePersistedState("deerDrawNew_pointsInitialized", false);
   const [showNoApplicants, setShowNoApplicants] = usePersistedState("deerDrawNew_showNoApplicants", "no");
@@ -72,7 +73,7 @@ export function DeerDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, showNewTags]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -169,6 +170,10 @@ export function DeerDrawTableNew() {
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
         if (isNaN(dol) || dol < minPoints || dol > maxPoints) return false;
       }
+      if (minSuccessRate > 0) {
+        const ps = parseFloat(String(row["Percent Success"] ?? ""));
+        if (isNaN(ps) || ps < minSuccessRate) return false;
+      }
       if (showNoApplicants === "no" && row.NoApps === "Yes") return false;
       if (!listFilter.includes("Any")) {
         const list = row.List || "";
@@ -177,7 +182,7 @@ export function DeerDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, showNewTags]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -335,6 +340,11 @@ export function DeerDrawTableNew() {
       <div className={`space-y-2 ${showNoPointsOnly || showHybridOnly ? 'opacity-50' : ''}`}>
         <Label>Maximum Preference Points: {maxPoints}</Label>
         <input type="range" min="0" max="32" value={maxPoints} onChange={e => setMaxPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly || showHybridOnly} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Minimum success rate: {minSuccessRate}%</Label>
+        <input type="range" min="0" max="100" value={minSuccessRate} onChange={e => setMinSuccessRate(Number(e.target.value))} className="w-full" />
       </div>
 
       <div className="space-y-2">
