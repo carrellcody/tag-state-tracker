@@ -67,24 +67,24 @@ const App = () => (
               <Route path="/profile" element={<Profile />} />
               <Route path="/email-preferences" element={<EmailPreferences />} />
               
-              <Route path="/deer" element={<DeerDraw />} />
+              <Route path="/deer-draw-old" element={<DeerDraw />} />
               <Route path="/deer-harvest" element={<DeerHarvest />} />
-              <Route path="/elk" element={<ElkDraw />} />
+              <Route path="/elk-draw-old" element={<ElkDraw />} />
               <Route path="/elk-harvest" element={<ElkHarvest />} />
-              <Route path="/antelope" element={<AntelopeDraw />} />
+              <Route path="/antelope-draw-old" element={<AntelopeDraw />} />
               <Route path="/antelope-harvest" element={<AntelopeHarvest />} />
               <Route path="/otc-elk" element={<OTCElk />} />
               <Route path="/otc-antelope" element={<OTCAntelope />} />
               <Route path="/otc-deer" element={<OTCDeer />} />
-              <Route path="/deerdrawnew" element={<DeerDrawNew />} />
+              <Route path="/deer-draw" element={<DeerDrawNew />} />
               <Route path="/OTCDeerNew" element={<OTCDeerNew />} />
               <Route path="/Deer-Units" element={<DeerUnits />} />
               <Route path="/Deer-Leftovers" element={<DeerLeftovers />} />
-              <Route path="/elkdrawnew" element={<ElkDrawNew />} />
+              <Route path="/elk-draw" element={<ElkDrawNew />} />
               <Route path="/OTCElkNew" element={<OTCElkNew />} />
               <Route path="/Elk-Units" element={<ElkUnits />} />
               <Route path="/Elk-Leftovers" element={<ElkLeftovers />} />
-              <Route path="/antelopedrawnew" element={<AntelopeDrawNew />} />
+              <Route path="/antelope-draw" element={<AntelopeDrawNew />} />
               <Route path="/OTCAntelopeNew" element={<OTCAntelopeNew />} />
               <Route path="/Antelope-Units" element={<AntelopeUnits />} />
               <Route path="/Antelope-Leftovers" element={<AntelopeLeftovers />} />

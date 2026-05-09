@@ -27,7 +27,7 @@ export default function ElkDraw() {
       <SEOHead
         title="Colorado Elk Hunting Draw Odds 2026 | TalloTags"
         description="Colorado elk draw odds and preference point statistics for 2026 hunting season. Analyze draw success rates by unit, season, and weapon type."
-        canonicalPath="/elk"
+        canonicalPath="/elk-draw-old"
       />
       <div className="mb-2 px-1">
         <div>

@@ -24,7 +24,7 @@ export default function DeerDraw() {
       <SEOHead
         title="Colorado Mule Deer Hunting Draw Odds 2026 | TalloTags"
         description="Colorado mule deer draw odds and preference point statistics for 2026 Hunting Seasons. Analyze draw success rates by unit, season, and weapon type."
-        canonicalPath="/deer"
+        canonicalPath="/deer-draw-old"
       />
       <div className="mb-2 px-1">
         <div>
