@@ -73,7 +73,7 @@ export function ElkDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, minSuccessRate, showNewTags]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -182,7 +182,7 @@ export function ElkDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, showNewTags]);
+  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
