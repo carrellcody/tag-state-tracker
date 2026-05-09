@@ -562,7 +562,7 @@ export function AntelopeDrawTableNew() {
               const huntCode = row.Tag;
               const isFavorited = favorites.has(huntCode);
               const pageNum = huntCodeMap[huntCode];
-              const pdfUrl = "https://cpw.widen.net/s/t6tnqjg55q/postdrawrecapreport_prong-25_05222025_0816";
+              const pdfUrl = "https://cpw.widen.net/content/jsyu9ob6ci/original/PostDrawRecapReport_PRONG-25_05222025_0816.pdf?u=qdpcdt";
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
               // Find matching subtable rows
@@ -595,7 +595,7 @@ export function AntelopeDrawTableNew() {
                     return <td key={col} className={`border border-border p-2 ${hybridHighlightClass}`} style={col === "Valid GMUs" || col === "Notes" ? { maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}}>
                       {col === "Tag" ? <div className="flex items-center gap-2 text-primary-dark group-hover:text-primary">
                         <span>{isExpanded ? "▼" : "▶"}</span>
-                        {pageNum ? <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={e => e.stopPropagation()}>{huntCode}</a> : huntCode}
+                        {pageNum ? <a href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${pageNum}`} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={e => e.stopPropagation()}>{huntCode}</a> : huntCode}
                       </div> : col === "slope" ? renderTrendArrow(row[col]) : col === "Valid GMUs" || col === "Notes" ? <span title={row[col] || ""}>{row[col] || ""}</span> : cellValue}
                     </td>;
                   })}
