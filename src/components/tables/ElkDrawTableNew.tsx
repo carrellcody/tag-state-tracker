@@ -53,6 +53,7 @@ export function ElkDrawTableNew() {
   const [rfwFilter, setRfwFilter] = usePersistedState("elkDrawNew_rfwFilter", "all");
   const [minPoints, setMinPoints] = usePersistedState("elkDrawNew_minPoints", 0);
   const [maxPoints, setMaxPoints] = usePersistedState("elkDrawNew_maxPoints", 32);
+  const [minSuccessRate, setMinSuccessRate] = usePersistedState("elkDrawNew_minSuccessRate", 0);
   const [userPreferencePoints, setUserPreferencePoints] = usePersistedState("elkDrawNew_userPreferencePoints", 0);
   const [pointsInitialized, setPointsInitialized] = usePersistedState("elkDrawNew_pointsInitialized", false);
   const [showNoApplicants, setShowNoApplicants] = usePersistedState("elkDrawNew_showNoApplicants", "no");
@@ -72,7 +73,7 @@ export function ElkDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, showNewTags]);
+  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -168,6 +169,10 @@ export function ElkDrawTableNew() {
         const isLeftoverOrChoice = dolStr === "Leftover" || dolStr.startsWith("Choice");
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
         if (isNaN(dol) || dol < minPoints || dol > maxPoints) return false;
+      }
+      if (minSuccessRate > 0) {
+        const ps = parseFloat(String(row["Percent Success"] ?? ""));
+        if (isNaN(ps) || ps < minSuccessRate) return false;
       }
       if (showNoApplicants === "no" && row.NoApps === "Yes") return false;
       if (!listFilter.includes("Any")) {
@@ -335,6 +340,11 @@ export function ElkDrawTableNew() {
       <div className={`space-y-2 ${showNoPointsOnly || showHybridOnly ? 'opacity-50' : ''}`}>
         <Label>Maximum Preference Points: {maxPoints}</Label>
         <input type="range" min="0" max="32" value={maxPoints} onChange={e => setMaxPoints(Number(e.target.value))} className="w-full" disabled={showNoPointsOnly || showHybridOnly} />
+      </div>
+
+      <div className="space-y-2">
+        <Label>Minimum success rate: {minSuccessRate}%</Label>
+        <input type="range" min="0" max="100" value={minSuccessRate} onChange={e => setMinSuccessRate(Number(e.target.value))} className="w-full" />
       </div>
 
       <div className="space-y-2">
