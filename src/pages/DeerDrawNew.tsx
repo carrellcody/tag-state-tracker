@@ -22,7 +22,7 @@ export default function DeerDrawNew() {
       <SEOHead
         title="Colorado Mule Deer Draw Odds 2026 (New) | TalloTags"
         description="Colorado mule deer draw odds and preference point statistics for 2026 with enhanced harvest and land data."
-        canonicalPath="/deerdrawnew"
+        canonicalPath="/deer-draw"
       />
       <div className="mb-2 px-1">
         <div>

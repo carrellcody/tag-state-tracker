@@ -7,7 +7,7 @@ export default function AntelopeDrawNew() {
       <SEOHead
         title="Colorado Pronghorn Draw Odds 2026 (New) | TalloTags"
         description="Colorado pronghorn draw odds and preference point statistics for 2026 with enhanced harvest and land data."
-        canonicalPath="/antelopedrawnew"
+        canonicalPath="/antelope-draw"
       />
       <div className="mb-2 px-1">
         <h1 className="text-3xl font-bold mb-1">Colorado Pronghorn Draw Odds (New)</h1>

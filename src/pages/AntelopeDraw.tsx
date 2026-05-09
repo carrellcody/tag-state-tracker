@@ -7,7 +7,7 @@ export default function AntelopeDraw() {
       <SEOHead
         title="Colorado Pronghorn Hunting Draw Odds 2026 | TalloTags"
         description="Colorado pronghorn draw odds for 2026. Free access to draw statistics, preference points, and unit analysis."
-        canonicalPath="/antelope"
+        canonicalPath="/antelope-draw-old"
       />
       <div className="mb-2 px-1">
         <div>

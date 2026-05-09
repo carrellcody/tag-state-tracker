@@ -52,7 +52,7 @@ export default function Layout({ children }: LayoutProps) {
       type: "deer" as const,
       items: [
         {
-          to: "/deerdrawnew",
+          to: "/deer-draw",
           label: "Draw Stats",
         },
         {
@@ -74,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
       type: "elk" as const,
       items: [
         {
-          to: "/elkdrawnew",
+          to: "/elk-draw",
           label: "Draw Stats",
         },
         {
@@ -96,7 +96,7 @@ export default function Layout({ children }: LayoutProps) {
       type: "antelope" as const,
       items: [
         {
-          to: "/antelopedrawnew",
+          to: "/antelope-draw",
           label: "Draw Stats",
         },
         {
