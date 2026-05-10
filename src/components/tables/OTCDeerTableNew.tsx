@@ -137,7 +137,7 @@ export function OTCDeerTableNew() {
     'Post Hunt Estimate': 'Population Estimate',
     'DAUAnimalDensity': 'Deer Density (Population/Acres)',
     'Buck/ Doe ratio (per 100)': 'Buck:Doe ratio',
-    'DAUBuckDensity': 'Normalized Buck Density (Animal Density x Buck:Doe ratio)',
+    'DAUBuckDensity': 'Normalized Buck Density (0-1)',
     'Total_Harvest_estimate': 'Harvest',
     'Success_DAU': '% Success',
   };

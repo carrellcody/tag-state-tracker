@@ -137,7 +137,7 @@ export function OTCAntelopeTableNew() {
     'Population': 'Population Estimate',
     'DAUAnimalDensity': 'Pronghorn Density (Population/Acres)',
     'Buck/Doe Ratio': 'Buck:Doe ratio',
-    'DAUBuckDensity': 'Normalized Buck Density (Animal Density x Buck:Doe ratio)',
+    'DAUBuckDensity': 'Normalized Buck Density (0-1)',
     'Total_Harvest_estimate': 'Harvest',
     'Success_DAU': '% Success',
   };
