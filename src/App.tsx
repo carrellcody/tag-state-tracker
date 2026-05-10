@@ -81,7 +81,7 @@ const App = () => (
               <Route path="/Deer-Units" element={<DeerUnits />} />
               <Route path="/Deer-Leftovers" element={<DeerLeftovers />} />
               <Route path="/elk-draw" element={<ElkDrawNew />} />
-              <Route path="/OTCElkNew" element={<OTCElkNew />} />
+              <Route path="/otc-elk" element={<OTCElkNew />} />
               <Route path="/Elk-Units" element={<ElkUnits />} />
               <Route path="/Elk-Leftovers" element={<ElkLeftovers />} />
               <Route path="/antelope-draw" element={<AntelopeDrawNew />} />
