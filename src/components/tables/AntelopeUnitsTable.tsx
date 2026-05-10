@@ -21,7 +21,7 @@ const COLUMNS: { key: string; label: string }[] = [
   { key: "Population", label: "DAU Population" },
   { key: "DAUAnimalDensity", label: "DAU Pronghorn Density (Population/Acres)" },
   { key: "Buck/Doe Ratio", label: "DAU Buck:Doe ratio (per 100)" },
-  { key: "DAUBuckDensity", label: "DAU Buck Density (Animal Density x Buck:Doe ratio)" },
+  { key: "DAUBuckDensity", label: "Normalized Buck Density by DAU (Animal Density x Buck:Doe ratio)" },
 ];
 
 function parseNumeric(val: any): number {
