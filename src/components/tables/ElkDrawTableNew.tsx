@@ -307,7 +307,7 @@ export function ElkDrawTableNew() {
   if (loading) return <div className="p-8 text-center">Loading elk draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = showPreviousYears
+  const visibleColumns = (showPreviousYears
     ? [
         "Tag",
         "List",
@@ -350,7 +350,8 @@ export function ElkDrawTableNew() {
         "Public_Percent",
         "Hunters_per_Public_Acre_norm",
         "Notes",
-      ];
+      ]
+  ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
