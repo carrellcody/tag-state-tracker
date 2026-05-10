@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
+import { TableHeaderHelp } from '@/components/tables/TableHeaderHelp';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
