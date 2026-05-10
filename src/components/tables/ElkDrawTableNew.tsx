@@ -819,7 +819,11 @@ export function ElkDrawTableNew() {
         </Button>
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="elk-unit-stats" className="text-sm cursor-pointer">View Unit/DAU statistics</Label>
+              <Switch id="elk-unit-stats" checked={showUnitStats} onCheckedChange={setShowUnitStats} />
+            </div>
             <p className="text-sm text-muted-foreground">
               Page {currentPage} of {totalPages}
             </p>
