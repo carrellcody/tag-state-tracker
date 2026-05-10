@@ -72,6 +72,8 @@ export function ElkDrawTableNew() {
   const [listFilter, setListFilter] = usePersistedState<string[]>("elkDrawNew_listFilter", ["Any"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("elkDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("elkDrawNew_showPreviousYears", false);
+  const [showUnitStats, setShowUnitStats] = usePersistedState("elkDrawNew_showUnitStats", false);
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("elkDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("elkDrawNew_showHybridOnly", false);
   const [showNewTags, setShowNewTags] = usePersistedState("elkDrawNew_showNewTags", true);
