@@ -955,7 +955,7 @@ export function ElkDrawTableNew() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/s/qh6nqttnnz/postdrawrecapreport_elk-25_05172025_0612";
+                const pdfUrl = "https://cpw.widen.net/content/v8vurwjjn6/original/PostDrawRecapReport_ELK-25_05172025_0612.pdf?u=qdpcdt";
                 // Get valid GMU numbers from the row
                 const validGmus = String(row["Valid GMUs"] || "")
                   .split(",")
@@ -1020,7 +1020,7 @@ export function ElkDrawTableNew() {
                                 <span>{isExpanded ? "▼" : "▶"}</span>
                                 {pageNum ? (
                                   <a
-                                    href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${pdfUrl}.pdf#page=${pageNum}`}
+                                    href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${pageNum}`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="hover:underline"
