@@ -134,13 +134,16 @@ export function OTCAntelopeTableNew() {
     'Acres': 'Acres',
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
-    'Population': 'DAU Population Estimate',
-    'DAUAnimalDensity': 'DAU Pronghorn Density (Population/Acres)',
-    'Buck/Doe Ratio': 'DAU Buck:Doe ratio',
-    'DAUBuckDensity': 'Normalized Buck Density by DAU (Animal Density x Buck:Doe ratio)',
-    'Total_Harvest_estimate': 'DAU Harvest',
-    'Success_DAU': 'DAU % Success',
+    'Population': 'Population Estimate',
+    'DAUAnimalDensity': 'Pronghorn Density (Population/Acres)',
+    'Buck/Doe Ratio': 'Buck:Doe ratio',
+    'DAUBuckDensity': 'Normalized Buck Density (Animal Density x Buck:Doe ratio)',
+    'Total_Harvest_estimate': 'Harvest',
+    'Success_DAU': '% Success',
   };
+
+  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
