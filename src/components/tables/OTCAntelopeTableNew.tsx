@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { ChevronDown, ChevronUp, Star, Filter } from 'lucide-react';
+import { TableHeaderHelp } from '@/components/tables/TableHeaderHelp';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { usePersistedState } from '@/hooks/usePersistedState';
 
@@ -141,6 +142,10 @@ export function OTCAntelopeTableNew() {
     'Success_DAU': 'DAU % Success',
   };
 
+  const headerHelp: Record<string, string> = {
+    'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
@@ -234,9 +239,13 @@ export function OTCAntelopeTableNew() {
                 <tr>
                   <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
                   {visibleColumns.map((col) => (
-                    <th key={col} className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
+                    <th key={col} className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                       <div className="flex items-center gap-1">
-                        {headerLabels[col] || col}
+                        {headerHelp[col] ? (
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />
+                        ) : (
+                          <span>{headerLabels[col] || col}</span>
+                        )}
                         {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
                       </div>
                     </th>
