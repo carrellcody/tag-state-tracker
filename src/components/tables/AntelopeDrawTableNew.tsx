@@ -481,7 +481,11 @@ export function AntelopeDrawTableNew() {
       </Button>
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="antelope-unit-stats" className="text-sm cursor-pointer">View Unit/DAU statistics</Label>
+            <Switch id="antelope-unit-stats" checked={showUnitStats} onCheckedChange={setShowUnitStats} />
+          </div>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
