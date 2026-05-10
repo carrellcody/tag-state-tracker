@@ -85,7 +85,7 @@ const App = () => (
               <Route path="/Elk-Units" element={<ElkUnits />} />
               <Route path="/Elk-Leftovers" element={<ElkLeftovers />} />
               <Route path="/antelope-draw" element={<AntelopeDrawNew />} />
-              <Route path="/OTCAntelopeNew" element={<OTCAntelopeNew />} />
+              <Route path="/otc-antelope" element={<OTCAntelopeNew />} />
               <Route path="/Antelope-Units" element={<AntelopeUnits />} />
               <Route path="/Antelope-Leftovers" element={<AntelopeLeftovers />} />
               <Route path="/privacy-policy" element={<PrivacyPolicy />} />
