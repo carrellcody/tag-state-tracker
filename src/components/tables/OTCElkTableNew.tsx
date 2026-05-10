@@ -137,7 +137,7 @@ export function OTCElkTableNew() {
     'Population': 'Population Estimate',
     'DAUAnimalDensity': 'Elk Density (Population/Acres)',
     'Bull/Cow ratio': 'Bull:Cow ratio',
-    'BullDensity': 'Normalized Bull Density (Animal Density x Bull:Cow ratio)',
+    'BullDensity': 'Normalized Bull Density (0-1)',
     'Total_Harvest_estimate': 'Harvest',
     'Success_DAU': '% Success',
   };
