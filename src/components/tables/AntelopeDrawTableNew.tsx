@@ -60,6 +60,8 @@ export function AntelopeDrawTableNew() {
   const [listFilter, setListFilter] = usePersistedState<string[]>("antelopeDrawNew_listFilter", ["Any"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("antelopeDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("antelopeDrawNew_showPreviousYears", false);
+  const [showUnitStats, setShowUnitStats] = usePersistedState("antelopeDrawNew_showUnitStats", false);
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("antelopeDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("antelopeDrawNew_showHybridOnly", false);
   const [showNewTags, setShowNewTags] = usePersistedState("antelopeDrawNew_showNewTags", true);
