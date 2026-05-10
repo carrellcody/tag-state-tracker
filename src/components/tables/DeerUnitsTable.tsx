@@ -7,48 +7,37 @@ import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { TableHeaderHelp } from "@/components/tables/TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
 
 const ROWS_PER_PAGE = 50;
 
-const COLUMNS: { key: string; label: string }[] = [
-  { key: "Unit", label: "Unit" },
-  { key: "Acres", label: "Acres" },
-  { key: "Acres Public", label: "Public Acres" },
-  { key: "percent_public", label: "Percent Public" },
-  { key: "DAU", label: "DAU #" },
-  { key: "Herd Name", label: "Herd Name" },
-  { key: "Post Hunt Estimate", label: "DAU Population" },
-  { key: "DAUAnimalDensity", label: "DAU Deer Density (Population/Acres)" },
-  { key: "Buck/ Doe ratio (per 100)", label: "DAU Buck:Doe ratio (per 100)" },
-  { key: "DAUBuckDensity", label: "Normalized Buck Density by DAU (Animal Density x Buck:Doe ratio)" },
-];
+const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+
+const headerLabels: Record<string, string> = {
+  'Unit': 'Unit',
+  'Acres': 'Acres',
+  'Acres Public': 'Public Acres',
+  'DAU': 'DAU',
+  'Post Hunt Estimate': 'Population Estimate',
+  'DAUAnimalDensity': 'Deer Density (Population/Acres)',
+  'Buck/ Doe ratio (per 100)': 'Buck:Doe ratio',
+  'DAUBuckDensity': 'Normalized Buck Density (0-1)',
+  'Total_Harvest_estimate': 'Harvest',
+  'Success_DAU': '% Success',
+};
+
+const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
+
+const headerHelp: Record<string, string> = {
+  'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+};
 
 function parseNumeric(val: any): number {
   if (val == null) return NaN;
   const n = parseFloat(String(val).replace(/[%,$\s]/g, ""));
   return isNaN(n) ? NaN : n;
-}
-
-function formatCell(key: string, val: any): string {
-  if (val == null || val === "") return "-";
-  const str = String(val).trim();
-  if (key === "percent_public") {
-    const n = parseNumeric(str);
-    if (!isNaN(n)) {
-      const pct = n <= 1 ? n * 100 : n;
-      return `${pct.toFixed(1)}%`;
-    }
-  }
-  if (key === "DAUAnimalDensity" || key === "DAUBuckDensity") {
-    const n = parseNumeric(str);
-    if (!isNaN(n)) return n.toFixed(4);
-  }
-  if (key === "Acres" || key === "Acres Public" || key === "Post Hunt Estimate") {
-    const n = parseNumeric(str);
-    if (!isNaN(n)) return n.toLocaleString();
-  }
-  return str;
 }
 
 export function DeerUnitsTable() {
@@ -270,15 +259,46 @@ export function DeerUnitsTable() {
           <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
-                {COLUMNS.map((col) => (
+                {ungroupedColumns.map((col) => (
                   <th
-                    key={col.key}
-                    onClick={() => handleSort(col.key)}
-                    className="border border-border p-2 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                    key={col}
+                    rowSpan={2}
+                    onClick={() => handleSort(col)}
+                    className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
                   >
                     <div className="flex items-center gap-1">
-                      <span>{col.label}</span>
-                      {sortColumn === col.key &&
+                      {headerHelp[col] ? (
+                        <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />
+                      ) : (
+                        <span>{headerLabels[col] || col}</span>
+                      )}
+                      {sortColumn === col &&
+                        (sortDirection === "asc" ? (
+                          <ChevronUp className="w-4 h-4" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4" />
+                        ))}
+                    </div>
+                  </th>
+                ))}
+                <th colSpan={groupedColumns.length} className="border border-border p-2 text-center text-primary-foreground">
+                  DAU-Specific Statistics
+                </th>
+              </tr>
+              <tr>
+                {groupedColumns.map((col) => (
+                  <th
+                    key={col}
+                    onClick={() => handleSort(col)}
+                    className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground"
+                  >
+                    <div className="flex items-center gap-1">
+                      {headerHelp[col] ? (
+                        <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />
+                      ) : (
+                        <span>{headerLabels[col] || col}</span>
+                      )}
+                      {sortColumn === col &&
                         (sortDirection === "asc" ? (
                           <ChevronUp className="w-4 h-4" />
                         ) : (
@@ -292,14 +312,16 @@ export function DeerUnitsTable() {
             <tbody>
               {paginated.map((row: any, idx) => (
                 <tr key={idx} className="group hover:bg-accent">
-                  {COLUMNS.map((col) => (
-                    <td key={col.key} className="border border-border p-2">
-                      {col.key === "Unit" ? (
+                  {visibleColumns.map((col) => (
+                    <td key={col} className="border border-border p-2">
+                      {col === "Unit" ? (
                         <span className="text-primary-dark group-hover:text-primary">
-                          {formatCell(col.key, row[col.key])}
+                          {row[col] || ""}
                         </span>
+                      ) : col === "Success_DAU" && row[col] !== "" && row[col] != null && !isNaN(parseFloat(row[col])) ? (
+                        `${(parseFloat(row[col]) * 100).toFixed(1)}%`
                       ) : (
-                        formatCell(col.key, row[col.key])
+                        row[col] || ""
                       )}
                     </td>
                   ))}
@@ -307,7 +329,7 @@ export function DeerUnitsTable() {
               ))}
               {paginated.length === 0 && (
                 <tr>
-                  <td colSpan={COLUMNS.length} className="border border-border p-8 text-center text-muted-foreground">
+                  <td colSpan={visibleColumns.length} className="border border-border p-8 text-center text-muted-foreground">
                     No units match your filters.
                   </td>
                 </tr>
