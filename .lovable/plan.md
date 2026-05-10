@@ -1,33 +1,34 @@
 ## Plan
 
-Update the Pronghorn draw table Hunt code links so they pass a real PDF file URL to the external pdf.js viewer instead of the CPW/Widen HTML landing page.
+Apply the same Pronghorn fix to the Elk draw table so Hunt code links open the actual PDF instead of the empty pdf.js viewer.
 
 ## Why the current link is blank
 
-The current code builds links like:
+In `ElkDrawTableNew.tsx`:
 
 ```text
-https://mozilla.github.io/pdf.js/web/viewer.html?file=https://cpw.widen.net/s/t6tnqjg55q/postdrawrecapreport_prong-25_05222025_0816.pdf#page=...
+pdfUrl = "https://cpw.widen.net/s/qh6nqttnnz/postdrawrecapreport_elk-25_05172025_0612"
 ```
 
-That CPW/Widen URL returns `text/html`, not `application/pdf`, so pdf.js opens an empty viewer.
+That CPW share URL returns `text/html` (a Widen landing page), so pdf.js opens an empty viewer. The actual downloadable PDF lives at CPW's direct content URL.
 
 ## Change
 
-In `src/components/tables/AntelopeDrawTableNew.tsx`, replace the current `pdfUrl` value with CPW’s direct content URL:
+In `src/components/tables/ElkDrawTableNew.tsx`:
+
+1. Line 958 — replace `pdfUrl` with the direct content URL:
 
 ```text
-https://cpw.widen.net/content/jsyu9ob6ci/original/PostDrawRecapReport_PRONG-25_05222025_0816.pdf?u=qdpcdt
+https://cpw.widen.net/content/v8vurwjjn6/original/PostDrawRecapReport_ELK-25_05172025_0612.pdf?u=qdpcdt
 ```
 
-Then adjust the existing link template so it does not append another `.pdf`, while keeping the page anchor behavior:
+2. Line 1023 — drop the appended `.pdf` and wrap the URL in `encodeURIComponent` so the full query string survives the viewer's parser:
 
 ```text
-...viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${pageNum}
+https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${pageNum}
 ```
 
 ## Scope
 
-- Fix Pronghorn only.
-- Keep Elk and Deer unchanged until you provide their current CPW direct URLs.
-- No database/config refactor.
+- Elk only. Pronghorn already fixed; Deer unchanged until you provide its CPW direct URL.
+- No DB/config changes.
