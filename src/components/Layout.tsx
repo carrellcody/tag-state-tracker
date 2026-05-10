@@ -56,7 +56,7 @@ export default function Layout({ children }: LayoutProps) {
           label: "Draw Stats",
         },
         {
-          to: "/OTCDeerNew",
+          to: "/otc-deer",
           label: "OTC Stats",
         },
         {
@@ -78,7 +78,7 @@ export default function Layout({ children }: LayoutProps) {
           label: "Draw Stats",
         },
         {
-          to: "/OTCElkNew",
+          to: "/otc-elk",
           label: "OTC Stats",
         },
         {
@@ -100,7 +100,7 @@ export default function Layout({ children }: LayoutProps) {
           label: "Draw Stats",
         },
         {
-          to: "/OTCAntelopeNew",
+          to: "/otc-antelope",
           label: "OTC Stats",
         },
         {

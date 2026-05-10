@@ -20,7 +20,7 @@ export default function OTCElkNew() {
       <SEOHead
         title="Colorado OTC Elk Units | TalloTags"
         description="Colorado over-the-counter elk unit data with DAU population estimates and harvest statistics."
-        canonicalPath="/OTCElkNew"
+        canonicalPath="/otc-elk"
       />
       <div className="mb-2 px-1">
         <h1 className="text-3xl font-bold mb-1">OTC Elk Units</h1>

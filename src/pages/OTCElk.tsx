@@ -27,7 +27,7 @@ export default function OTCElk() {
       <SEOHead 
         title="Colorado OTC Elk Tags & Harvest Statistics | TalloTags"
         description="Colorado over-the-counter elk tag harvest statistics. View OTC unit success rates, hunter density, and harvest data by season."
-        canonicalPath="/otc-elk"
+        canonicalPath="/otc-elk-old"
       />
       <div className="mb-2 px-1">
         <div>

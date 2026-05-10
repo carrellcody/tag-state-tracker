@@ -7,7 +7,7 @@ export default function OTCAntelope() {
       <SEOHead 
         title="Colorado OTC Pronghorn Tags & Harvest Statistics | TalloTags"
         description="Colorado over-the-counter pronghorn tag harvest statistics. Free access to OTC unit success rates and harvest data."
-        canonicalPath="/otc-antelope"
+        canonicalPath="/otc-antelope-old"
       />
       <div className="mb-2 px-1">
         <div>

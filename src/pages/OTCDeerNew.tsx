@@ -25,7 +25,7 @@ export default function OTCDeerNew() {
       <SEOHead
         title="Colorado OTC Deer Units | TalloTags"
         description="Colorado over-the-counter mule deer unit data with DAU population estimates and harvest statistics."
-        canonicalPath="/OTCDeerNew"
+        canonicalPath="/otc-deer"
       />
       <div className="mb-2 px-1">
         <div>

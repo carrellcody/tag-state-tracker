@@ -7,7 +7,7 @@ export default function OTCAntelopeNew() {
       <SEOHead
         title="Colorado OTC Pronghorn Units | TalloTags"
         description="Colorado over-the-counter pronghorn unit data with DAU population estimates and harvest statistics."
-        canonicalPath="/OTCAntelopeNew"
+        canonicalPath="/otc-antelope"
       />
       <div className="mb-2 px-1">
         <h1 className="text-3xl font-bold mb-1">OTC Pronghorn Units</h1>
