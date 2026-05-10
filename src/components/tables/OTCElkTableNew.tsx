@@ -134,13 +134,16 @@ export function OTCElkTableNew() {
     'Acres': 'Acres',
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
-    'Population': 'DAU Population Estimate',
-    'DAUAnimalDensity': 'DAU Elk Density (Population/Acres)',
-    'Bull/Cow ratio': 'DAU Bull:Cow ratio',
-    'BullDensity': 'Normalized Bull Density by DAU (Animal Density x Bull:Cow ratio)',
-    'Total_Harvest_estimate': 'DAU Harvest',
-    'Success_DAU': 'DAU % Success',
+    'Population': 'Population Estimate',
+    'DAUAnimalDensity': 'Elk Density (Population/Acres)',
+    'Bull/Cow ratio': 'Bull:Cow ratio',
+    'BullDensity': 'Normalized Bull Density (Animal Density x Bull:Cow ratio)',
+    'Total_Harvest_estimate': 'Harvest',
+    'Success_DAU': '% Success',
   };
+
+  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
