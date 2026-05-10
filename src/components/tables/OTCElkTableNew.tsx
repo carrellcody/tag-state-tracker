@@ -258,6 +258,8 @@ export function OTCElkTableNew() {
                             <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary-dark group-hover:text-primary hover:underline">{row[col] || ''}</a>
                           ) : col === 'Unit' ? (
                             <span className="text-primary-dark group-hover:text-primary">{row[col] || ''}</span>
+                          ) : col === 'Success_DAU' && row[col] !== '' && row[col] != null && !isNaN(parseFloat(row[col])) ? (
+                            `${(parseFloat(row[col]) * 100).toFixed(1)}%`
                           ) : (
                             row[col] || ''
                           )}
