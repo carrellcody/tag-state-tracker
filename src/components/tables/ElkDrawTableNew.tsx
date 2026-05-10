@@ -72,6 +72,8 @@ export function ElkDrawTableNew() {
   const [listFilter, setListFilter] = usePersistedState<string[]>("elkDrawNew_listFilter", ["Any"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("elkDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("elkDrawNew_showPreviousYears", false);
+  const [showUnitStats, setShowUnitStats] = usePersistedState("elkDrawNew_showUnitStats", false);
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("elkDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("elkDrawNew_showHybridOnly", false);
   const [showNewTags, setShowNewTags] = usePersistedState("elkDrawNew_showNewTags", true);
@@ -305,7 +307,7 @@ export function ElkDrawTableNew() {
   if (loading) return <div className="p-8 text-center">Loading elk draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = showPreviousYears
+  const visibleColumns = (showPreviousYears
     ? [
         "Tag",
         "List",
@@ -348,7 +350,8 @@ export function ElkDrawTableNew() {
         "Public_Percent",
         "Hunters_per_Public_Acre_norm",
         "Notes",
-      ];
+      ]
+  ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
@@ -382,7 +385,7 @@ export function ElkDrawTableNew() {
   };
 
   const nonGroupedColumnsBefore = ["Tag", "List", "Valid GMUs", "Dates", "Quota"];
-  const nonGroupedColumnsAfter = showPreviousYears
+  const nonGroupedColumnsAfter = (showPreviousYears
     ? [
         "slope",
         "Chance_with_First_choice",
@@ -407,7 +410,8 @@ export function ElkDrawTableNew() {
         "Public_Percent",
         "Hunters_per_Public_Acre_norm",
         "Notes",
-      ];
+      ]
+  ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag.",
@@ -815,7 +819,11 @@ export function ElkDrawTableNew() {
         </Button>
         <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Label htmlFor="elk-unit-stats" className="text-sm cursor-pointer">View Unit/DAU statistics</Label>
+              <Switch id="elk-unit-stats" checked={showUnitStats} onCheckedChange={setShowUnitStats} />
+            </div>
             <p className="text-sm text-muted-foreground">
               Page {currentPage} of {totalPages}
             </p>

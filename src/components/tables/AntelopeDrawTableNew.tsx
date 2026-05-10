@@ -60,6 +60,8 @@ export function AntelopeDrawTableNew() {
   const [listFilter, setListFilter] = usePersistedState<string[]>("antelopeDrawNew_listFilter", ["Any"]);
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("antelopeDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("antelopeDrawNew_showPreviousYears", false);
+  const [showUnitStats, setShowUnitStats] = usePersistedState("antelopeDrawNew_showUnitStats", false);
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("antelopeDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("antelopeDrawNew_showHybridOnly", false);
   const [showNewTags, setShowNewTags] = usePersistedState("antelopeDrawNew_showNewTags", true);
@@ -224,9 +226,10 @@ export function AntelopeDrawTableNew() {
   if (loading) return <div className="p-8 text-center">Loading antelope draw data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = showPreviousYears
+  const visibleColumns = (showPreviousYears
     ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
-    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"];
+    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+  ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
     Tag: "Hunt Code",
@@ -260,9 +263,10 @@ export function AntelopeDrawTableNew() {
   };
 
   const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
-  const nonGroupedColumnsAfter = showPreviousYears
+  const nonGroupedColumnsAfter = (showPreviousYears
     ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
-    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes'];
+    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
+  ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag.",
@@ -477,7 +481,11 @@ export function AntelopeDrawTableNew() {
       </Button>
       <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <p className="text-sm text-muted-foreground">{sortedData.length} tags match</p>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <Label htmlFor="antelope-unit-stats" className="text-sm cursor-pointer">View Unit/DAU statistics</Label>
+            <Switch id="antelope-unit-stats" checked={showUnitStats} onCheckedChange={setShowUnitStats} />
+          </div>
           <p className="text-sm text-muted-foreground">Page {currentPage} of {totalPages}</p>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => setCurrentPage(p => p - 1)}>Previous</Button>
