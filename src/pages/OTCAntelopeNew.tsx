@@ -5,7 +5,7 @@ export default function OTCAntelopeNew() {
   return (
     <div className="container mx-auto pt-2 px-4 pb-4 h-[calc(100vh-4rem)]">
       <SEOHead
-        title="Colorado OTC Pronghorn Units (New) | TalloTags"
+        title="Colorado OTC Pronghorn Units | TalloTags"
         description="Colorado over-the-counter pronghorn unit data with DAU population estimates and harvest statistics."
         canonicalPath="/OTCAntelopeNew"
       />
