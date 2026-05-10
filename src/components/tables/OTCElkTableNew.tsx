@@ -241,10 +241,13 @@ export function OTCElkTableNew() {
                   {visibleColumns.map((col) => (
                     <th key={col} className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                       <div className="flex items-center gap-1">
-                        {headerLabels[col] || col}
+                        {headerHelp[col] ? (
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />
+                        ) : (
+                          <span>{headerLabels[col] || col}</span>
+                        )}
                         {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
                       </div>
-                      {headerHelp[col] && <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />}
                     </th>
                   ))}
                 </tr>
