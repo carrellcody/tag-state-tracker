@@ -134,13 +134,16 @@ export function OTCElkTableNew() {
     'Acres': 'Acres',
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
-    'Population': 'DAU Population Estimate',
-    'DAUAnimalDensity': 'DAU Elk Density (Population/Acres)',
-    'Bull/Cow ratio': 'DAU Bull:Cow ratio',
-    'BullDensity': 'Normalized Bull Density by DAU (Animal Density x Bull:Cow ratio)',
-    'Total_Harvest_estimate': 'DAU Harvest',
-    'Success_DAU': 'DAU % Success',
+    'Population': 'Population Estimate',
+    'DAUAnimalDensity': 'Elk Density (Population/Acres)',
+    'Bull/Cow ratio': 'Bull:Cow ratio',
+    'BullDensity': 'Normalized Bull Density (Animal Density x Bull:Cow ratio)',
+    'Total_Harvest_estimate': 'Harvest',
+    'Success_DAU': '% Success',
   };
+
+  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
@@ -237,8 +240,25 @@ export function OTCElkTableNew() {
             <table className="w-full border-collapse bg-card relative">
               <thead className="sticky top-0 gradient-primary z-10">
                 <tr>
-                  <th className="border border-border p-2 text-left text-primary-foreground w-12"></th>
-                  {visibleColumns.map((col) => (
+                  <th rowSpan={2} className="border border-border p-2 text-left text-primary-foreground w-12"></th>
+                  {ungroupedColumns.map((col) => (
+                    <th key={col} rowSpan={2} className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
+                      <div className="flex items-center gap-1">
+                        {headerHelp[col] ? (
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={headerHelp[col]} />
+                        ) : (
+                          <span>{headerLabels[col] || col}</span>
+                        )}
+                        {sortColumn === col && (sortDirection === 'asc' ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                      </div>
+                    </th>
+                  ))}
+                  <th colSpan={groupedColumns.length} className="border border-border p-2 text-center text-primary-foreground">
+                    DAU-Specific Statistics
+                  </th>
+                </tr>
+                <tr>
+                  {groupedColumns.map((col) => (
                     <th key={col} className="relative border border-border p-2 pr-6 text-left cursor-pointer hover:bg-primary/90 text-primary-foreground" onClick={() => handleSort(col)}>
                       <div className="flex items-center gap-1">
                         {headerHelp[col] ? (
