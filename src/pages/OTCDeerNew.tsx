@@ -24,7 +24,11 @@ export default function OTCDeerNew() {
     <div className="container mx-auto pt-2 px-4 pb-4 h-[calc(100vh-4rem)]">
       <SEOHead
         title="Colorado OTC Deer Units | TalloTags"
-...
+        description="Colorado over-the-counter mule deer unit data with DAU population estimates and harvest statistics."
+        canonicalPath="/OTCDeerNew"
+      />
+      <div className="mb-2 px-1">
+        <div>
           <h1 className="text-3xl font-bold mb-1">OTC Deer Units</h1>
           <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter deer unit data by DAU population, harvest, and land statistics.</p>
         </div>
