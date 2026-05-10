@@ -142,6 +142,10 @@ export function OTCElkTableNew() {
     'Success_DAU': 'DAU % Success',
   };
 
+  const headerHelp: Record<string, string> = {
+    'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
