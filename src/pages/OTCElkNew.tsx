@@ -18,7 +18,7 @@ export default function OTCElkNew() {
   return (
     <div className="container mx-auto pt-2 px-4 pb-4 h-[calc(100vh-4rem)]">
       <SEOHead
-        title="Colorado OTC Elk Units (New) | TalloTags"
+        title="Colorado OTC Elk Units | TalloTags"
         description="Colorado over-the-counter elk unit data with DAU population estimates and harvest statistics."
         canonicalPath="/OTCElkNew"
       />
