@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { TableHeaderHelp } from "@/components/tables/TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ROWS_PER_PAGE = 50;
 
@@ -42,6 +43,7 @@ function parseNumeric(val: any): number {
 
 export function DeerUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const isMobile = useIsMobile();
 
   const [unitSearch, setUnitSearch] = usePersistedState("deerUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("deerUnits_minPublicPercent", "");
@@ -314,7 +316,11 @@ export function DeerUnitsTable() {
                 <tr key={idx} className="group hover:bg-accent">
                   {visibleColumns.map((col) => (
                     <td key={col} className="border border-border p-2">
-                      {col === "Unit" ? (
+                      {col === "Unit" && row.onx && !isMobile ? (
+                        <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary-dark group-hover:text-primary hover:underline">
+                          {row[col] || ""}
+                        </a>
+                      ) : col === "Unit" ? (
                         <span className="text-primary-dark group-hover:text-primary">
                           {row[col] || ""}
                         </span>
