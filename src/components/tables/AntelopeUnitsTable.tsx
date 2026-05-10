@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { TableHeaderHelp } from "@/components/tables/TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const ROWS_PER_PAGE = 50;
 
@@ -42,6 +43,7 @@ function parseNumeric(val: any): number {
 
 export function AntelopeUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/AntDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const isMobile = useIsMobile();
 
   const [unitSearch, setUnitSearch] = usePersistedState("antelopeUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("antelopeUnits_minPublicPercent", "");
