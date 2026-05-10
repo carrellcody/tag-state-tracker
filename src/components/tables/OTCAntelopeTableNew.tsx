@@ -142,6 +142,10 @@ export function OTCAntelopeTableNew() {
     'Success_DAU': 'DAU % Success',
   };
 
+  const headerHelp: Record<string, string> = {
+    'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+  };
+
   return (
     <div className="flex flex-col lg:flex-row gap-4 h-full">
       {(!isMobile || showMobileFilters) && (
