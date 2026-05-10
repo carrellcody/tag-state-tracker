@@ -73,11 +73,11 @@ const App = () => (
               <Route path="/elk-harvest" element={<ElkHarvest />} />
               <Route path="/antelope-draw-old" element={<AntelopeDraw />} />
               <Route path="/antelope-harvest" element={<AntelopeHarvest />} />
-              <Route path="/otc-elk" element={<OTCElk />} />
-              <Route path="/otc-antelope" element={<OTCAntelope />} />
-              <Route path="/otc-deer" element={<OTCDeer />} />
+              <Route path="/otc-elk-old" element={<OTCElk />} />
+              <Route path="/otc-antelope-old" element={<OTCAntelope />} />
+              <Route path="/otc-deer-old" element={<OTCDeer />} />
               <Route path="/deer-draw" element={<DeerDrawNew />} />
-              <Route path="/OTCDeerNew" element={<OTCDeerNew />} />
+              <Route path="/otc-deer" element={<OTCDeerNew />} />
               <Route path="/Deer-Units" element={<DeerUnits />} />
               <Route path="/Deer-Leftovers" element={<DeerLeftovers />} />
               <Route path="/elk-draw" element={<ElkDrawNew />} />
