@@ -385,7 +385,7 @@ export function ElkDrawTableNew() {
   };
 
   const nonGroupedColumnsBefore = ["Tag", "List", "Valid GMUs", "Dates", "Quota"];
-  const nonGroupedColumnsAfter = showPreviousYears
+  const nonGroupedColumnsAfter = (showPreviousYears
     ? [
         "slope",
         "Chance_with_First_choice",
@@ -410,7 +410,8 @@ export function ElkDrawTableNew() {
         "Public_Percent",
         "Hunters_per_Public_Acre_norm",
         "Notes",
-      ];
+      ]
+  ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const helpText: Record<string, string> = {
     Tag: "This is the hunt code that you would enter when applying for this license. Click on the hyperlink to take you to the detailed draw stats about this code from the CPW. Click the dropdown arrow to show the harvest statistics for all units that can be hunted with this tag.",
