@@ -134,13 +134,16 @@ export function OTCDeerTableNew() {
     'Acres': 'Acres',
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
-    'Post Hunt Estimate': 'DAU Population Estimate',
-    'DAUAnimalDensity': 'DAU Deer Density (Population/Acres)',
-    'Buck/ Doe ratio (per 100)': 'DAU Buck:Doe ratio',
-    'DAUBuckDensity': 'Normalized Buck Density by DAU (Animal Density x Buck:Doe ratio)',
-    'Total_Harvest_estimate': 'DAU Harvest',
-    'Success_DAU': 'DAU % Success',
+    'Post Hunt Estimate': 'Population Estimate',
+    'DAUAnimalDensity': 'Deer Density (Population/Acres)',
+    'Buck/ Doe ratio (per 100)': 'Buck:Doe ratio',
+    'DAUBuckDensity': 'Normalized Buck Density (Animal Density x Buck:Doe ratio)',
+    'Total_Harvest_estimate': 'Harvest',
+    'Success_DAU': '% Success',
   };
+
+  const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
