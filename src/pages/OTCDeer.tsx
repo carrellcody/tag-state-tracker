@@ -27,7 +27,7 @@ export default function OTCDeer() {
       <SEOHead 
         title="Colorado OTC Deer Tags & Harvest Statistics | TalloTags"
         description="Colorado over-the-counter mule deer tag harvest statistics. View OTC unit success rates, hunter density, and harvest data by season."
-        canonicalPath="/otc-deer"
+        canonicalPath="/otc-deer-old"
       />
       <div className="mb-2 px-1">
         <div>
