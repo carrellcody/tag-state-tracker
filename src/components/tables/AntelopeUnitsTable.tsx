@@ -272,6 +272,7 @@ export function AntelopeUnitsTable() {
           <table className="w-full border-collapse bg-card relative">
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
+                <th rowSpan={2} className="border border-border p-2 text-primary-foreground w-8"></th>
                 {ungroupedColumns.map((col) => (
                   <th
                     key={col}
@@ -323,30 +324,45 @@ export function AntelopeUnitsTable() {
               </tr>
             </thead>
             <tbody>
-              {paginated.map((row: any, idx) => (
-                <tr key={idx} className="group hover:bg-accent">
-                  {visibleColumns.map((col) => (
-                    <td key={col} className="border border-border p-2">
-                      {col === "Unit" && row.onx && !isMobile ? (
-                        <a href={row.onx} target="_blank" rel="noopener noreferrer" className="text-primary-dark group-hover:text-primary hover:underline">
-                          {row[col] || ""}
-                        </a>
-                      ) : col === "Unit" ? (
-                        <span className="text-primary-dark group-hover:text-primary">
-                          {row[col] || ""}
-                        </span>
-                      ) : col === "Success_DAU" && row[col] !== "" && row[col] != null && !isNaN(parseFloat(row[col])) ? (
-                        `${(parseFloat(row[col]) * 100).toFixed(1)}%`
-                      ) : (
-                        row[col] || ""
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {paginated.map((row: any, idx) => {
+                const isExpanded = expandedRows.has(idx);
+                return (
+                  <Fragment key={idx}>
+                    <tr className="group hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
+                      <td className="border border-border p-2 text-center text-primary-dark group-hover:text-primary select-none">
+                        {isExpanded ? "▼" : "▶"}
+                      </td>
+                      {visibleColumns.map((col) => (
+                        <td key={col} className="border border-border p-2">
+                          {col === "Unit" && row.onx && !isMobile ? (
+                            <a href={row.onx} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-primary-dark group-hover:text-primary hover:underline">
+                              {row[col] || ""}
+                            </a>
+                          ) : col === "Unit" ? (
+                            <span className="text-primary-dark group-hover:text-primary">
+                              {row[col] || ""}
+                            </span>
+                          ) : col === "Success_DAU" && row[col] !== "" && row[col] != null && !isNaN(parseFloat(row[col])) ? (
+                            `${(parseFloat(row[col]) * 100).toFixed(1)}%`
+                          ) : (
+                            row[col] || ""
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                    {isExpanded && (
+                      <tr>
+                        <td colSpan={visibleColumns.length + 1} className="border border-border p-4 bg-primary-foreground">
+                          <UnitTagSubtable tagsCsv={row.Tag} fullData={fullData} />
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
+                );
+              })}
               {paginated.length === 0 && (
                 <tr>
-                  <td colSpan={visibleColumns.length} className="border border-border p-8 text-center text-muted-foreground">
+                  <td colSpan={visibleColumns.length + 1} className="border border-border p-8 text-center text-muted-foreground">
                     No units match your filters.
                   </td>
                 </tr>
