@@ -44,7 +44,17 @@ function parseNumeric(val: any): number {
 
 export function AntelopeUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/AntDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/Fullant25Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const toggleRow = (idx: number) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
 
   const [unitSearch, setUnitSearch] = usePersistedState("antelopeUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("antelopeUnits_minPublicPercent", "");
