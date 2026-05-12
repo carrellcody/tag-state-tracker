@@ -127,7 +127,7 @@ export function OTCElkTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
