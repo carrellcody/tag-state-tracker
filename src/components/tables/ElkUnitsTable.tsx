@@ -44,7 +44,17 @@ function parseNumeric(val: any): number {
 
 export function ElkUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/ElkDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/Fullelk25Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const toggleRow = (idx: number) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
 
   const [unitSearch, setUnitSearch] = usePersistedState("elkUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("elkUnits_minPublicPercent", "");
