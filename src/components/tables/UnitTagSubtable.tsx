@@ -7,20 +7,21 @@ interface UnitTagSubtableProps {
   fullData: any[];
 }
 
-const subColumns = [
+const statsColumns = [
   "Tag",
   "Drawn_out_level",
   "Chance_at_DOL",
-  "Dates",
   "Total Hunters",
   "Percent Success",
 ];
+
+const subColumns = [...statsColumns, "Dates"];
 
 const subLabels: Record<string, string> = {
   "Tag": "Tag",
   "Drawn_out_level": "Drawn out level",
   "Chance_at_DOL": "Odds to draw at drawn out level",
-  "Dates": "Dates",
+  "Dates": "2026 Hunt Dates",
   "Total Hunters": "Total Hunters",
   "Percent Success": "Percent Success",
 };
