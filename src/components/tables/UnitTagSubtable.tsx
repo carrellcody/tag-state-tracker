@@ -1,4 +1,6 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { supabase } from "@/integrations/supabase/client";
 
 interface UnitTagSubtableProps {
   tagsCsv: string;
@@ -24,6 +26,34 @@ const subLabels: Record<string, string> = {
 };
 
 export function UnitTagSubtable({ tagsCsv, fullData }: UnitTagSubtableProps) {
+  const { user } = useAuth();
+  const [stateResidency, setStateResidency] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!user) {
+      setStateResidency(null);
+      return;
+    }
+    supabase
+      .from("profiles")
+      .select("state_residency")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (!cancelled) setStateResidency(data?.state_residency ?? null);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
+  const desiredClass = useMemo(() => {
+    const s = (stateResidency || "").trim().toLowerCase();
+    if (!user || !s) return "A_R";
+    return s === "colorado" || s === "co" ? "A_R" : "A_NR";
+  }, [user, stateResidency]);
+
   const tags = useMemo(
     () =>
       String(tagsCsv || "")
@@ -36,8 +66,12 @@ export function UnitTagSubtable({ tagsCsv, fullData }: UnitTagSubtableProps) {
   const rows = useMemo(() => {
     if (tags.length === 0 || !fullData || fullData.length === 0) return [];
     const set = new Set(tags);
-    return fullData.filter((r: any) => set.has(String(r.Tag || "").trim()));
-  }, [tags, fullData]);
+    return fullData.filter(
+      (r: any) =>
+        set.has(String(r.Tag || "").trim()) &&
+        String(r.Class || "").trim() === desiredClass
+    );
+  }, [tags, fullData, desiredClass]);
 
   if (rows.length === 0) {
     return (
