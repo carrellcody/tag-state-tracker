@@ -44,7 +44,7 @@ function parseNumeric(val: any): number {
 
 export function AntelopeUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/AntDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: fullData } = useCsvData(`/data/Fullant25Final.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/Fullant26Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const toggleRow = (idx: number) => {

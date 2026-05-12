@@ -44,7 +44,7 @@ function parseNumeric(val: any): number {
 
 export function DeerUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: fullData } = useCsvData(`/data/FullDeer25Final.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const toggleRow = (idx: number) => {

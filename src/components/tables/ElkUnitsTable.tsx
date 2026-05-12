@@ -44,7 +44,7 @@ function parseNumeric(val: any): number {
 
 export function ElkUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/ElkDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: fullData } = useCsvData(`/data/Fullelk25Final.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/Fullelk26Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const toggleRow = (idx: number) => {
