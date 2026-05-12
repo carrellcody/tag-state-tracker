@@ -29,7 +29,7 @@ const headerLabels: Record<string, string> = {
   'Success_DAU': '% Success',
 };
 
-const groupedColumns = ['Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+const groupedColumns = ['Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
 const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
 const headerHelp: Record<string, string> = {
