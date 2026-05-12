@@ -66,11 +66,18 @@ export function UnitTagSubtable({ tagsCsv, fullData }: UnitTagSubtableProps) {
   const rows = useMemo(() => {
     if (tags.length === 0 || !fullData || fullData.length === 0) return [];
     const set = new Set(tags);
-    return fullData.filter(
+    const matched = fullData.filter(
       (r: any) =>
         set.has(String(r.Tag || "").trim()) &&
         String(r.Class || "").trim() === desiredClass
     );
+    if (matched.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log("[UnitTagSubtable] sample row keys:", Object.keys(matched[0]));
+      // eslint-disable-next-line no-console
+      console.log("[UnitTagSubtable] sample row:", matched[0]);
+    }
+    return matched;
   }, [tags, fullData, desiredClass]);
 
   if (rows.length === 0) {
