@@ -147,6 +147,7 @@ export function OTCElkTableNew() {
 
   const headerHelp: Record<string, string> = {
     'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
+    'DAUAnimalDensityNorm': 'Results are normalized to the maximum value, so 1 is the maximum animal density, and 0 is the lowest. Results are calculated by dividing the DAU population estimate by the total DAU Acreage.',
     'Success_DAU': 'Percent success across all seasons for this unit, NOT percent success for the over the counter tag. CPW does not report the % success for OTC tags by unit.',
   };
 
