@@ -14,7 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const ROWS_PER_PAGE = 50;
 
-const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensityNorm', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensityNorm', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
 
 const headerLabels: Record<string, string> = {
   'Unit': 'Unit',
