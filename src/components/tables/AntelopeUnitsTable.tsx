@@ -14,7 +14,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 
 const ROWS_PER_PAGE = 50;
 
-const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensityNorm', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
 
 const headerLabels: Record<string, string> = {
   'Unit': 'Unit',
@@ -22,18 +22,19 @@ const headerLabels: Record<string, string> = {
   'Acres Public': 'Public Acres',
   'DAU': 'DAU',
   'Population': 'Population Estimate',
-  'DAUAnimalDensity': 'Pronghorn Density (Population/Acres)',
+  'DAUAnimalDensityNorm': 'Normalized Pronghorn Density (0-1)',
   'Buck/Doe Ratio': 'Buck:Doe ratio',
   'DAUBuckDensity': 'Normalized Buck Density (0-1)',
   'Total_Harvest_estimate': 'Harvest',
   'Success_DAU': '% Success',
 };
 
-const groupedColumns = ['Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+const groupedColumns = ['Population', 'DAUAnimalDensityNorm', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
 const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
 const headerHelp: Record<string, string> = {
   'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+  'DAUAnimalDensityNorm': 'Results are normalized to the maximum value, so 1 is the maximum animal density, and 0 is the lowest. Results are calculated by dividing the DAU population estimate by the total DAU Acreage.',
 };
 
 function parseNumeric(val: any): number {

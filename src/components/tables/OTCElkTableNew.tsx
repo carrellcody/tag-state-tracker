@@ -127,7 +127,7 @@ export function OTCElkTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC elk data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
@@ -135,18 +135,19 @@ export function OTCElkTableNew() {
     'Acres Public': 'Public Acres',
     'DAU': 'DAU',
     'Population': 'Population Estimate',
-    'DAUAnimalDensity': 'Elk Density (Population/Acres)',
+    'DAUAnimalDensityNorm': 'Normalized Elk Density (0-1)',
     'Bull/Cow ratio': 'Bull:Cow ratio',
     'BullDensity': 'Normalized Bull Density (0-1)',
     'Total_Harvest_estimate': 'Harvest',
     'Success_DAU': '% Success',
   };
 
-  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
+  const groupedColumns = ['Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
   const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
+    'DAUAnimalDensityNorm': 'Results are normalized to the maximum value, so 1 is the maximum animal density, and 0 is the lowest. Results are calculated by dividing the DAU population estimate by the total DAU Acreage.',
     'Success_DAU': 'Percent success across all seasons for this unit, NOT percent success for the over the counter tag. CPW does not report the % success for OTC tags by unit.',
   };
 
