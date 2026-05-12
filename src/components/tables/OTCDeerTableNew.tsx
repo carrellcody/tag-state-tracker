@@ -14,7 +14,7 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 const ROWS_PER_PAGE = 50;
 
 export function OTCDeerTableNew() {
-  const { data, loading, error } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const { data, loading, error } = useCsvData(`/data/DeerOTC25.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_deer_new');
   const isMobile = useIsMobile();
 

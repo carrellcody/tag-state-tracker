@@ -14,7 +14,7 @@ import { usePersistedState } from '@/hooks/usePersistedState';
 const ROWS_PER_PAGE = 50;
 
 export function OTCAntelopeTableNew() {
-  const { data, loading, error } = useCsvData(`/data/AntDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const { data, loading, error } = useCsvData(`/data/antOTC25.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite: toggleFavoriteRaw, clearAllFavorites } = useFavorites('otc_antelope_new');
   const isMobile = useIsMobile();
 
