@@ -15,11 +15,23 @@ import { useIsMobile } from "@/hooks/use-mobile";
 const ROWS_PER_PAGE = 50;
 
 const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
-...
+
+const headerLabels: Record<string, string> = {
+  'Unit': 'Unit',
+  'Acres': 'Acres',
+  'Acres Public': 'Public Acres',
+  'DAU': 'DAU',
+  'Population': 'Population Estimate',
   'DAUAnimalDensityNorm': 'Normalized Elk Density (0-1)',
-...
+  'Bull/Cow ratio': 'Bull:Cow ratio',
+  'BullDensity': 'Normalized Bull Density (0-1)',
+  'Total_Harvest_estimate': 'Harvest',
+  'Success_DAU': '% Success',
+};
+
 const groupedColumns = ['Population', 'DAUAnimalDensityNorm', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
-...
+const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
+
 const headerHelp: Record<string, string> = {
   'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
   'DAUAnimalDensityNorm': 'Results are normalized to the maximum value, so 1 is the maximum animal density, and 0 is the lowest. Results are calculated by dividing the DAU population estimate by the total DAU Acreage.',
