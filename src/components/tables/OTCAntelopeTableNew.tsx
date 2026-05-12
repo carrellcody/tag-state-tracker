@@ -127,7 +127,7 @@ export function OTCAntelopeTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensityNorm', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
