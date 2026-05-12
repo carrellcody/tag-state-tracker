@@ -142,7 +142,7 @@ export function OTCDeerTableNew() {
     'Success_DAU': '% Success',
   };
 
-  const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
+  const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensityNorm', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
   const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
