@@ -7,20 +7,21 @@ interface UnitTagSubtableProps {
   fullData: any[];
 }
 
-const subColumns = [
+const statsColumns = [
   "Tag",
   "Drawn_out_level",
   "Chance_at_DOL",
-  "Dates",
   "Total Hunters",
   "Percent Success",
 ];
+
+const subColumns = [...statsColumns, "Dates"];
 
 const subLabels: Record<string, string> = {
   "Tag": "Tag",
   "Drawn_out_level": "Drawn out level",
   "Chance_at_DOL": "Odds to draw at drawn out level",
-  "Dates": "Dates",
+  "Dates": "2026 Hunt Dates",
   "Total Hunters": "Total Hunters",
   "Percent Success": "Percent Success",
 };
@@ -92,7 +93,15 @@ export function UnitTagSubtable({ tagsCsv, fullData }: UnitTagSubtableProps) {
     <table className="w-full text-sm">
       <thead>
         <tr>
-          {subColumns.map((c) => (
+          <th colSpan={statsColumns.length} className="border p-1 bg-accent text-center">
+            2025 draw and harvest stats
+          </th>
+          <th rowSpan={2} className="border p-1 bg-accent text-left align-bottom">
+            {subLabels["Dates"]}
+          </th>
+        </tr>
+        <tr>
+          {statsColumns.map((c) => (
             <th key={c} className="border p-1 bg-accent text-left">
               {subLabels[c]}
             </th>
