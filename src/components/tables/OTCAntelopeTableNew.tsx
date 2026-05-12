@@ -127,7 +127,7 @@ export function OTCAntelopeTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC antelope data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
@@ -142,11 +142,12 @@ export function OTCAntelopeTableNew() {
     'Success_DAU': '% Success',
   };
 
-  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Buck/Doe Ratio', 'DAUBuckDensity', 'Success_DAU'];
   const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+    'Success_DAU': 'Percent success across all seasons for this unit, NOT percent success for the over the counter tag. CPW does not report the % success for OTC tags by unit.',
   };
 
   return (
