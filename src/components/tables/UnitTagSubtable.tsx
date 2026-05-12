@@ -93,7 +93,15 @@ export function UnitTagSubtable({ tagsCsv, fullData }: UnitTagSubtableProps) {
     <table className="w-full text-sm">
       <thead>
         <tr>
-          {subColumns.map((c) => (
+          <th colSpan={statsColumns.length} className="border p-1 bg-accent text-center">
+            2025 draw and harvest stats
+          </th>
+          <th rowSpan={2} className="border p-1 bg-accent text-left align-bottom">
+            {subLabels["Dates"]}
+          </th>
+        </tr>
+        <tr>
+          {statsColumns.map((c) => (
             <th key={c} className="border p-1 bg-accent text-left">
               {subLabels[c]}
             </th>
