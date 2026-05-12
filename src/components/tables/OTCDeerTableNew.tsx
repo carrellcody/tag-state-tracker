@@ -127,7 +127,7 @@ export function OTCDeerTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC deer data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensityNorm', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
