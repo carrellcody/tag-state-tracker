@@ -142,11 +142,12 @@ export function OTCElkTableNew() {
     'Success_DAU': '% Success',
   };
 
-  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const groupedColumns = ['Population', 'DAUAnimalDensity', 'Bull/Cow ratio', 'BullDensity', 'Success_DAU'];
   const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'BullDensity': 'Results are normalized to the maximum value, so 1 is the maximum bull density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the bull:cow ratio and dividing by the total acreage of the DAU',
+    'Success_DAU': 'Percent success across all seasons for this unit, NOT percent success for the over the counter tag. CPW does not report the % success for OTC tags by unit.',
   };
 
   return (
