@@ -44,7 +44,17 @@ function parseNumeric(val: any): number {
 
 export function DeerUnitsTable() {
   const { data, loading, error } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
+  const { data: fullData } = useCsvData(`/data/FullDeer25Final.csv?v=${CSV_VERSION}`);
   const isMobile = useIsMobile();
+  const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
+  const toggleRow = (idx: number) => {
+    setExpandedRows((prev) => {
+      const next = new Set(prev);
+      if (next.has(idx)) next.delete(idx);
+      else next.add(idx);
+      return next;
+    });
+  };
 
   const [unitSearch, setUnitSearch] = usePersistedState("deerUnits_unitSearch", "");
   const [minPublicPercent, setMinPublicPercent] = usePersistedState("deerUnits_minPublicPercent", "");
