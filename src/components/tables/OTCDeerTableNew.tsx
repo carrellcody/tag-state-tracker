@@ -127,7 +127,7 @@ export function OTCDeerTableNew() {
   if (loading) return <div className="p-8 text-center">Loading OTC deer data...</div>;
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
-  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const visibleColumns = ['Unit', 'Acres', 'Acres Public', 'DAU', 'Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
 
   const headerLabels: Record<string, string> = {
     'Unit': 'Unit',
@@ -136,17 +136,18 @@ export function OTCDeerTableNew() {
     'DAU': 'DAU',
     'Post Hunt Estimate': 'Population Estimate',
     'DAUAnimalDensity': 'Deer Density (Population/Acres)',
-    'Buck/ Doe ratio (per 100)': 'Buck:Doe ratio',
+    'Buck/ Doe ratio (per 100)': 'Buck:Doe ratio (per 100)',
     'DAUBuckDensity': 'Normalized Buck Density (0-1)',
     'Total_Harvest_estimate': 'Harvest',
     'Success_DAU': '% Success',
   };
 
-  const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Total_Harvest_estimate', 'Success_DAU'];
+  const groupedColumns = ['Post Hunt Estimate', 'DAUAnimalDensity', 'Buck/ Doe ratio (per 100)', 'DAUBuckDensity', 'Success_DAU'];
   const ungroupedColumns = visibleColumns.filter((c) => !groupedColumns.includes(c));
 
   const headerHelp: Record<string, string> = {
     'DAUBuckDensity': 'Results are normalized to the maximum value, so 1 is the maximum buck density, and 0 is the lowest. Results are calculated by multiplying the DAU population by the buck:doe ratio and dividing by the total acreage of the DAU',
+    'Success_DAU': 'Percent success across all seasons for this unit, NOT percent success for the over the counter tag. CPW does not report the % success for OTC tags by unit.',
   };
 
   return (
