@@ -74,9 +74,8 @@ async function loadSpeciesRows(file: string) {
   if (rows.length === 0) return { rows: [], tagKey: null, unitKey: null, seasonKey: null };
   const sample = rows[0];
   const tagKey = findKey(sample, ["Tag", "TagCode", "Tag Code", "Hunt Code", "HuntCode"]);
-  const unitKey = findKey(sample, ["Unit", "Units", "Hunt Unit", "GMU"]);
-  const seasonKey = findKey(sample, ["Season", "Season Description", "SeasonDescription", "Hunt"]);
-  return { rows, tagKey, unitKey, seasonKey };
+  const availableKey = findKey(sample, ["Available Tags", "AvailableTags", "Available"]);
+  return { rows, tagKey, availableKey };
 }
 
 function buildEmailHtml(opts: {
