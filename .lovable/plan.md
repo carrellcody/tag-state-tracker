@@ -1,59 +1,77 @@
 ## Goal
 
-Make the three Unit Information tables (`/Elk-Units`, `/Deer-Units`, `/Antelope-Units`) display the same columns, in the same format and styling, as their OTC counterparts (`/otc-elk`, `/otc-deer`, `/otc-antelope`). Filters stay unique to each page, and the OTC pages continue to filter to OTC units only.
+Every Monday at 8:00 AM Mountain Time, email each user whose saved tag codes (from `tag_alerts`) appear in the latest weekly leftover-tag CSVs. Skip users with zero matches.
 
-## Scope
+## What you'll do (one-time)
 
-Edit only the three Unit table components:
-- `src/components/tables/ElkUnitsTable.tsx`
-- `src/components/tables/DeerUnitsTable.tsx`
-- `src/components/tables/AntelopeUnitsTable.tsx`
+1. Upload three CSVs weekly via the existing `/admin/upload` page into the `csv-data` bucket:
+   - `elk_Current_Leftover_Tags.csv`
+   - `deer_Current_Leftover_Tags.csv`
+   - `ant_Current_Leftover_Tags.csv`
+2. Each CSV must contain a `Tag` (or `TagCode`) column. Other columns shown in the email: `Unit`, `Season` (or `Hunt Code` / similar — I'll auto-detect a couple of common names; you can confirm exact headers when you upload the first one).
+3. Paste the CPW leftover-list URL into the edge function constant on first deploy.
 
-No changes to OTC tables, page wrappers, routes, or filter logic on the unit pages.
+## Architecture
 
-## Column changes (match OTC layout)
+```text
+pg_cron (Mon 15:00 UTC = 8am MT during MDT / 9am MT during MST)
+   │
+   ▼
+net.http_post → edge function: send-leftover-tag-alerts
+   │
+   ├── Download 3 CSVs from csv-data storage bucket (service role)
+   ├── Parse → build Set of tag codes per species + row metadata
+   ├── Fetch all rows from tag_alerts joined with profiles (email + name)
+   ├── For each user: intersect their codes with each species' set
+   │      └── If any matches → enqueue email
+   └── Send via Resend (existing RESEND_API_KEY)
+          └── Log every send to email_send_log table for auditing
+```
 
-Replace each unit table's `COLUMNS` list with the OTC visible-column set, and adopt the OTC two-row grouped header.
+## Email content
 
-**Elk Units** — match `OTCElkTableNew`:
-- Ungrouped (rowSpan=2): `Unit`, `Acres`, `Acres Public`, `DAU`
-- Grouped under "DAU-Specific Statistics": `Population`, `DAUAnimalDensity` (Elk Density), `Bull/Cow ratio`, `BullDensity` (Normalized Bull Density (0-1) with `?` help), `Total_Harvest_estimate`, `Success_DAU`
+- Branded header with Tallo Tags logo and mid-green accent
+- Greeting: "Hi {first_name}, here are your saved tag codes that appeared on this week's Colorado leftover lists:"
+- Per-species sections (only species with matches) showing a small table: **Tag Code | Unit | Season**
+- Buttons: **View Elk Leftovers** / **Deer** / **Pronghorn** (only for species with matches), linking to `https://tallotags.com/{species}-leftovers`
+- Link: **View official CPW leftover list** → CPW URL constant
+- Footer link: **Manage your tag alerts** → `https://tallotags.com/profile#tag-alerts`
+- From: `Tallo Tags <onboarding@resend.dev>`, Reply-To: `tallotags@gmail.com`
 
-**Deer Units** — match `OTCDeerTableNew`:
-- Ungrouped: `Unit`, `Acres`, `Acres Public`, `DAU`
-- Grouped: `Post Hunt Estimate`, `DAUAnimalDensity` (Deer Density), `Buck/ Doe ratio (per 100)`, `DAUBuckDensity` (Normalized Buck Density (0-1) with `?` help), `Total_Harvest_estimate`, `Success_DAU`
+You'll be able to tweak any wording directly in the edge function template after I create it.
 
-**Antelope Units** — match `OTCAntelopeTableNew`:
-- Ungrouped: `Unit`, `Acres`, `Acres Public`, `DAU`
-- Grouped: `Population`, `DAUAnimalDensity` (Pronghorn Density), `Buck/Doe Ratio`, `DAUBuckDensity` (Normalized Buck Density (0-1) with `?` help), `Total_Harvest_estimate`, `Success_DAU`
+## DST note
 
-(Note: this drops the unit-table-only columns `percent_public`, `Herd Name`, and `DAU #` label variant. `percent_public` filtering still works because the data is on each row even though the column is hidden — matching the OTC pages exactly.)
+Mountain Time shifts between MST (UTC−7) and MDT (UTC−6). Two clean options:
 
-## Cell formatting
+- **Single cron at 14:00 UTC** → 8am MDT in summer, 7am MST in winter (1 hr early in winter)
+- **Single cron at 15:00 UTC** → 9am MDT in summer, 8am MST in winter (1 hr late in summer)
 
-Adopt OTC formatting:
-- `Success_DAU`: render as `(value * 100).toFixed(1) + '%'` when numeric.
-- All other cells: render raw value (no `toLocaleString`, no `toFixed(4)`), matching OTC behavior so the two views look identical for shared rows.
+I'll default to **14:00 UTC** (8am during the active hunting season months — MDT runs March–November) unless you say otherwise.
 
-## Header rendering
+## Technical details
 
-Use the OTC two-row `<thead>` structure: first row has the ungrouped `<th rowSpan={2}>` cells plus a single `<th colSpan={6}>DAU-Specific Statistics</th>`; second row has the six grouped `<th>` cells. Sort indicators and `TableHeaderHelp` on the normalized density column behave identically to OTC.
+**New edge function**: `supabase/functions/send-leftover-tag-alerts/index.ts`
+- `verify_jwt = false` (called by cron) but validates a shared secret from request body
+- Uses service role to read storage and `tag_alerts` + `profiles`
+- Sends emails directly via Resend (matches existing `send-contact-email` pattern — no need for full email-queue infra for ~weekly low-volume sends)
+- Inserts one row per send into `email_send_log` (creating the table if not present) so we can debug delivery
 
-## Filters (unchanged per page)
+**Migration**:
+- Enable `pg_cron` and `pg_net` extensions
+- Create `email_send_log` table (id, user_id, recipient_email, match_count, status, error, sent_at)
+- Schedule cron job `leftover-tag-alerts-weekly` for `0 14 * * 1` calling the edge function with the anon key + a `CRON_SECRET`
 
-Keep each page's existing filter sidebar exactly as-is:
-- Elk Units: Search Units, Min Public %, Min Bull:Cow, DAU multi-select
-- Deer Units: Search Units, Min Public %, Min Buck:Doe, DAU multi-select
-- Antelope Units: Search Units, Min Public %, Min Buck:Doe, DAU multi-select
+**New secret you'll add when prompted**: `CRON_SECRET` (random string I'll generate; protects the function from unauthenticated triggering).
 
-No new filters; no removed filters; no OTC season filter on unit pages. Unit pages continue to show all units (not just OTC ones).
+**Manual test path**: An admin-only **"Send leftover alerts now"** button on `/admin/upload` so you can dry-run the job after each Monday upload without waiting for cron.
 
-## OTC pages
+## Out of scope (for this plan)
 
-Untouched. They continue to filter rows to those with a non-empty `OTCCat`.
+- Per-user opt-out toggle (your existing `tag_alerts` rows imply opt-in; I won't add to `email_preferences` unless you ask)
+- Bounce/complaint webhook handling (Resend dashboard already shows these)
+- Custom domain / DKIM for tallotags.com (would improve deliverability — happy to add later)
 
-## Out of scope
+## Open item
 
-- CSV files, hooks, and routing
-- OTC table components and pages
-- Mobile filter behavior, persistence keys, pagination size
+Send me the CPW leftover-list URL in your next message and I'll bake it in. I'll proceed with everything else as soon as you approve.

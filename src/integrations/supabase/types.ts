@@ -128,6 +128,42 @@ export type Database = {
         }
         Relationships: []
       }
+      leftover_alert_log: {
+        Row: {
+          created_at: string
+          error_message: string | null
+          id: string
+          match_count: number
+          matched_codes: Json | null
+          recipient_email: string
+          run_id: string
+          status: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          match_count?: number
+          matched_codes?: Json | null
+          recipient_email: string
+          run_id: string
+          status: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          match_count?: number
+          matched_codes?: Json | null
+          recipient_email?: string
+          run_id?: string
+          status?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           antelope_preference_points: number | null
