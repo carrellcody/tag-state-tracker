@@ -177,17 +177,14 @@ const handler = async (req: Request): Promise<Response> => {
       const authHeader = req.headers.get("Authorization");
       if (authHeader?.startsWith("Bearer ")) {
         const token = authHeader.replace("Bearer ", "");
-        const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
-          global: { headers: { Authorization: authHeader } },
-        });
-        const { data: claimsData } = await userClient.auth.getClaims(token);
-        if (claimsData?.claims?.sub) {
-          const uid = claimsData.claims.sub as string;
+        const { data: userData } = await supabase.auth.getUser(token);
+        const uid = userData?.user?.id;
+        if (uid) {
           const { data: roleOk } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
           if (roleOk) {
             isAuthorized = true;
             callerUserId = uid;
-            callerEmail = (claimsData.claims as any).email ?? null;
+            callerEmail = userData.user.email ?? null;
           }
         }
       }
