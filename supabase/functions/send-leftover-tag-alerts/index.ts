@@ -322,7 +322,7 @@ const handler = async (req: Request): Promise<Response> => {
           url: sp.url,
           matches: userMatches
             .filter((m) => m.speciesCode === sp.code)
-            .map((m) => ({ tag: m.tag, unit: m.unit, season: m.season })),
+            .map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
         }))
         .filter((s) => s.matches.length > 0);
 
