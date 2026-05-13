@@ -281,6 +281,71 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
 
+        {/* Leftover tag alerts */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Mail className="h-5 w-5" />
+              Leftover Tag Alerts
+            </CardTitle>
+            <CardDescription>
+              Sends to every user whose saved tag alerts match this week's leftover CSVs
+              (<span className="font-mono">elk_/deer_/ant__Current_Leftover_Tags.csv</span>).
+              Auto-runs every Monday at 8:00 AM Mountain Time.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={sendAll} disabled={sendingAll}>
+                {sendingAll ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                Send all alerts now
+              </Button>
+              <Button variant="outline" onClick={sendTest} disabled={sendingTest}>
+                {sendingTest ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FlaskConical className="h-4 w-4 mr-2" />}
+                Send test to me
+              </Button>
+              <Button variant="ghost" size="sm" onClick={loadRecentRuns} disabled={runsLoading}>
+                {runsLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                Refresh log
+              </Button>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-2">Recent sends (last 20)</h3>
+              {recentRuns.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No sends logged yet.</p>
+              ) : (
+                <div className="overflow-x-auto rounded-md border border-border">
+                  <table className="w-full text-xs">
+                    <thead className="bg-muted/40">
+                      <tr className="text-left">
+                        <th className="px-3 py-2 font-medium">When</th>
+                        <th className="px-3 py-2 font-medium">Recipient</th>
+                        <th className="px-3 py-2 font-medium">Matches</th>
+                        <th className="px-3 py-2 font-medium">Status</th>
+                        <th className="px-3 py-2 font-medium">Error</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentRuns.map((r) => (
+                        <tr key={r.id} className="border-t border-border">
+                          <td className="px-3 py-2 whitespace-nowrap">{new Date(r.created_at).toLocaleString()}</td>
+                          <td className="px-3 py-2 font-mono">{r.recipient_email}</td>
+                          <td className="px-3 py-2">{r.match_count}</td>
+                          <td className={`px-3 py-2 font-medium ${r.status === "sent" ? "text-primary" : "text-destructive"}`}>
+                            {r.status}
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground truncate max-w-[200px]">{r.error_message ?? "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
         {/* File viewer dialog */}
         <Dialog open={!!viewingFile} onOpenChange={(open) => !open && setViewingFile(null)}>
           <DialogContent className="max-w-4xl max-h-[80vh] flex flex-col">
