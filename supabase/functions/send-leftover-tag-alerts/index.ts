@@ -74,9 +74,8 @@ async function loadSpeciesRows(file: string) {
   if (rows.length === 0) return { rows: [], tagKey: null, unitKey: null, seasonKey: null };
   const sample = rows[0];
   const tagKey = findKey(sample, ["Tag", "TagCode", "Tag Code", "Hunt Code", "HuntCode"]);
-  const unitKey = findKey(sample, ["Unit", "Units", "Hunt Unit", "GMU"]);
-  const seasonKey = findKey(sample, ["Season", "Season Description", "SeasonDescription", "Hunt"]);
-  return { rows, tagKey, unitKey, seasonKey };
+  const availableKey = findKey(sample, ["Available Tags", "AvailableTags", "Available"]);
+  return { rows, tagKey, availableKey };
 }
 
 function buildEmailHtml(opts: {
@@ -84,7 +83,7 @@ function buildEmailHtml(opts: {
   sections: Array<{
     label: string;
     url: string;
-    matches: Array<{ tag: string; unit: string; season: string }>;
+    matches: Array<{ tag: string; availableTags: string }>;
   }>;
 }) {
   const { firstName, sections } = opts;
@@ -94,8 +93,7 @@ function buildEmailHtml(opts: {
     const rows = s.matches.map((m) => `
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;font-family:monospace;font-weight:600;color:${PRIMARY};">${m.tag}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.unit || "—"}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.season || "—"}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.availableTags || "—"}</td>
       </tr>`).join("");
     return `
       <div style="margin:24px 0;">
@@ -104,8 +102,7 @@ function buildEmailHtml(opts: {
           <thead>
             <tr style="background:#f6f8f4;">
               <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Tag Code</th>
-              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Unit</th>
-              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Season</th>
+              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Available Tags</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -125,7 +122,7 @@ function buildEmailHtml(opts: {
       <div style="padding:24px;">
         <p style="margin:0 0 12px 0;font-size:16px;">${greeting}</p>
         <p style="margin:0 0 8px 0;font-size:15px;line-height:1.5;">
-          Good news — one or more of the tags on your alert list just showed up on this week's Colorado leftover lists.
+          Good news — one or more of the tags on your alert list just showed up on this week's Colorado leftover list.
         </p>
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
@@ -212,14 +209,14 @@ const handler = async (req: Request): Promise<Response> => {
       }
       const sampleSections = [
         { label: "Elk", url: SPECIES[0].url, matches: [
-          { tag: "EE001O1R", unit: "Unit 12", season: "2nd Rifle" },
-          { tag: "EM024O1R", unit: "Unit 24", season: "Muzzleloader" },
+          { tag: "EE001O1R", availableTags: "3" },
+          { tag: "EM024O1R", availableTags: "1" },
         ]},
         { label: "Deer", url: SPECIES[1].url, matches: [
-          { tag: "DM061O1A", unit: "Unit 61", season: "Archery" },
+          { tag: "DM061O1A", availableTags: "2" },
         ]},
         { label: "Pronghorn", url: SPECIES[2].url, matches: [
-          { tag: "PF301O1R", unit: "Unit 301", season: "Rifle" },
+          { tag: "PF301O1R", availableTags: "5" },
         ]},
       ];
       const html = buildEmailHtml({ firstName: "there", sections: sampleSections });
@@ -249,8 +246,8 @@ const handler = async (req: Request): Promise<Response> => {
       SPECIES.map(async (sp) => ({ sp, data: await loadSpeciesRows(sp.file) }))
     );
 
-    // Build a normalized lookup: tagCode (uppercase) -> { species, unit, season }
-    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; unit: string; season: string };
+    // Build a normalized lookup: tagCode (uppercase) -> matches
+    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; availableTags: string };
     const tagIndex = new Map<string, Match[]>();
     for (const { sp, data } of speciesData) {
       if (!data || !data.tagKey) continue;
@@ -263,8 +260,7 @@ const handler = async (req: Request): Promise<Response> => {
           speciesLabel: sp.label,
           url: sp.url,
           tag,
-          unit: data.unitKey ? row[data.unitKey] || "" : "",
-          season: data.seasonKey ? row[data.seasonKey] || "" : "",
+          availableTags: data.availableKey ? row[data.availableKey] || "" : "",
         };
         const arr = tagIndex.get(key) || [];
         arr.push(match);
@@ -326,7 +322,7 @@ const handler = async (req: Request): Promise<Response> => {
           url: sp.url,
           matches: userMatches
             .filter((m) => m.speciesCode === sp.code)
-            .map((m) => ({ tag: m.tag, unit: m.unit, season: m.season })),
+            .map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
         }))
         .filter((s) => s.matches.length > 0);
 
@@ -348,7 +344,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, unit: m.unit, season: m.season })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, available_tags: m.availableTags })),
           status: "sent",
         });
       } catch (sendErr: any) {
