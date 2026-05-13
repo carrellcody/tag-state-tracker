@@ -246,8 +246,8 @@ const handler = async (req: Request): Promise<Response> => {
       SPECIES.map(async (sp) => ({ sp, data: await loadSpeciesRows(sp.file) }))
     );
 
-    // Build a normalized lookup: tagCode (uppercase) -> { species, unit, season }
-    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; unit: string; season: string };
+    // Build a normalized lookup: tagCode (uppercase) -> matches
+    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; availableTags: string };
     const tagIndex = new Map<string, Match[]>();
     for (const { sp, data } of speciesData) {
       if (!data || !data.tagKey) continue;
@@ -260,8 +260,7 @@ const handler = async (req: Request): Promise<Response> => {
           speciesLabel: sp.label,
           url: sp.url,
           tag,
-          unit: data.unitKey ? row[data.unitKey] || "" : "",
-          season: data.seasonKey ? row[data.seasonKey] || "" : "",
+          availableTags: data.availableKey ? row[data.availableKey] || "" : "",
         };
         const arr = tagIndex.get(key) || [];
         arr.push(match);
