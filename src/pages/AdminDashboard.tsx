@@ -121,6 +121,11 @@ const AdminDashboard: React.FC = () => {
     })();
   }, [isAdmin, toast]);
 
+  useEffect(() => {
+    if (isAdmin) loadRecentRuns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
+
   const downloadFile = async (name: string) => {
     try {
       const { data: sessionData } = await supabase.auth.getSession();
