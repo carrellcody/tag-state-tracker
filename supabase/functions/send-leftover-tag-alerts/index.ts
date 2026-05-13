@@ -156,11 +156,22 @@ const handler = async (req: Request): Promise<Response> => {
     const body = await req.json().catch(() => ({}));
     const mode: "real" | "test" = body?.mode === "test" ? "test" : "real";
 
-    // Auth: cron secret OR logged-in admin
-    const providedSecret = body?.secret || req.headers.get("x-cron-secret");
+    // Auth: cron secret (env or vault) OR logged-in admin
+    const providedSecret: string | null = body?.secret || req.headers.get("x-cron-secret");
     let callerUserId: string | null = null;
     let callerEmail: string | null = null;
-    let isAuthorized = providedSecret === CRON_SECRET;
+    let isAuthorized = false;
+    if (providedSecret) {
+      if (CRON_SECRET && providedSecret === CRON_SECRET) {
+        isAuthorized = true;
+      } else {
+        const { data: vaultRows } = await supabase
+          .rpc("get_leftover_cron_secret" as any)
+          .single();
+        const vaultSecret = (vaultRows as any)?.secret as string | undefined;
+        if (vaultSecret && providedSecret === vaultSecret) isAuthorized = true;
+      }
+    }
 
     if (!isAuthorized) {
       const authHeader = req.headers.get("Authorization");
