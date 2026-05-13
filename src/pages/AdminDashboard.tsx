@@ -38,6 +38,57 @@ const AdminDashboard: React.FC = () => {
   const [viewingFile, setViewingFile] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string>("");
   const [fileLoading, setFileLoading] = useState(false);
+  const [sendingAll, setSendingAll] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
+  const [recentRuns, setRecentRuns] = useState<any[]>([]);
+  const [runsLoading, setRunsLoading] = useState(false);
+
+  const loadRecentRuns = async () => {
+    setRunsLoading(true);
+    const { data, error } = await supabase
+      .from("leftover_alert_log")
+      .select("id, run_id, recipient_email, match_count, status, error_message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (!error) setRecentRuns(data || []);
+    setRunsLoading(false);
+  };
+
+  const sendTest = async () => {
+    setSendingTest(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-leftover-tag-alerts", {
+        body: { mode: "test" },
+      });
+      if (error) throw error;
+      toast({ title: "Test email sent", description: `Sent to ${(data as any)?.sent_to ?? "you"}` });
+    } catch (err: any) {
+      toast({ title: "Test send failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setSendingTest(false);
+    }
+  };
+
+  const sendAll = async () => {
+    if (!confirm("Send leftover-tag alert emails to ALL matching users now?")) return;
+    setSendingAll(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-leftover-tag-alerts", {
+        body: { mode: "real" },
+      });
+      if (error) throw error;
+      const d = data as any;
+      toast({
+        title: "Alert run complete",
+        description: `Sent ${d?.sent ?? 0} email(s) · skipped ${d?.skipped ?? 0} of ${d?.users_with_alerts ?? 0} users with alerts.`,
+      });
+      loadRecentRuns();
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setSendingAll(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
