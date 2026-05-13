@@ -83,7 +83,7 @@ function buildEmailHtml(opts: {
   sections: Array<{
     label: string;
     url: string;
-    matches: Array<{ tag: string; unit: string; season: string }>;
+    matches: Array<{ tag: string; availableTags: string }>;
   }>;
 }) {
   const { firstName, sections } = opts;
@@ -93,8 +93,7 @@ function buildEmailHtml(opts: {
     const rows = s.matches.map((m) => `
       <tr>
         <td style="padding:10px 12px;border-bottom:1px solid #eee;font-family:monospace;font-weight:600;color:${PRIMARY};">${m.tag}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.unit || "—"}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.season || "—"}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #eee;">${m.availableTags || "—"}</td>
       </tr>`).join("");
     return `
       <div style="margin:24px 0;">
@@ -103,8 +102,7 @@ function buildEmailHtml(opts: {
           <thead>
             <tr style="background:#f6f8f4;">
               <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Tag Code</th>
-              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Unit</th>
-              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Season</th>
+              <th align="left" style="padding:10px 12px;font-size:13px;color:#555;">Available Tags</th>
             </tr>
           </thead>
           <tbody>${rows}</tbody>
@@ -124,7 +122,7 @@ function buildEmailHtml(opts: {
       <div style="padding:24px;">
         <p style="margin:0 0 12px 0;font-size:16px;">${greeting}</p>
         <p style="margin:0 0 8px 0;font-size:15px;line-height:1.5;">
-          Good news — one or more of the tags on your alert list just showed up on this week's Colorado leftover lists.
+          Good news — one or more of the tags on your alert list just showed up on this week's Colorado leftover list.
         </p>
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
