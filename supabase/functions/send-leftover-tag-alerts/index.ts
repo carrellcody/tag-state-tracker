@@ -134,6 +134,9 @@ function buildEmailHtml(opts: {
         <p style="margin:24px 0 0 0;font-size:13px;color:#666;">
           Tags get scooped up fast — log into your CPW account to grab one before it's gone.
         </p>
+        <p style="margin:20px 0 0 0;font-size:12px;color:#888;line-height:1.5;">
+          Want to stop receiving these alerts? <a href="https://tallotags.com/profile#tag-alerts" style="color:${PRIMARY};text-decoration:underline;">Click here</a> to manage your tag alerts, and remove all tag alerts to stop receiving email alerts.
+        </p>
       </div>
       <div style="padding:16px 24px;background:#fafafa;border-top:1px solid #eee;text-align:center;font-size:12px;color:#888;">
         <a href="https://tallotags.com/profile#tag-alerts" style="color:${PRIMARY};text-decoration:none;">Manage your tag alerts</a>
