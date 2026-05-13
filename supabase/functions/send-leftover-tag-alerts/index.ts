@@ -344,7 +344,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, unit: m.unit, season: m.season })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, available_tags: m.availableTags })),
           status: "sent",
         });
       } catch (sendErr: any) {
