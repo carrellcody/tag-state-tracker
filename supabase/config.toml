@@ -31,3 +31,6 @@ verify_jwt = false
 [functions.serve-csv]
 verify_jwt = false
 
+
+[functions.send-leftover-tag-alerts]
+verify_jwt = false
