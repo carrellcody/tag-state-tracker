@@ -5,7 +5,7 @@ import { Link, Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download } from "lucide-react";
+import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download, Mail, Send, FlaskConical } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 
@@ -38,6 +38,57 @@ const AdminDashboard: React.FC = () => {
   const [viewingFile, setViewingFile] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string>("");
   const [fileLoading, setFileLoading] = useState(false);
+  const [sendingAll, setSendingAll] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
+  const [recentRuns, setRecentRuns] = useState<any[]>([]);
+  const [runsLoading, setRunsLoading] = useState(false);
+
+  const loadRecentRuns = async () => {
+    setRunsLoading(true);
+    const { data, error } = await supabase
+      .from("leftover_alert_log")
+      .select("id, run_id, recipient_email, match_count, status, error_message, created_at")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (!error) setRecentRuns(data || []);
+    setRunsLoading(false);
+  };
+
+  const sendTest = async () => {
+    setSendingTest(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-leftover-tag-alerts", {
+        body: { mode: "test" },
+      });
+      if (error) throw error;
+      toast({ title: "Test email sent", description: `Sent to ${(data as any)?.sent_to ?? "you"}` });
+    } catch (err: any) {
+      toast({ title: "Test send failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setSendingTest(false);
+    }
+  };
+
+  const sendAll = async () => {
+    if (!confirm("Send leftover-tag alert emails to ALL matching users now?")) return;
+    setSendingAll(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("send-leftover-tag-alerts", {
+        body: { mode: "real" },
+      });
+      if (error) throw error;
+      const d = data as any;
+      toast({
+        title: "Alert run complete",
+        description: `Sent ${d?.sent ?? 0} email(s) · skipped ${d?.skipped ?? 0} of ${d?.users_with_alerts ?? 0} users with alerts.`,
+      });
+      loadRecentRuns();
+    } catch (err: any) {
+      toast({ title: "Send failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setSendingAll(false);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -69,6 +120,11 @@ const AdminDashboard: React.FC = () => {
       }
     })();
   }, [isAdmin, toast]);
+
+  useEffect(() => {
+    if (isAdmin) loadRecentRuns();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isAdmin]);
 
   const downloadFile = async (name: string) => {
     try {
@@ -222,6 +278,71 @@ const AdminDashboard: React.FC = () => {
                 ))}
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Leftover tag alerts */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <Mail className="h-5 w-5" />
+              Leftover Tag Alerts
+            </CardTitle>
+            <CardDescription>
+              Sends to every user whose saved tag alerts match this week's leftover CSVs
+              (<span className="font-mono">elk_/deer_/ant__Current_Leftover_Tags.csv</span>).
+              Auto-runs every Monday at 8:00 AM Mountain Time.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={sendAll} disabled={sendingAll}>
+                {sendingAll ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Send className="h-4 w-4 mr-2" />}
+                Send all alerts now
+              </Button>
+              <Button variant="outline" onClick={sendTest} disabled={sendingTest}>
+                {sendingTest ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <FlaskConical className="h-4 w-4 mr-2" />}
+                Send test to me
+              </Button>
+              <Button variant="ghost" size="sm" onClick={loadRecentRuns} disabled={runsLoading}>
+                {runsLoading ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                Refresh log
+              </Button>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-foreground mb-2">Recent sends (last 20)</h3>
+              {recentRuns.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No sends logged yet.</p>
+              ) : (
+                <div className="overflow-x-auto rounded-md border border-border">
+                  <table className="w-full text-xs">
+                    <thead className="bg-muted/40">
+                      <tr className="text-left">
+                        <th className="px-3 py-2 font-medium">When</th>
+                        <th className="px-3 py-2 font-medium">Recipient</th>
+                        <th className="px-3 py-2 font-medium">Matches</th>
+                        <th className="px-3 py-2 font-medium">Status</th>
+                        <th className="px-3 py-2 font-medium">Error</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {recentRuns.map((r) => (
+                        <tr key={r.id} className="border-t border-border">
+                          <td className="px-3 py-2 whitespace-nowrap">{new Date(r.created_at).toLocaleString()}</td>
+                          <td className="px-3 py-2 font-mono">{r.recipient_email}</td>
+                          <td className="px-3 py-2">{r.match_count}</td>
+                          <td className={`px-3 py-2 font-medium ${r.status === "sent" ? "text-primary" : "text-destructive"}`}>
+                            {r.status}
+                          </td>
+                          <td className="px-3 py-2 text-muted-foreground truncate max-w-[200px]">{r.error_message ?? "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 

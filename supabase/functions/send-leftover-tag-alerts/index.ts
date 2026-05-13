@@ -154,12 +154,94 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const body = await req.json().catch(() => ({}));
-    const providedSecret = body?.secret || req.headers.get("x-cron-secret");
-    if (providedSecret !== CRON_SECRET) {
+    const mode: "real" | "test" = body?.mode === "test" ? "test" : "real";
+
+    // Auth: cron secret (env or vault) OR logged-in admin
+    const providedSecret: string | null = body?.secret || req.headers.get("x-cron-secret");
+    let callerUserId: string | null = null;
+    let callerEmail: string | null = null;
+    let isAuthorized = false;
+    if (providedSecret) {
+      if (CRON_SECRET && providedSecret === CRON_SECRET) {
+        isAuthorized = true;
+      } else {
+        const { data: vaultRows } = await supabase
+          .rpc("get_leftover_cron_secret" as any)
+          .single();
+        const vaultSecret = (vaultRows as any)?.secret as string | undefined;
+        if (vaultSecret && providedSecret === vaultSecret) isAuthorized = true;
+      }
+    }
+
+    if (!isAuthorized) {
+      const authHeader = req.headers.get("Authorization");
+      if (authHeader?.startsWith("Bearer ")) {
+        const token = authHeader.replace("Bearer ", "");
+        const userClient = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_ANON_KEY")!, {
+          global: { headers: { Authorization: authHeader } },
+        });
+        const { data: claimsData } = await userClient.auth.getClaims(token);
+        if (claimsData?.claims?.sub) {
+          const uid = claimsData.claims.sub as string;
+          const { data: roleOk } = await supabase.rpc("has_role", { _user_id: uid, _role: "admin" });
+          if (roleOk) {
+            isAuthorized = true;
+            callerUserId = uid;
+            callerEmail = (claimsData.claims as any).email ?? null;
+          }
+        }
+      }
+    }
+
+    if (!isAuthorized) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       });
+    }
+
+    // TEST MODE: send a sample email to the calling admin only
+    if (mode === "test") {
+      let toEmail = callerEmail;
+      if (!toEmail && callerUserId) {
+        const { data: prof } = await supabase
+          .from("profiles").select("email").eq("id", callerUserId).maybeSingle();
+        toEmail = prof?.email ?? null;
+      }
+      if (!toEmail) {
+        return new Response(JSON.stringify({ error: "No admin email available for test send" }), {
+          status: 400, headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
+      const sampleSections = [
+        { label: "Elk", url: SPECIES[0].url, matches: [
+          { tag: "EE001O1R", unit: "Unit 12", season: "2nd Rifle" },
+          { tag: "EM024O1R", unit: "Unit 24", season: "Muzzleloader" },
+        ]},
+        { label: "Deer", url: SPECIES[1].url, matches: [
+          { tag: "DM061O1A", unit: "Unit 61", season: "Archery" },
+        ]},
+        { label: "Pronghorn", url: SPECIES[2].url, matches: [
+          { tag: "PF301O1R", unit: "Unit 301", season: "Rifle" },
+        ]},
+      ];
+      const html = buildEmailHtml({ firstName: "there", sections: sampleSections });
+      try {
+        await resend.emails.send({
+          from: "Tallo Tags <alerts@tallotags.com>",
+          to: [toEmail],
+          reply_to: "tallotags@gmail.com",
+          subject: "🧪 [TEST] Tallo Tags leftover alert preview",
+          html,
+        });
+        return new Response(JSON.stringify({ success: true, mode: "test", sent_to: toEmail }), {
+          status: 200, headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      } catch (e: any) {
+        return new Response(JSON.stringify({ error: e?.message || String(e) }), {
+          status: 500, headers: { "Content-Type": "application/json", ...corsHeaders },
+        });
+      }
     }
 
     const runId = crypto.randomUUID();

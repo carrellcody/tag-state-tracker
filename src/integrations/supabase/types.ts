@@ -274,6 +274,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_leftover_cron_secret: {
+        Args: never
+        Returns: {
+          secret: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

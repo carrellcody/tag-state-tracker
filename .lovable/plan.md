@@ -1,77 +1,43 @@
-## Goal
+## Current status
 
-Every Monday at 8:00 AM Mountain Time, email each user whose saved tag codes (from `tag_alerts`) appear in the latest weekly leftover-tag CSVs. Skip users with zero matches.
+**Already built and deployed:**
+- Backend function that scans the three weekly CSVs, finds matches against each user's saved tag alerts, and sends one branded email per matching user (only users who have at least one tag alert AND at least one match get an email).
+- Send log table (`leftover_alert_log`) for auditing every send.
+- Weekly schedule: Mondays at 8am Mountain Time.
 
-## What you'll do (one-time)
+**One bug to fix before going live:** The scheduled job is currently passing the wrong secret value, so the Monday-morning run would be rejected. Need to fix the way the cron passes its secret (move it into Vault and read it from SQL).
 
-1. Upload three CSVs weekly via the existing `/admin/upload` page into the `csv-data` bucket:
-   - `elk_Current_Leftover_Tags.csv`
-   - `deer_Current_Leftover_Tags.csv`
-   - `ant_Current_Leftover_Tags.csv`
-2. Each CSV must contain a `Tag` (or `TagCode`) column. Other columns shown in the email: `Unit`, `Season` (or `Hunt Code` / similar — I'll auto-detect a couple of common names; you can confirm exact headers when you upload the first one).
-3. Paste the CPW leftover-list URL into the edge function constant on first deploy.
+## CSV names to upload on `/admin/upload`
 
-## Architecture
+Upload to the existing `csv-data` bucket using these exact filenames:
 
-```text
-pg_cron (Mon 15:00 UTC = 8am MT during MDT / 9am MT during MST)
-   │
-   ▼
-net.http_post → edge function: send-leftover-tag-alerts
-   │
-   ├── Download 3 CSVs from csv-data storage bucket (service role)
-   ├── Parse → build Set of tag codes per species + row metadata
-   ├── Fetch all rows from tag_alerts joined with profiles (email + name)
-   ├── For each user: intersect their codes with each species' set
-   │      └── If any matches → enqueue email
-   └── Send via Resend (existing RESEND_API_KEY)
-          └── Log every send to email_send_log table for auditing
-```
+- `elk_Current_Leftover_Tags.csv`
+- `deer_Current_Leftover_Tags.csv`
+- `ant_Current_Leftover_Tags.csv`
 
-## Email content
+Each file must contain a column named **`Tag`** or **`TagCode`**. If columns named `Unit` and `Season` exist, those values will appear next to each matched code in the email. Other columns are ignored.
 
-- Branded header with Tallo Tags logo and mid-green accent
-- Greeting: "Hi {first_name}, here are your saved tag codes that appeared on this week's Colorado leftover lists:"
-- Per-species sections (only species with matches) showing a small table: **Tag Code | Unit | Season**
-- Buttons: **View Elk Leftovers** / **Deer** / **Pronghorn** (only for species with matches), linking to `https://tallotags.com/{species}-leftovers`
-- Link: **View official CPW leftover list** → CPW URL constant
-- Footer link: **Manage your tag alerts** → `https://tallotags.com/profile#tag-alerts`
-- From: `Tallo Tags <onboarding@resend.dev>`, Reply-To: `tallotags@gmail.com`
+## From address
 
-You'll be able to tweak any wording directly in the edge function template after I create it.
+I'm using **`Tallo Tags <alerts@tallotags.com>`** with reply-to `tallotags@gmail.com`. Your contact form already sends from `@tallotags.com` successfully, so this domain is verified in Resend — using it gives much better inbox placement than `onboarding@resend.dev`. Let me know if you'd rather switch.
 
-## DST note
+## What I'll add in this step
 
-Mountain Time shifts between MST (UTC−7) and MDT (UTC−6). Two clean options:
-
-- **Single cron at 14:00 UTC** → 8am MDT in summer, 7am MST in winter (1 hr early in winter)
-- **Single cron at 15:00 UTC** → 9am MDT in summer, 8am MST in winter (1 hr late in summer)
-
-I'll default to **14:00 UTC** (8am during the active hunting season months — MDT runs March–November) unless you say otherwise.
+1. **Fix the cron secret** — store `CRON_SECRET` in Vault so the scheduled SQL job can read and forward it.
+2. **Admin dashboard controls** on `/admin` (admin-only):
+   - **"Send all alerts now"** button — runs the same job the cron runs. Triggers a real send to every user with matches.
+   - **"Send test to me"** button — generates a sample email using fake matches and sends it to the admin's own email address only. No log row, no real users touched.
+   - **Recent runs panel** — shows the last 20 rows from `leftover_alert_log` (run ID, recipient, match count, status, time).
+3. **Backend support** — extend the alert function to accept `mode: "test"` (sends sample email to caller only) alongside the existing real-send mode. Both still require admin auth or the cron secret.
 
 ## Technical details
 
-**New edge function**: `supabase/functions/send-leftover-tag-alerts/index.ts`
-- `verify_jwt = false` (called by cron) but validates a shared secret from request body
-- Uses service role to read storage and `tag_alerts` + `profiles`
-- Sends emails directly via Resend (matches existing `send-contact-email` pattern — no need for full email-queue infra for ~weekly low-volume sends)
-- Inserts one row per send into `email_send_log` (creating the table if not present) so we can debug delivery
+- Vault: `INSERT INTO vault.secrets (name, secret) VALUES ('cron_secret', '<value>')` then update the cron SQL to `SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'cron_secret'`.
+- Admin buttons call the function with `supabase.functions.invoke('send-leftover-tag-alerts', { body: { mode: 'real' | 'test', secret: <CRON_SECRET fetched from a small admin-only RPC OR from a thin wrapper edge function that injects it server-side> } })`. Cleaner: change the function to accept either `x-cron-secret` header OR a logged-in admin JWT (verify with `has_role(uid, 'admin')`). I'll go with the JWT-admin path for the buttons so the secret never has to round-trip to the browser.
+- "Send test to me" path: function looks up the caller's profile email, builds an email with hardcoded sample matches across all three species, sends only to that address, returns success.
+- Recent runs panel: simple `select * from leftover_alert_log order by created_at desc limit 20` — already covered by the existing admin RLS policy on that table.
 
-**Migration**:
-- Enable `pg_cron` and `pg_net` extensions
-- Create `email_send_log` table (id, user_id, recipient_email, match_count, status, error, sent_at)
-- Schedule cron job `leftover-tag-alerts-weekly` for `0 14 * * 1` calling the edge function with the anon key + a `CRON_SECRET`
+## Out of scope for this step
 
-**New secret you'll add when prompted**: `CRON_SECRET` (random string I'll generate; protects the function from unauthenticated triggering).
-
-**Manual test path**: An admin-only **"Send leftover alerts now"** button on `/admin/upload` so you can dry-run the job after each Monday upload without waiting for cron.
-
-## Out of scope (for this plan)
-
-- Per-user opt-out toggle (your existing `tag_alerts` rows imply opt-in; I won't add to `email_preferences` unless you ask)
-- Bounce/complaint webhook handling (Resend dashboard already shows these)
-- Custom domain / DKIM for tallotags.com (would improve deliverability — happy to add later)
-
-## Open item
-
-Send me the CPW leftover-list URL in your next message and I'll bake it in. I'll proceed with everything else as soon as you approve.
+- Per-user "send only to user X" picker (can add later if useful).
+- Editable email template in the admin UI (template stays in code).
