@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Trash2, X } from 'lucide-react';
+import { Loader2, Lock, Plus, Trash2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getTierFromProductId } from '@/utils/subscriptionTiers';
 
 interface TagAlert {
   id: string;
