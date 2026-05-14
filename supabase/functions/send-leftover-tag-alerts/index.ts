@@ -132,7 +132,7 @@ function buildEmailHtml(opts: {
           <a href="${CPW_LEFTOVER_URL}" style="color:${PRIMARY};font-weight:600;">Official CPW Leftover List →</a>
         </div>
         <p style="margin:24px 0 0 0;font-size:13px;color:#666;">
-          Tags get scooped up fast — log into your CPW account to grab one before it's gone.
+          Remember, this batch of leftover tags go on sale this Tuesday at 9am. To apply for a tag, log into your CPW account just before 9 am and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
         </p>
         <p style="margin:20px 0 0 0;font-size:12px;color:#888;line-height:1.5;">
           Want to stop receiving these alerts? <a href="https://tallotags.com/profile#tag-alerts" style="color:${PRIMARY};text-decoration:underline;">Click here</a> to manage your tag alerts, and remove all tag alerts to stop receiving email alerts.
