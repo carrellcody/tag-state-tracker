@@ -25,8 +25,9 @@ const SEGMENTS = [
 ];
 
 export default function TagAlertsSection() {
-  const { user } = useAuth();
+  const { user, subscriptionStatus } = useAuth();
   const { toast } = useToast();
+  const isPro = getTierFromProductId(subscriptionStatus?.product_id ?? null) === 'pro';
   const [alerts, setAlerts] = useState<TagAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [showInput, setShowInput] = useState(false);
