@@ -137,6 +137,38 @@ export default function TagAlertsSection() {
     }
   };
 
+  if (!isPro) {
+    return (
+      <Card id="tag-alerts" className="scroll-mt-20 opacity-75">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-4 w-4" />
+            Tag Alerts
+          </CardTitle>
+          <CardDescription>
+            Get an email every Monday morning if any of your saved tag codes appear on the leftover lists.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-md border bg-muted/40 p-4 text-sm">
+            <p className="mb-3 text-muted-foreground">
+              Tag alerts are a Pro feature. Upgrade your subscription to save tag codes and receive weekly leftover alerts.
+            </p>
+            <Button asChild size="sm">
+              <Link to="/subscription">Upgrade to Pro</Link>
+            </Button>
+          </div>
+          <div aria-hidden className="pointer-events-none select-none opacity-50">
+            <Button variant="outline" disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              Add tag alert
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card id="tag-alerts" className="scroll-mt-20">
       <CardHeader>
