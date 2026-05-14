@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Plus, Trash2, X } from 'lucide-react';
+import { Loader2, Lock, Plus, Trash2, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getTierFromProductId } from '@/utils/subscriptionTiers';
 
 interface TagAlert {
   id: string;
@@ -23,8 +25,9 @@ const SEGMENTS = [
 ];
 
 export default function TagAlertsSection() {
-  const { user } = useAuth();
+  const { user, subscriptionStatus } = useAuth();
   const { toast } = useToast();
+  const isPro = getTierFromProductId(subscriptionStatus?.product_id ?? null) === 'pro';
   const [alerts, setAlerts] = useState<TagAlert[]>([]);
   const [loading, setLoading] = useState(true);
   const [showInput, setShowInput] = useState(false);
@@ -133,6 +136,38 @@ export default function TagAlertsSection() {
       setAlerts(alerts.filter(a => a.id !== id));
     }
   };
+
+  if (!isPro) {
+    return (
+      <Card id="tag-alerts" className="scroll-mt-20 opacity-75">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Lock className="h-4 w-4" />
+            Tag Alerts
+          </CardTitle>
+          <CardDescription>
+            Get an email every Monday morning if any of your saved tag codes appear on the leftover lists.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="rounded-md border bg-muted/40 p-4 text-sm">
+            <p className="mb-3 text-muted-foreground">
+              Tag alerts are a Pro feature. Upgrade your subscription to save tag codes and receive weekly leftover alerts.
+            </p>
+            <Button asChild size="sm">
+              <Link to="/subscription">Upgrade to Pro</Link>
+            </Button>
+          </div>
+          <div aria-hidden className="pointer-events-none select-none opacity-50">
+            <Button variant="outline" disabled>
+              <Plus className="mr-2 h-4 w-4" />
+              Add tag alert
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card id="tag-alerts" className="scroll-mt-20">
