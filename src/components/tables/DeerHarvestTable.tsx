@@ -118,8 +118,8 @@ export function DeerHarvestTable() {
       const aVal = a[sortColumn];
       const bVal = b[sortColumn];
       
-      const aNum = parseFloat(aVal);
-      const bNum = parseFloat(bVal);
+      const aNum = parseFloat(String(aVal ?? "").replace(/[,%$\s]/g, ""));
+      const bNum = parseFloat(String(bVal ?? "").replace(/[,%$\s]/g, ""));
       
       if (!isNaN(aNum) && !isNaN(bNum)) {
         return sortDirection === 'asc' ? aNum - bNum : bNum - aNum;

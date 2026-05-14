@@ -191,8 +191,8 @@ export function AntelopeDrawTableNew() {
     return [...filteredData].sort((a: any, b: any) => {
       const aVal = a[sortColumn];
       const bVal = b[sortColumn];
-      const aNum = parseFloat(aVal);
-      const bNum = parseFloat(bVal);
+      const aNum = parseFloat(String(aVal ?? "").replace(/[,%$\s]/g, ""));
+      const bNum = parseFloat(String(bVal ?? "").replace(/[,%$\s]/g, ""));
       if (!isNaN(aNum) && !isNaN(bNum)) return sortDirection === "asc" ? aNum - bNum : bNum - aNum;
       const aStr = String(aVal || "").toLowerCase();
       const bStr = String(bVal || "").toLowerCase();
