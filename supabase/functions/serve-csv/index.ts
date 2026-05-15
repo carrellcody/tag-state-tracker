@@ -88,6 +88,36 @@ serve(async (req) => {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
+
+      // Verify active subscription for premium files
+      const adminCheck = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+        { auth: { persistSession: false } }
+      );
+
+      // Admins bypass subscription check
+      const { data: roleRow } = await adminCheck
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", userData.user.id)
+        .eq("role", "admin")
+        .maybeSingle();
+
+      if (!roleRow) {
+        const { data: profile } = await adminCheck
+          .from("profiles")
+          .select("subscription_status")
+          .eq("id", userData.user.id)
+          .single();
+
+        if (profile?.subscription_status !== "active") {
+          return new Response(JSON.stringify({ error: "Subscription required" }), {
+            status: 403,
+            headers: { ...corsHeaders, "Content-Type": "application/json" },
+          });
+        }
+      }
     }
 
     // Fetch from private storage using service role
