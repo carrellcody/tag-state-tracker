@@ -1,0 +1,6 @@
+DROP TRIGGER IF EXISTS prevent_profile_subscription_self_update_trigger ON public.profiles;
+
+CREATE TRIGGER prevent_profile_subscription_self_update_trigger
+BEFORE UPDATE ON public.profiles
+FOR EACH ROW
+EXECUTE FUNCTION public.prevent_profile_subscription_self_update();
