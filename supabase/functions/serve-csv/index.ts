@@ -36,14 +36,16 @@ const ALLOWED_FILES = new Set([
   "antOTC25.csv",
 ]);
 
-// Files that can be accessed without authentication (free tier content)
-const PUBLIC_FILES = new Set([
-  "Fullant26Final.csv",
-  "antHarvest25.csv",
-  "ant25code_pages.csv",
-  "antOTC24.csv",
-  "AntDraw25Subtable.csv",
+const PRO_PRODUCT_IDS = new Set([
+  "prod_TQEkp6iEC7tmTK",
+  "prod_Tlkqena8Ul3Ezu",
 ]);
+
+const jsonResponse = (body: Record<string, string>, status: number) =>
+  new Response(JSON.stringify(body), {
+    status,
+    headers: { ...corsHeaders, "Content-Type": "application/json" },
+  });
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -51,81 +53,60 @@ serve(async (req) => {
   }
 
   try {
-    // Get filename from query params first to check if auth is needed
     const url = new URL(req.url);
     const filename = url.searchParams.get("file");
 
     if (!filename || !ALLOWED_FILES.has(filename)) {
-      return new Response(JSON.stringify({ error: "Invalid file" }), {
-        status: 400,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      return jsonResponse({ error: "Invalid file" }, 400);
     }
 
-    const isPublicFile = PUBLIC_FILES.has(filename);
-
-    // Validate auth for non-public files
     const authHeader = req.headers.get("Authorization");
-    if (!isPublicFile) {
-      if (!authHeader?.startsWith("Bearer ")) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_ANON_KEY")!,
-        { global: { headers: { Authorization: authHeader } } }
-      );
-
-      const token = authHeader.replace("Bearer ", "");
-      const { data: userData, error: userError } = await supabase.auth.getUser(token);
-      if (userError || !userData?.user) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-          status: 401,
-          headers: { ...corsHeaders, "Content-Type": "application/json" },
-        });
-      }
-
-      // Verify active subscription for premium files
-      const adminCheck = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-        { auth: { persistSession: false } }
-      );
-
-      // Admins bypass subscription check
-      const { data: roleRow } = await adminCheck
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userData.user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-
-      if (!roleRow) {
-        const { data: profile } = await adminCheck
-          .from("profiles")
-          .select("subscription_status")
-          .eq("id", userData.user.id)
-          .single();
-
-        if (profile?.subscription_status !== "active") {
-          return new Response(JSON.stringify({ error: "Subscription required" }), {
-            status: 403,
-            headers: { ...corsHeaders, "Content-Type": "application/json" },
-          });
-        }
-      }
+    if (!authHeader?.startsWith("Bearer ")) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
-    // Fetch from private storage using service role
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_ANON_KEY")!,
+      { global: { headers: { Authorization: authHeader } } }
+    );
+
+    const token = authHeader.replace("Bearer ", "");
+    const { data: claimsData, error: claimsError } = await supabase.auth.getClaims(token);
+    const userId = claimsData?.claims?.sub;
+    if (claimsError || !userId) {
+      return jsonResponse({ error: "Unauthorized" }, 401);
+    }
+
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } }
     );
+
+    const { data: roleRow } = await adminClient
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (!roleRow) {
+      const { data: profile, error: profileError } = await adminClient
+        .from("profiles")
+        .select("subscription_status, subscription_manual_override, product_id")
+        .eq("id", userId)
+        .single();
+
+      const hasActiveProSubscription =
+        !profileError &&
+        profile?.subscription_status === "active" &&
+        (profile.subscription_manual_override === true || PRO_PRODUCT_IDS.has(profile.product_id ?? ""));
+
+      if (!hasActiveProSubscription) {
+        return jsonResponse({ error: "Subscription required" }, 403);
+      }
+    }
 
     const { data, error } = await adminClient.storage
       .from("csv-data")
