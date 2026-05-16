@@ -23,13 +23,32 @@ serve(async (req) => {
   }
 
   try {
-    // Auth: require CRON_SECRET header to invoke
-    const cronSecret = Deno.env.get("CRON_SECRET");
+    const supabaseAuth = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      { auth: { persistSession: false } }
+    );
+
+    // Auth: accept CRON_SECRET env OR vault secret (same pattern as send-leftover-tag-alerts)
+    const envSecret = Deno.env.get("CRON_SECRET");
     const providedSecret =
       req.headers.get("x-cron-secret") ||
       req.headers.get("authorization")?.replace(/^Bearer\s+/i, "");
 
-    if (!cronSecret || providedSecret !== cronSecret) {
+    let isAuthorized = false;
+    if (providedSecret) {
+      if (envSecret && providedSecret === envSecret) {
+        isAuthorized = true;
+      } else {
+        const { data: vaultRow } = await supabaseAuth
+          .rpc("get_leftover_cron_secret" as any)
+          .single();
+        const vaultSecret = (vaultRow as any)?.secret as string | undefined;
+        if (vaultSecret && providedSecret === vaultSecret) isAuthorized = true;
+      }
+    }
+
+    if (!isAuthorized) {
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
         status: 401,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
