@@ -59,11 +59,7 @@ serve(async (req) => {
       apiVersion: "2025-08-27.basil",
     });
     const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
-    const supabase = createClient(
-      Deno.env.get("SUPABASE_URL")!,
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      { auth: { persistSession: false } }
-    );
+    const supabase = supabaseAuth;
 
     logStep("Listing trialing subscriptions");
     const now = Math.floor(Date.now() / 1000);
