@@ -39,13 +39,26 @@ serve(async (req) => {
 
     // Check if customer already exists
     const customers = await stripe.customers.list({ email: user.email, limit: 1 });
-    let customerId;
+    let customerId: string | undefined;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
     }
 
+    // Trial eligibility: only first-time subscribers (no prior subscriptions of any status)
+    let eligibleForTrial = true;
+    if (customerId) {
+      const priorSubs = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "all",
+        limit: 1,
+      });
+      if (priorSubs.data.length > 0) {
+        eligibleForTrial = false;
+      }
+    }
+
     const origin = req.headers.get("origin") || "https://nbkybwnjjzmwyiiciffm.lovableproject.com";
-    
+
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
       customer_email: customerId ? undefined : user.email,
@@ -58,10 +71,22 @@ serve(async (req) => {
       ],
       mode: "subscription",
       allow_promotion_codes: true, // Enable promo code input on checkout page
+      // Always collect a payment method up front; if trial-eligible, give 15 days free
+      payment_method_collection: "always",
+      subscription_data: eligibleForTrial
+        ? {
+            trial_period_days: 15,
+            trial_settings: {
+              end_behavior: { missing_payment_method: "cancel" },
+            },
+            metadata: { user_id: user.id },
+          }
+        : { metadata: { user_id: user.id } },
       success_url: `${origin}/welcome?success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/subscription?canceled=true`,
       metadata: {
         user_id: user.id,
+        trial_granted: eligibleForTrial ? "true" : "false",
       },
     });
 

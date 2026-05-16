@@ -143,11 +143,15 @@ serve(async (req) => {
       logStep("Using existing Stripe customer id from profile", { customerId });
     }
 
-    const subscriptions = await stripe.subscriptions.list({
+    // Fetch all subscriptions and accept either "active" or "trialing" as Pro access
+    const allSubs = await stripe.subscriptions.list({
       customer: customerId,
-      status: "active",
-      limit: 1,
+      status: "all",
+      limit: 10,
     });
+    const subscriptions = {
+      data: allSubs.data.filter((s: any) => s.status === "active" || s.status === "trialing"),
+    };
 
     const hasActiveSub = subscriptions.data.length > 0;
     let productId = null;
