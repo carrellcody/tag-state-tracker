@@ -34,3 +34,6 @@ verify_jwt = false
 
 [functions.send-leftover-tag-alerts]
 verify_jwt = false
+
+[functions.send-trial-ending-reminder]
+verify_jwt = false
