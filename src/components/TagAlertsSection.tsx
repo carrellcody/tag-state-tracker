@@ -146,7 +146,7 @@ export default function TagAlertsSection() {
             Tag Alerts
           </CardTitle>
           <CardDescription>
-            Get an email every Monday morning if any of your saved tag codes appear on the leftover lists.
+            Receive an alert email whenever one of your saved tag codes appears on the leftover list
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -174,7 +174,7 @@ export default function TagAlertsSection() {
       <CardHeader>
         <CardTitle>Tag Alerts</CardTitle>
         <CardDescription>
-          Get an email every Monday morning if any of your saved tag codes appear on the leftover lists.
+          Receive an alert email whenever one of your saved tag codes appears on the leftover list
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
