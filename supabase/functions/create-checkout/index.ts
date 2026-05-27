@@ -71,7 +71,7 @@ serve(async (req) => {
       ],
       mode: "subscription",
       allow_promotion_codes: true, // Enable promo code input on checkout page
-      // Always collect a payment method up front; if trial-eligible, give 15 days free
+      // Always collect a payment method up front; if trial-eligible, give 30 days free
       payment_method_collection: "always",
       subscription_data: eligibleForTrial
         ? {
