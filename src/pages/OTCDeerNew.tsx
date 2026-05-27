@@ -30,7 +30,7 @@ export default function OTCDeerNew() {
       <div className="mb-2 px-1">
         <div>
           <h1 className="text-3xl font-bold mb-1">OTC Deer Units</h1>
-          <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter deer unit data by DAU population, harvest, and land statistics.</p>
+          <p className="text-muted-foreground text-sm">Browse Colorado's over-the-counter deer unit data by DAU population, harvest, and land statistics. All harvest and DAU statistics are from 2025 data</p>
         </div>
       </div>
       <OTCDeerTableNew />
