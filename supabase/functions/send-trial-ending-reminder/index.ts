@@ -117,7 +117,7 @@ serve(async (req) => {
             html: `
               <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #1a1a1a;">
                 <h1 style="color: #598749;">Your free trial ends soon</h1>
-                <p>Just a heads-up — your 15-day TalloTags Pro free trial ends on <strong>${trialEndDate}</strong>.</p>
+                <p>Just a heads-up — your 30-day TalloTags Pro free trial ends on <strong>${trialEndDate}</strong>.</p>
                 <p>If you do nothing, your card on file will be charged for the annual Pro plan ($20/year) on that date and you'll keep full access to all Elk, Deer, and Pronghorn data.</p>
                 <p>If you'd rather not continue, you can cancel anytime before then from your account page — you won't be charged.</p>
                 <p style="margin-top: 24px;">
