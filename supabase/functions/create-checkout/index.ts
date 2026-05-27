@@ -75,7 +75,7 @@ serve(async (req) => {
       payment_method_collection: "always",
       subscription_data: eligibleForTrial
         ? {
-            trial_period_days: 15,
+            trial_period_days: 30,
             trial_settings: {
               end_behavior: { missing_payment_method: "cancel" },
             },
