@@ -42,6 +42,7 @@ export default function Layout({ children }: LayoutProps) {
   const { user, signOut, subscriptionStatus, loading } = useAuth();
   const navLinks = [
     { to: "/", label: "Home" },
+    { to: "/leftovers", label: "Secondary / Leftover Tags" },
     { to: "/learn", label: "Learn" },
     { to: "/about", label: "About TalloTags" },
     { to: "/contact", label: "Contact" },
@@ -63,10 +64,6 @@ export default function Layout({ children }: LayoutProps) {
           to: "/Deer-Units",
           label: "Unit Information",
         },
-        {
-          to: "/Deer-Leftovers",
-          label: "Secondary / Leftover Draws",
-        },
       ],
     },
     {
@@ -85,10 +82,6 @@ export default function Layout({ children }: LayoutProps) {
           to: "/Elk-Units",
           label: "Unit Information",
         },
-        {
-          to: "/Elk-Leftovers",
-          label: "Secondary / Leftover Draws",
-        },
       ],
     },
     {
@@ -106,10 +99,6 @@ export default function Layout({ children }: LayoutProps) {
         {
           to: "/Antelope-Units",
           label: "Unit Information",
-        },
-        {
-          to: "/Antelope-Leftovers",
-          label: "Secondary / Leftover Draws",
         },
       ],
     },
