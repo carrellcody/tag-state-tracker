@@ -31,8 +31,8 @@ export default function WelcomeDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="sm:max-w-md text-center p-6">
         <div className="flex flex-col items-center gap-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
-            New feature! Sign up for Tag Alerts to get alerted whenever one of your tags becomes available on the leftover list.
+          <h2 className="text-xl sm:text-2xl text-foreground leading-tight font-extrabold whitespace-pre-line">
+            Welcome!{"\n"}New feature! Sign up for Tag Alerts to get alerted whenever one of your tags becomes available on the leftover list.
           </h2>
 
           <p className="text-base sm:text-lg text-foreground leading-relaxed">
