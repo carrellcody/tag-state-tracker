@@ -79,6 +79,9 @@ export default function Leftovers() {
     setSeasonWeapons(next.length === 0 ? ["Any"] : next);
   };
 
+  if (loading || !hasAccess) return null;
+
+
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
       <SEOHead
