@@ -17,15 +17,11 @@ export default function WelcomeDialog() {
     if (subscriptionStatus?.subscribed) return;
 
     const hasSeenWelcome = sessionStorage.getItem("hasSeenWelcome");
-    const isExternalVisit = !document.referrer ||
-      !document.referrer.includes(window.location.origin);
-
-    if (!hasSeenWelcome && isExternalVisit) {
+    if (!hasSeenWelcome) {
       setOpen(true);
       sessionStorage.setItem("hasSeenWelcome", "true");
     }
   }, [loading, subscriptionStatus]);
-
   const handleCreateAccount = () => {
     setOpen(false);
     navigate("/auth");
