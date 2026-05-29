@@ -188,12 +188,12 @@ export default function Subscription() {
                   <Badge variant="outline">Checking...</Badge>
                 ) : currentTier === 'pro' && <Badge>Your Plan</Badge>}
               </div>
-              <CardDescription>Complete hunting data access</CardDescription>
+              <CardDescription>Complete hunting data access and leftover tag alerts</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
                 <div className="text-3xl font-bold">30 Day Free Trial</div>
-                <div className="text-lg font-semibold text-muted-foreground mt-1">{SUBSCRIPTION_TIERS.pro.price}</div>
+                <div className="text-lg font-semibold text-muted-foreground mt-1">Then only {SUBSCRIPTION_TIERS.pro.price}</div>
               </div>
               <ul className="space-y-2">
                 {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
