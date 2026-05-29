@@ -191,7 +191,10 @@ export default function Subscription() {
               <CardDescription>Complete hunting data access</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-3xl font-bold">{SUBSCRIPTION_TIERS.pro.price}</div>
+              <div>
+                <div className="text-3xl font-bold">30 Day Free Trial</div>
+                <div className="text-lg font-semibold text-muted-foreground mt-1">{SUBSCRIPTION_TIERS.pro.price}</div>
+              </div>
               <ul className="space-y-2">
                 {SUBSCRIPTION_TIERS.pro.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2">
