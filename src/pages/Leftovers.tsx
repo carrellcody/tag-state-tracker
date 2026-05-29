@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { getTierFromProductId, canAccessElk } from "@/utils/subscriptionTiers";
 import { SEOHead } from "@/components/SEOHead";
 import TagAlertsSection from "@/components/TagAlertsSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +47,15 @@ const LIST_OPTIONS = [
 ];
 
 export default function Leftovers() {
+  const { subscriptionStatus, loading } = useAuth();
+  const navigate = useNavigate();
+  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasAccess = canAccessElk(currentTier);
+  useEffect(() => {
+    if (!loading && !hasAccess) {
+      navigate("/subscription");
+    }
+  }, [hasAccess, loading, navigate]);
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species", ["deer", "elk", "antelope"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
   const [sexFilter, setSexFilter] = usePersistedState<string>("leftovers_sex", "any");
@@ -66,6 +78,9 @@ export default function Leftovers() {
       : seasonWeapons.filter(s => s !== val);
     setSeasonWeapons(next.length === 0 ? ["Any"] : next);
   };
+
+  if (loading || !hasAccess) return null;
+
 
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
