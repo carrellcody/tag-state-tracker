@@ -44,24 +44,24 @@ export default function WelcomeDialog() {
         <div className="flex flex-col items-center gap-6">
           {/* Logo */}
           <img 
-            src={taggoutLogo} 
-            alt="TalloTags Logo" 
-            className="h-16 sm:h-20"
-          />
-          
-          {/* Welcome Text */}
+          {/* Headline */}
+          <h2 className="text-xl sm:text-2xl font-bold text-foreground leading-tight">
+            New feature! Sign up for Tag Alerts to get alerted whenever one of your tags becomes available on the leftover list.
+          </h2>
+
+          {/* Subtext */}
           <p className="text-base sm:text-lg text-foreground leading-relaxed">
-            Welcome to TalloTags - Browse pronghorn stats for free to get a feel for the site and subscribe to see the deer and elk stats!
+            Sign up now and try for free for 30 days! Only $20/year after that.
           </p>
-          
-          {/* Pricing */}
-          <div className="flex flex-col items-center justify-center gap-1 text-xl sm:text-2xl font-bold">
-            <span className="text-primary">$20/year</span>
-          </div>
-          
+
           {/* CTA Button */}
-          <Button 
+          <Button
             onClick={handleCreateAccount}
+            className="w-full sm:w-auto px-8"
+            size="lg"
+          >
+            Create an account
+          </Button>
             className="w-full sm:w-auto px-8"
             size="lg"
           >
