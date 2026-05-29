@@ -1,4 +1,7 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { getTierFromProductId, canAccessElk } from "@/utils/subscriptionTiers";
 import { SEOHead } from "@/components/SEOHead";
 import TagAlertsSection from "@/components/TagAlertsSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
