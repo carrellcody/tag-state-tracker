@@ -47,6 +47,15 @@ const LIST_OPTIONS = [
 ];
 
 export default function Leftovers() {
+  const { subscriptionStatus, loading } = useAuth();
+  const navigate = useNavigate();
+  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasAccess = canAccessElk(currentTier);
+  useEffect(() => {
+    if (!loading && !hasAccess) {
+      navigate("/subscription");
+    }
+  }, [hasAccess, loading, navigate]);
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species", ["deer", "elk", "antelope"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
   const [sexFilter, setSexFilter] = usePersistedState<string>("leftovers_sex", "any");
