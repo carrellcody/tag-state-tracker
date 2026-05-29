@@ -5,10 +5,13 @@ import taggoutLogo from "@/assets/longbluename.png";
 import heroBg from "@/assets/hero-bg.jpg";
 
 import { SEOHead } from "@/components/SEOHead";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
 export default function Home() {
   return (
     <div className="min-h-screen">
+      <WelcomeDialog />
+
       <SEOHead 
         title="TalloTags - Colorado Big Game Draw Odds & Harvest Statistics"
         description="Colorado big game draw odds, harvest statistics, and preference point data for elk, mule deer, and pronghorn hunting. Free pronghorn stats, advanced filtering tools."
