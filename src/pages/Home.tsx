@@ -5,6 +5,7 @@ import taggoutLogo from "@/assets/longbluename.png";
 import heroBg from "@/assets/hero-bg.jpg";
 
 import { SEOHead } from "@/components/SEOHead";
+import WelcomeDialog from "@/components/WelcomeDialog";
 
 export default function Home() {
   return (
