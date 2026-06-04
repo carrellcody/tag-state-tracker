@@ -45,7 +45,7 @@ export function DeerDrawTable() {
   } = useCsvData(`/data/DeerHarvest24.csv?v=${CSV_VERSION}`);
   const {
     data: codePages
-  } = useCsvData(`/data/deer25code_pages.csv?v=${CSV_VERSION}`);
+  } = useCsvData(`/data/deer26code_pages.csv?v=${CSV_VERSION}`);
   const {
     favorites,
     toggleFavorite,

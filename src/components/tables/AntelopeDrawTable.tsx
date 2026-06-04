@@ -39,7 +39,7 @@ function isHybridEligible(row: any) {
 export function AntelopeDrawTable() {
   const { data, loading, error } = useCsvData(`/data/Fullant26Final.csv?v=${CSV_VERSION}`);
   const { data: harvestData } = useCsvData(`/data/antHarvest25.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/ant25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/ant26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_draw');
   const { user } = useAuth();
   const isMobile = useIsMobile();

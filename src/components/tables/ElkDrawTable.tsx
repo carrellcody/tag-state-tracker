@@ -48,7 +48,7 @@ function isHybridEligible(row: any) {
 export function ElkDrawTable() {
   const { data, loading, error } = useCsvData(`/data/Fullelk26Final.csv?v=${CSV_VERSION}`);
   const { data: harvestData } = useCsvData(`/data/elkHarvest25.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/elk25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/elk26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("elk_draw");
   const { user } = useAuth();
   const isMobile = useIsMobile();
