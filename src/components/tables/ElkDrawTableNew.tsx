@@ -963,7 +963,7 @@ export function ElkDrawTableNew() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/content/v8vurwjjn6/original/PostDrawRecapReport_ELK-25_05172025_0612.pdf?u=qdpcdt";
+                const pdfUrl = "https://cpw.widen.net/s/jzvr7hzzl8/postdrawrecapreport_elk-26_05142026_1426";
                 // Get valid GMU numbers from the row
                 const validGmus = String(row["Valid GMUs"] || "")
                   .split(",")
