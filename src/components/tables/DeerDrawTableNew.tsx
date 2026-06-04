@@ -579,7 +579,7 @@ export function DeerDrawTableNew() {
               const isFavorited = favorites.has(huntCode);
               const pageNum = huntCodeMap[String(huntCode ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase()];
               const pdfUrl = "https://cpw.widen.net/s/5j2x8x6fdd/postdrawrecapreport_deer-26_05112026_1505";
-              const pdfViewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}${pageNum ? `#page=${pageNum}` : ''}`;
+              const pdfViewerUrl = `${pdfUrl}${pageNum ? `#page=${pageNum}` : ''}`;
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
               // Find matching subtable rows
