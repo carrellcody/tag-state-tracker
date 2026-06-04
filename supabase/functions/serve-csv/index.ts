@@ -10,9 +10,9 @@ const corsHeaders = {
 const ALLOWED_FILES = new Set([
   "DeerDraw25Subtable.csv",
   "DeerOTC25.csv",
-  "ant25code_pages.csv",
-  "deer25code_pages.csv",
-  "elk25code_pages.csv",
+  "ant26code_pages.csv",
+  "deer26code_pages.csv",
+  "elk26code_pages.csv",
   "elkOTC24.csv",
   "gmu_public_land.csv",
   "DeerHarvest24.csv",

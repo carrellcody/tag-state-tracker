@@ -39,7 +39,7 @@ function isHybridEligible(row: any) {
 export function AntelopeDrawTable() {
   const { data, loading, error } = useCsvData(`/data/Fullant26Final.csv?v=${CSV_VERSION}`);
   const { data: harvestData } = useCsvData(`/data/antHarvest25.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/ant25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/ant26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites('antelope_draw');
   const { user } = useAuth();
   const isMobile = useIsMobile();
@@ -761,7 +761,7 @@ export function AntelopeDrawTable() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/s/t6tnqjg55q/postdrawrecapreport_prong-25_05222025_0816";
+                const pdfUrl = "https://cpw.widen.net/s/vtght5qc8p/postdrawrecapreport_prong-26_05212026_1006";
                 const harvestUnits = String(row.harvestunit || '').split(',').map(u => u.trim()).filter(Boolean);
 
                 return (

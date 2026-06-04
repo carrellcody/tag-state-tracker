@@ -48,7 +48,7 @@ function isHybridEligible(row: any) {
 export function ElkDrawTable() {
   const { data, loading, error } = useCsvData(`/data/Fullelk26Final.csv?v=${CSV_VERSION}`);
   const { data: harvestData } = useCsvData(`/data/elkHarvest25.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/elk25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/elk26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("elk_draw");
   const { user } = useAuth();
   const isMobile = useIsMobile();
@@ -948,7 +948,7 @@ export function ElkDrawTable() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/s/qh6nqttnnz/postdrawrecapreport_elk-25_05172025_0612";
+                const pdfUrl = "https://cpw.widen.net/s/jzvr7hzzl8/postdrawrecapreport_elk-26_05142026_1426";
                 const harvestUnits = String(row.harvestunit || "")
                   .split(",")
                   .map((u) => u.trim())

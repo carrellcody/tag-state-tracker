@@ -44,7 +44,7 @@ function isHybridEligible(row: any) {
 export function ElkDrawTableNew() {
   const { data, loading, error } = useCsvData(`/data/Fullelk26Final.csv?v=${CSV_VERSION}`);
   const { data: subtableData } = useCsvData(`/data/ElkDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/elk25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/elk26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("elk_draw_new");
   const { user } = useAuth();
   const isMobile = useIsMobile();
@@ -963,7 +963,7 @@ export function ElkDrawTableNew() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/content/v8vurwjjn6/original/PostDrawRecapReport_ELK-25_05172025_0612.pdf?u=qdpcdt";
+                const pdfUrl = "https://cpw.widen.net/s/jzvr7hzzl8/postdrawrecapreport_elk-26_05142026_1426";
                 // Get valid GMU numbers from the row
                 const validGmus = String(row["Valid GMUs"] || "")
                   .split(",")

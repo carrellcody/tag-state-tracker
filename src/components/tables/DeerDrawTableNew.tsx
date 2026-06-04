@@ -35,7 +35,7 @@ function isHybridEligible(row: any) {
 export function DeerDrawTableNew() {
   const { data, loading, error } = useCsvData(`/data/FullDeer26FinalNewHarv.csv?v=${CSV_VERSION}`);
   const { data: subtableData } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/deer25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/deer26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("deer_draw_new");
   const { user } = useAuth();
   const isMobile = useIsMobile();
@@ -570,7 +570,7 @@ export function DeerDrawTableNew() {
               const huntCode = row.Tag;
               const isFavorited = favorites.has(huntCode);
               const pageNum = huntCodeMap[huntCode];
-              const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
+              const pdfUrl = "https://cpw.widen.net/s/5j2x8x6fdd/postdrawrecapreport_deer-26_05112026_1505";
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
               // Find matching subtable rows

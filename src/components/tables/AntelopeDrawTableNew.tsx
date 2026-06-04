@@ -35,7 +35,7 @@ function isHybridEligible(row: any) {
 export function AntelopeDrawTableNew() {
   const { data, loading, error } = useCsvData(`/data/Fullant26Final.csv?v=${CSV_VERSION}`);
   const { data: subtableData } = useCsvData(`/data/AntDraw25Subtable.csv?v=${CSV_VERSION}`);
-  const { data: codePages } = useCsvData(`/data/ant25code_pages.csv?v=${CSV_VERSION}`);
+  const { data: codePages } = useCsvData(`/data/ant26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("antelope_draw_new");
   const { user } = useAuth();
   const isMobile = useIsMobile();
@@ -586,7 +586,7 @@ export function AntelopeDrawTableNew() {
               const huntCode = row.Tag;
               const isFavorited = favorites.has(huntCode);
               const pageNum = huntCodeMap[huntCode];
-              const pdfUrl = "https://cpw.widen.net/content/jsyu9ob6ci/original/PostDrawRecapReport_PRONG-25_05222025_0816.pdf?u=qdpcdt";
+              const pdfUrl = "https://cpw.widen.net/s/vtght5qc8p/postdrawrecapreport_prong-26_05212026_1006";
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
               // Find matching subtable rows

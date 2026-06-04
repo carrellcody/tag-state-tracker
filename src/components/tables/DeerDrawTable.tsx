@@ -45,7 +45,7 @@ export function DeerDrawTable() {
   } = useCsvData(`/data/DeerHarvest24.csv?v=${CSV_VERSION}`);
   const {
     data: codePages
-  } = useCsvData(`/data/deer25code_pages.csv?v=${CSV_VERSION}`);
+  } = useCsvData(`/data/deer26code_pages.csv?v=${CSV_VERSION}`);
   const {
     favorites,
     toggleFavorite,
@@ -762,7 +762,7 @@ export function DeerDrawTable() {
                 const huntCode = row.Tag;
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[huntCode];
-                const pdfUrl = "https://cpw.widen.net/s/fm5zxrbhwz/postdrawrecapreport_deer-25_05102025_1540";
+                const pdfUrl = "https://cpw.widen.net/s/5j2x8x6fdd/postdrawrecapreport_deer-26_05112026_1505";
                 const harvestUnits = String(row.harvestunit || "").split(",").map(u => u.trim()).filter(Boolean);
                 return <Fragment key={idx}>
                       <tr className="group hover:bg-accent cursor-pointer" onClick={() => toggleRow(idx)}>
