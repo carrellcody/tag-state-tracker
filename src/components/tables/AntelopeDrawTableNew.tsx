@@ -279,10 +279,12 @@ export function AntelopeDrawTableNew() {
     Chance_at_DOL23: "Odds of drawing with the Drawn Out Level points in 2023.",
     Drawn_out_level24: "Minimum points needed to have a chance at drawing in the 2024 draw.",
     Chance_at_DOL24: "Odds of drawing with the Drawn Out Level points in 2024.",
-    Drawn_out_level: "Minimum points needed to have a chance at drawing in the 2025 draw.",
-    Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2025.",
+    Drawn_out_level25: "Minimum points needed to have a chance at drawing in the 2025 draw.",
+    Chance_at_DOL25: "Odds of drawing with the Drawn Out Level points in 2025.",
+    Drawn_out_level: "Minimum points needed to have a chance at drawing in the 2026 draw.",
+    Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2026.",
     slope: "Trend of points required over the last three draws. Green down = easier, Red up = harder.",
-    Chance_with_First_choice: "Your odds of drawing with your preference points if this were your first choice in the 2025 draw.",
+    Chance_with_First_choice: "Your odds of drawing with your preference points if this were your first choice in the 2026 draw.",
     Hunters_per_Public_Acre_norm: "Higher numbers here means more hunters per public acre. A 1 is indicates that this tag has the highest density of hunters of all tags, and a 0 indicates that the unit has the lowest density of hunters among all tags. A 0.5 would indicate that the hunter density is half that of the most dense tag."
   };
 
