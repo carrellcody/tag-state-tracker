@@ -109,8 +109,16 @@ export function AntelopeDrawTableNew() {
   }, [hunterClass]);
 
   const huntCodeMap = useMemo(() => {
+    const norm = (v: any) => String(v ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase();
     const map: Record<string, string> = {};
-    codePages.forEach((row: any) => { if (row.HuntCode && row.Page) map[row.HuntCode] = row.Page; });
+    codePages.forEach((row: any) => {
+      const key = norm(row.HuntCode);
+      const page = String(row.Page ?? "").trim();
+      if (key && page !== "") map[key] = page;
+    });
+    if (import.meta.env.DEV) {
+      console.log("[AntelopeDrawTableNew] codePages rows:", codePages.length, "map size:", Object.keys(map).length, "first row keys:", codePages[0] ? Object.keys(codePages[0]) : []);
+    }
     return map;
   }, [codePages]);
 
