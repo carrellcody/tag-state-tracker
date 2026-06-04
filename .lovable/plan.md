@@ -1,12 +1,21 @@
-## Email template tweaks
+## Goal
+Give user `6e16bb65-7de4-43a7-9355-8cd4d5383407` full Pro access by updating their profile row.
 
-Edit `supabase/functions/send-leftover-tag-alerts/index.ts`:
+## Why the dashboard update fails
+The `profiles` table has a trigger `prevent_profile_subscription_self_update` that raises an exception on any change to `subscription_status`, `subscription_manual_override`, `product_id`, etc. unless the caller is `service_role` or has the `admin` role. Editing the row from the Supabase dashboard runs as your dashboard user, which the trigger blocks.
 
-1. **Add "Available Tags" column** — read from CSV column literally named `Available Tags` (case-insensitive match, fallback variants: `AvailableTags`, `Available`). Display its value in a new column in the email table.
-2. **Remove "Unit" and "Season" columns** from both the email table header and rows. Stop reading those CSV keys.
-3. **Copy fix** — change "this week's Colorado leftover lists." to "this week's Colorado leftover list."
-4. **Test mode sample data** — update the hardcoded sample matches to include `availableTags` (e.g., "3", "1", "2") instead of unit/season so the test preview reflects the new layout.
+## Plan
+Run a single data update via the service-role insert tool (which bypasses the trigger's role check):
 
-Final email table columns: **Tag Code | Available Tags**.
+```sql
+UPDATE public.profiles
+SET subscription_manual_override = true,
+    subscription_status = 'active',
+    product_id = 'prod_TQEkp6iEC7tmTK',
+    subscription_end = NULL
+WHERE id = '6e16bb65-7de4-43a7-9355-8cd4d5383407';
+```
 
-Redeploy the edge function after the edit.
+This matches the `check-subscription` edge function logic: when `subscription_manual_override` is true, it skips Stripe sync and returns the DB values (defaulting `product_id` to the Pro product if null), so the user immediately gets Pro access.
+
+No code or schema changes needed.
