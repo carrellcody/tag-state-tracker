@@ -595,7 +595,7 @@ export function AntelopeDrawTableNew() {
               const isFavorited = favorites.has(huntCode);
               const pageNum = huntCodeMap[String(huntCode ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase()];
               const pdfUrl = "https://cpw.widen.net/s/vtght5qc8p/postdrawrecapreport_prong-26_05212026_1006";
-              const pdfViewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}${pageNum ? `#page=${pageNum}` : ''}`;
+              const pdfViewerUrl = `${pdfUrl}${pageNum ? `#page=${pageNum}` : ''}`;
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
               // Find matching subtable rows
