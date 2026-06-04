@@ -970,6 +970,7 @@ export function ElkDrawTableNew() {
                 const isFavorited = favorites.has(huntCode);
                 const pageNum = huntCodeMap[String(huntCode ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase()];
                 const pdfUrl = "https://cpw.widen.net/s/jzvr7hzzl8/postdrawrecapreport_elk-26_05142026_1426";
+                const pdfViewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}${pageNum ? `#page=${pageNum}` : ''}`;
                 // Get valid GMU numbers from the row
                 const validGmus = String(row["Valid GMUs"] || "")
                   .split(",")
@@ -1032,19 +1033,15 @@ export function ElkDrawTableNew() {
                             {col === "Tag" ? (
                               <div className="flex items-center gap-2 text-primary-dark group-hover:text-primary">
                                 <span>{isExpanded ? "▼" : "▶"}</span>
-                                {pageNum ? (
-                                  <a
-                                    href={`https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(pdfUrl)}#page=${pageNum}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:underline"
-                                    onClick={(e) => e.stopPropagation()}
-                                  >
-                                    {huntCode}
-                                  </a>
-                                ) : (
-                                  huntCode
-                                )}
+                                <a
+                                  href={pdfViewerUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="hover:underline"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  {huntCode}
+                                </a>
                               </div>
                             ) : col === "slope" ? (
                               renderTrendArrow(row[col])
