@@ -518,9 +518,10 @@ export function AntelopeDrawTableNew() {
                 <>
                   <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2023</th>
                   <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2024</th>
+                  <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2025</th>
                 </>
               )}
-              <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2025</th>
+              <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2026</th>
               {nonGroupedColumnsAfter.map(col => (
                 <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative">
                   <div className="flex items-center gap-1">
