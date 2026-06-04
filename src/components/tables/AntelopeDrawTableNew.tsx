@@ -109,8 +109,16 @@ export function AntelopeDrawTableNew() {
   }, [hunterClass]);
 
   const huntCodeMap = useMemo(() => {
+    const norm = (v: any) => String(v ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase();
     const map: Record<string, string> = {};
-    codePages.forEach((row: any) => { if (row.HuntCode && row.Page) map[row.HuntCode] = row.Page; });
+    codePages.forEach((row: any) => {
+      const key = norm(row.HuntCode);
+      const page = String(row.Page ?? "").trim();
+      if (key && page !== "") map[key] = page;
+    });
+    if (import.meta.env.DEV) {
+      console.log("[AntelopeDrawTableNew] codePages rows:", codePages.length, "map size:", Object.keys(map).length, "first row keys:", codePages[0] ? Object.keys(codePages[0]) : []);
+    }
     return map;
   }, [codePages]);
 
@@ -585,7 +593,7 @@ export function AntelopeDrawTableNew() {
               const isExpanded = expandedRows.has(idx);
               const huntCode = row.Tag;
               const isFavorited = favorites.has(huntCode);
-              const pageNum = huntCodeMap[huntCode];
+              const pageNum = huntCodeMap[String(huntCode ?? "").replace(/\uFEFF/g, "").replace(/\u00A0/g, " ").trim().toUpperCase()];
               const pdfUrl = "https://cpw.widen.net/s/vtght5qc8p/postdrawrecapreport_prong-26_05212026_1006";
               // Get valid GMU numbers from the row
               const validGmus = String(row["Valid GMUs"] || "").split(",").map(u => u.trim()).filter(Boolean);
