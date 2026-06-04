@@ -33,8 +33,8 @@ export default function ElkDraw() {
         <div>
           <h1 className="text-3xl font-bold mb-1">Colorado Elk Draw Odds</h1>
           <p className="text-muted-foreground text-sm">
-            Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2025, and harvest
-            stats from 2024.
+            Hunt codes, dates, and valid units pulled from 2026 Big Game Brochure. Draw odds from 2026, and harvest
+            stats from 2025.
           </p>
         </div>
       </div>
