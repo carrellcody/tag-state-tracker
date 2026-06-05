@@ -55,6 +55,7 @@ export function ElkDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("elkDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("elkDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("elkDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("elkDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("elkDrawNew_hunterClass", "A_R");
