@@ -46,6 +46,7 @@ export function AntelopeDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("antelopeDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("antelopeDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("antelopeDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("antelopeDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("antelopeDrawNew_hunterClass", "A_R");
