@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from "./TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
