@@ -13,7 +13,7 @@ const GOOGLE_MAPS_CHANNEL = import.meta.env
 
 const COLORADO_CENTER = { lat: 39.0, lng: -105.55 };
 const INITIAL_ZOOM = 7;
-const LABEL_MIN_ZOOM = 8;
+const LABEL_MIN_ZOOM = 6;
 
 declare global {
   interface Window {
