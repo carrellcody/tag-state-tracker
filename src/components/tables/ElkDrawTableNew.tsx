@@ -262,6 +262,7 @@ export function ElkDrawTableNew() {
   }, [
     data,
     unitSearch,
+    huntCodeFilter,
     sexFilter,
     seasonWeapons,
     hunterClass,
