@@ -324,6 +324,8 @@ export function ElkDrawTableNew() {
         "Chance_at_DOL23",
         "Drawn_out_level24",
         "Chance_at_DOL24",
+        "Drawn_out_level25",
+        "Chance_at_DOL25",
         "Drawn_out_level",
         "Chance_at_DOL",
         "slope",
@@ -369,6 +371,8 @@ export function ElkDrawTableNew() {
     Chance_at_DOL23: "Chance at DOL",
     Drawn_out_level24: "Drawn Out Level",
     Chance_at_DOL24: "Chance at DOL",
+    Drawn_out_level25: "Drawn Out Level",
+    Chance_at_DOL25: "Chance at DOL",
     Drawn_out_level: "Drawn Out Level",
     Chance_with_First_choice: "Chance with your preference points",
     Chance_at_DOL: "Chance at DOL",
@@ -387,7 +391,8 @@ export function ElkDrawTableNew() {
   const yearGroupedColumns = {
     "2023": ["Drawn_out_level23", "Chance_at_DOL23"],
     "2024": ["Drawn_out_level24", "Chance_at_DOL24"],
-    "2025": ["Drawn_out_level", "Chance_at_DOL"],
+    "2025": ["Drawn_out_level25", "Chance_at_DOL25"],
+    "2026": ["Drawn_out_level", "Chance_at_DOL"],
   };
 
   const nonGroupedColumnsBefore = ["Tag", "List", "Valid GMUs", "Dates", "Quota"];
@@ -427,11 +432,13 @@ export function ElkDrawTableNew() {
     Chance_at_DOL23: "Odds of drawing with the Drawn Out Level points in 2023.",
     Drawn_out_level24: "Minimum points needed to have a chance at drawing in the 2024 draw.",
     Chance_at_DOL24: "Odds of drawing with the Drawn Out Level points in 2024.",
-    Drawn_out_level: "Minimum points needed to have a chance at drawing in the 2025 draw.",
-    Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2025.",
+    Drawn_out_level25: "Minimum points needed to have a chance at drawing in the 2025 draw.",
+    Chance_at_DOL25: "Odds of drawing with the Drawn Out Level points in 2025.",
+    Drawn_out_level: "Minimum points needed to have a chance at drawing in the 2026 draw.",
+    Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2026.",
     slope: "Trend of points required over the last three draws. Green down = easier, Red up = harder.",
     Chance_with_First_choice:
-      "Your odds of drawing with your preference points if this were your first choice in the 2025 draw.",
+      "Your odds of drawing with your preference points if this were your first choice in the 2026 draw.",
     Hunters_per_Public_Acre_norm:
       "Higher numbers here means more hunters per public acre. A 1 is indicates that this tag has the highest density of hunters of all tags, and a 0 indicates that the unit has the lowest density of hunters among all tags. A 0.5 would indicate that the hunter density is half that of the most dense tag.",
   };
@@ -886,10 +893,13 @@ export function ElkDrawTableNew() {
                     <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">
                       2024
                     </th>
+                    <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">
+                      2025
+                    </th>
                   </>
                 )}
                 <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">
-                  2025
+                  2026
                 </th>
                 {nonGroupedColumnsAfter.map((col) => (
                   <th
@@ -944,9 +954,24 @@ export function ElkDrawTableNew() {
                         </div>
                       </th>
                     ))}
+                    {yearGroupedColumns["2025"].map((col) => (
+                      <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
+                        <div className="flex items-center gap-1">
+                          <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                            <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                            {sortColumn === col &&
+                              (sortDirection === "asc" ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              ))}
+                          </div>
+                        </div>
+                      </th>
+                    ))}
                   </>
                 )}
-                {yearGroupedColumns["2025"].map((col) => (
+                {yearGroupedColumns["2026"].map((col) => (
                   <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
                     <div className="flex items-center gap-1">
                       <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
@@ -1012,6 +1037,8 @@ export function ElkDrawTableNew() {
                           "Chance_at_DOL23",
                           "Drawn_out_level24",
                           "Chance_at_DOL24",
+                          "Drawn_out_level25",
+                          "Chance_at_DOL25",
                         ].includes(col);
                         const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? "bg-hybrid-highlight" : "";
 
