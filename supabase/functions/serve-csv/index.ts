@@ -36,6 +36,18 @@ const ALLOWED_FILES = new Set([
   "antOTC25.csv",
 ]);
 
+const PUBLIC_FILES = new Set([
+  "ant26code_pages.csv",
+  "Fullant25Final.csv",
+  "Fullant26Final.csv",
+  "antHarvest25.csv",
+  "antHarvest24.csv",
+  "antOTC24.csv",
+  "antOTC25Test.csv",
+  "antOTC25.csv",
+  "AntDraw25Subtable.csv",
+]);
+
 const PRO_PRODUCT_IDS = new Set([
   "prod_TQEkp6iEC7tmTK",
   "prod_Tlkqena8Ul3Ezu",
