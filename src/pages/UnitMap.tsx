@@ -4,7 +4,7 @@ import { SEOHead } from "@/components/SEOHead";
 
 // The attribute key on each GeoJSON feature that holds the unit number.
 // Update this to match the column in your shapefile (e.g. "GMUID", "UNIT", "DAU").
-const UNIT_PROPERTY_CANDIDATES = ["UNIT", "GMUID", "GMU", "Unit", "unit", "DAU"];
+const UNIT_PROPERTY_CANDIDATES = ["GMUID", "UNIT", "GMU", "Unit", "unit", "DAU"];
 
 const GOOGLE_MAPS_BROWSER_KEY = import.meta.env
   .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
@@ -31,6 +31,23 @@ function pickUnitNumber(props: Record<string, unknown> | null): string | null {
     }
   }
   return null;
+}
+
+function pickUnitNumberFromFeature(feature: any): string | null {
+  for (const key of UNIT_PROPERTY_CANDIDATES) {
+    const v = feature.getProperty?.(key);
+    if (v !== undefined && v !== null && String(v).trim() !== "") {
+      return String(v);
+    }
+  }
+  return null;
+}
+
+function getCssHslToken(tokenName: string): string {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(tokenName)
+    .trim();
+  return `hsl(${value})`;
 }
 
 const UnitMap: React.FC = () => {
@@ -60,10 +77,13 @@ const UnitMap: React.FC = () => {
       });
       mapInstanceRef.current = map;
 
+      const primaryColor = getCssHslToken("--primary");
+      const boundaryColor = getCssHslToken("--map-boundary");
+
       map.data.setStyle({
-        fillColor: "#598749",
+        fillColor: primaryColor,
         fillOpacity: 0.08,
-        strokeColor: "#598749",
+        strokeColor: boundaryColor,
         strokeOpacity: 0.95,
         strokeWeight: 1.6,
       });
@@ -77,9 +97,7 @@ const UnitMap: React.FC = () => {
 
       const infoWindow = new window.google.maps.InfoWindow();
       map.data.addListener("click", (e: any) => {
-        const unit = pickUnitNumber(
-          e.feature.toGeoJson()?.properties ?? null
-        );
+        const unit = pickUnitNumberFromFeature(e.feature);
         if (!unit) return;
         infoWindow.setContent(
           `<div style="font-family:sans-serif;font-weight:600;color:#222;">Unit ${unit}</div>`
@@ -89,34 +107,36 @@ const UnitMap: React.FC = () => {
       });
 
       const addLabelForFeature = (feature: any) => {
-        const gj = feature.toGeoJson();
-        const unit = pickUnitNumber(gj?.properties ?? null);
+        const unit = pickUnitNumberFromFeature(feature);
         if (!unit) return;
-        try {
-          const pt = pointOnFeature(gj as any);
-          const [lng, lat] = pt.geometry.coordinates;
-          const marker = new window.google.maps.Marker({
-            position: { lat, lng },
-            map,
-            clickable: false,
-            icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 0,
-              fillOpacity: 0,
-              strokeOpacity: 0,
-            },
-            label: {
-              text: unit,
-              color: "#ffffff",
-              fontSize: "13px",
-              fontWeight: "700",
-              className: "gmu-unit-label",
-            },
-          });
-          labelMarkersRef.current.push(marker);
-        } catch (err) {
-          console.warn("Label placement failed for unit", unit, err);
-        }
+        feature.toGeoJson((gj: any) => {
+          try {
+            const pt = pointOnFeature(gj as any);
+            const [lng, lat] = pt.geometry.coordinates;
+            const marker = new window.google.maps.Marker({
+              position: { lat, lng },
+              map,
+              clickable: false,
+              visible: (map.getZoom() ?? INITIAL_ZOOM) >= LABEL_MIN_ZOOM,
+              icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 0,
+                fillOpacity: 0,
+                strokeOpacity: 0,
+              },
+              label: {
+                text: unit,
+                color: "#ffffff",
+                fontSize: "13px",
+                fontWeight: "700",
+                className: "gmu-unit-label",
+              },
+            });
+            labelMarkersRef.current.push(marker);
+          } catch (err) {
+            console.warn("Label placement failed for unit", unit, err);
+          }
+        });
       };
 
       map.data.addListener("addfeature", (e: any) => addLabelForFeature(e.feature));
