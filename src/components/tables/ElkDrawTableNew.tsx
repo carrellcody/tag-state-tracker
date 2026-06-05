@@ -180,8 +180,15 @@ export function ElkDrawTableNew() {
     return map;
   }, [subtableData]);
 
+  const allHuntCodes = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r: any) => { if (r?.Tag) set.add(String(r.Tag)); });
+    return Array.from(set).sort();
+  }, [data]);
+
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
       const isNewTag = String(row.New || "").trim() === "New";
       const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
