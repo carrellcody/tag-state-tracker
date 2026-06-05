@@ -371,6 +371,8 @@ export function ElkDrawTableNew() {
     Chance_at_DOL23: "Chance at DOL",
     Drawn_out_level24: "Drawn Out Level",
     Chance_at_DOL24: "Chance at DOL",
+    Drawn_out_level25: "Drawn Out Level",
+    Chance_at_DOL25: "Chance at DOL",
     Drawn_out_level: "Drawn Out Level",
     Chance_with_First_choice: "Chance with your preference points",
     Chance_at_DOL: "Chance at DOL",
@@ -389,7 +391,8 @@ export function ElkDrawTableNew() {
   const yearGroupedColumns = {
     "2023": ["Drawn_out_level23", "Chance_at_DOL23"],
     "2024": ["Drawn_out_level24", "Chance_at_DOL24"],
-    "2025": ["Drawn_out_level", "Chance_at_DOL"],
+    "2025": ["Drawn_out_level25", "Chance_at_DOL25"],
+    "2026": ["Drawn_out_level", "Chance_at_DOL"],
   };
 
   const nonGroupedColumnsBefore = ["Tag", "List", "Valid GMUs", "Dates", "Quota"];
