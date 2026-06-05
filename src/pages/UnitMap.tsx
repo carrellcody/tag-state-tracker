@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import pointOnFeature from "@turf/point-on-feature";
+import type { Feature, GeoJsonProperties, Geometry } from "geojson";
 import { SEOHead } from "@/components/SEOHead";
 
 // The attribute key on each GeoJSON feature that holds the unit number.
 // Update this to match the column in your shapefile (e.g. "GMUID", "UNIT", "DAU").
-const UNIT_PROPERTY_CANDIDATES = ["UNIT", "GMUID", "GMU", "Unit", "unit", "DAU"];
+const UNIT_PROPERTY_CANDIDATES = ["GMUID", "UNIT", "GMU", "Unit", "unit", "DAU"];
 
 const GOOGLE_MAPS_BROWSER_KEY = import.meta.env
   .VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY as string | undefined;
@@ -15,17 +16,48 @@ const COLORADO_CENTER = { lat: 39.0, lng: -105.55 };
 const INITIAL_ZOOM = 7;
 const LABEL_MIN_ZOOM = 6;
 
+type GeoJsonFeature = Feature<Geometry, GeoJsonProperties>;
+type GoogleMapFeature = {
+  getProperty?: (name: string) => unknown;
+  toGeoJson: (callback: (feature: GeoJsonFeature) => void) => void;
+};
+type GoogleMapFeatureEvent = { feature: GoogleMapFeature; latLng?: unknown };
+type GoogleMarker = { setVisible: (visible: boolean) => void; setMap: (map: null) => void };
+type GoogleMapData = {
+  setStyle: (style: Record<string, unknown>) => void;
+  addListener: (eventName: string, handler: (event: GoogleMapFeatureEvent) => void) => void;
+  overrideStyle: (feature: GoogleMapFeature, style: Record<string, unknown>) => void;
+  revertStyle: () => void;
+  loadGeoJson: (url: string, options: unknown, callback: () => void) => void;
+};
+type GoogleMap = {
+  data: GoogleMapData;
+  getZoom: () => number | undefined;
+  addListener: (eventName: string, handler: () => void) => void;
+};
+type GoogleMapsNamespace = {
+  maps: {
+    Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
+    InfoWindow: new () => {
+      setContent: (content: string) => void;
+      setPosition: (position: unknown) => void;
+      open: (map: GoogleMap) => void;
+    };
+    Marker: new (options: Record<string, unknown>) => GoogleMarker;
+    SymbolPath: { CIRCLE: unknown };
+  };
+};
+
 declare global {
   interface Window {
     initUnitMap?: () => void;
-    google?: any;
+    google?: GoogleMapsNamespace;
   }
 }
 
-function pickUnitNumber(props: Record<string, unknown> | null): string | null {
-  if (!props) return null;
+function pickUnitNumberFromFeature(feature: GoogleMapFeature): string | null {
   for (const key of UNIT_PROPERTY_CANDIDATES) {
-    const v = props[key];
+    const v = feature.getProperty?.(key);
     if (v !== undefined && v !== null && String(v).trim() !== "") {
       return String(v);
     }
@@ -33,10 +65,17 @@ function pickUnitNumber(props: Record<string, unknown> | null): string | null {
   return null;
 }
 
+function getCssHslToken(tokenName: string): string {
+  const value = getComputedStyle(document.documentElement)
+    .getPropertyValue(tokenName)
+    .trim();
+  return `hsl(${value})`;
+}
+
 const UnitMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const labelMarkersRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<GoogleMap | null>(null);
+  const labelMarkersRef = useRef<GoogleMarker[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
@@ -60,15 +99,18 @@ const UnitMap: React.FC = () => {
       });
       mapInstanceRef.current = map;
 
+      const primaryColor = getCssHslToken("--primary");
+      const boundaryColor = getCssHslToken("--map-boundary");
+
       map.data.setStyle({
-        fillColor: "#598749",
+        fillColor: primaryColor,
         fillOpacity: 0.08,
-        strokeColor: "#598749",
+        strokeColor: boundaryColor,
         strokeOpacity: 0.95,
         strokeWeight: 1.6,
       });
 
-      map.data.addListener("mouseover", (e: any) => {
+      map.data.addListener("mouseover", (e: GoogleMapFeatureEvent) => {
         map.data.overrideStyle(e.feature, { strokeWeight: 3, fillOpacity: 0.18 });
       });
       map.data.addListener("mouseout", () => {
@@ -76,10 +118,8 @@ const UnitMap: React.FC = () => {
       });
 
       const infoWindow = new window.google.maps.InfoWindow();
-      map.data.addListener("click", (e: any) => {
-        const unit = pickUnitNumber(
-          e.feature.toGeoJson()?.properties ?? null
-        );
+      map.data.addListener("click", (e: GoogleMapFeatureEvent) => {
+        const unit = pickUnitNumberFromFeature(e.feature);
         if (!unit) return;
         infoWindow.setContent(
           `<div style="font-family:sans-serif;font-weight:600;color:#222;">Unit ${unit}</div>`
@@ -88,38 +128,40 @@ const UnitMap: React.FC = () => {
         infoWindow.open(map);
       });
 
-      const addLabelForFeature = (feature: any) => {
-        const gj = feature.toGeoJson();
-        const unit = pickUnitNumber(gj?.properties ?? null);
+      const addLabelForFeature = (feature: GoogleMapFeature) => {
+        const unit = pickUnitNumberFromFeature(feature);
         if (!unit) return;
-        try {
-          const pt = pointOnFeature(gj as any);
-          const [lng, lat] = pt.geometry.coordinates;
-          const marker = new window.google.maps.Marker({
-            position: { lat, lng },
-            map,
-            clickable: false,
-            icon: {
-              path: window.google.maps.SymbolPath.CIRCLE,
-              scale: 0,
-              fillOpacity: 0,
-              strokeOpacity: 0,
-            },
-            label: {
-              text: unit,
-              color: "#ffffff",
-              fontSize: "13px",
-              fontWeight: "700",
-              className: "gmu-unit-label",
-            },
-          });
-          labelMarkersRef.current.push(marker);
-        } catch (err) {
-          console.warn("Label placement failed for unit", unit, err);
-        }
+        feature.toGeoJson((gj: GeoJsonFeature) => {
+          try {
+            const pt = pointOnFeature(gj);
+            const [lng, lat] = pt.geometry.coordinates;
+            const marker = new window.google.maps.Marker({
+              position: { lat, lng },
+              map,
+              clickable: false,
+              visible: (map.getZoom() ?? INITIAL_ZOOM) >= LABEL_MIN_ZOOM,
+              icon: {
+                path: window.google.maps.SymbolPath.CIRCLE,
+                scale: 0,
+                fillOpacity: 0,
+                strokeOpacity: 0,
+              },
+              label: {
+                text: unit,
+                color: "#ffffff",
+                fontSize: "13px",
+                fontWeight: "700",
+                className: "gmu-unit-label",
+              },
+            });
+            labelMarkersRef.current.push(marker);
+          } catch (err) {
+            console.warn("Label placement failed for unit", unit, err);
+          }
+        });
       };
 
-      map.data.addListener("addfeature", (e: any) => addLabelForFeature(e.feature));
+      map.data.addListener("addfeature", (e: GoogleMapFeatureEvent) => addLabelForFeature(e.feature));
 
       const updateLabelVisibility = () => {
         const visible = (map.getZoom() ?? INITIAL_ZOOM) >= LABEL_MIN_ZOOM;
