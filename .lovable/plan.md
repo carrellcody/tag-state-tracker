@@ -1,42 +1,45 @@
-## Problem
+## /unit_map page
 
-The Hunt Code link disappeared on all draw tables after uploading the new `ant26code_pages.csv` / `elk26code_pages.csv` / `deer26code_pages.csv`. The link only renders when `huntCodeMap[row.Tag]` returns a truthy `Page` — so the lookup is returning empty for every row.
+A new public page that shows Colorado satellite imagery with Game Management Unit (GMU) boundaries overlaid, and the unit number labeled at the center of each unit. Users can pan and zoom.
 
-The current lookup is strict:
+### Boundary data — what to send
 
-```ts
-codePages.forEach((row) => {
-  if (row.HuntCode && row.Page) map[row.HuntCode] = row.Page;
-});
-// later: const pageNum = huntCodeMap[row.Tag];
-```
+Please zip and upload your shapefile bundle. A shapefile is actually a set of files that must travel together:
 
-Even though you confirmed the headers are `HuntCode` and `Page`, the lookup can still silently fail from any of:
-- whitespace / casing differences between `row.Tag` in the draw CSV and `HuntCode` in the code_pages CSV
-- a Windows BOM or non-breaking space inside data cells (we strip headers but not values)
-- a numeric `Page` column being read as `0` for some rows (falsy)
-- a delimiter mismatch (tab vs comma) leaving the row as one big field
+- `units.shp` (geometry)
+- `units.dbf` (attributes — needs a column with the unit number, e.g. `GMUID` or `UNIT`)
+- `units.shx` (index)
+- `units.prj` (projection — important so I can reproject to WGS84/lat-lon for the web map)
+- optional: `.cpg`
 
-## Plan
+I'll convert that to a single optimized **GeoJSON** file (reprojected to EPSG:4326, simplified to keep the file small/fast), commit it under `public/data/colorado_gmu.geojson`, and load it client-side. If you happen to already have a GeoJSON export, send that instead and we skip the conversion.
 
-1. **Make the lookup tolerant** in all three draw tables (`ElkDrawTableNew.tsx`, `AntelopeDrawTableNew.tsx`, `DeerDrawTableNew.tsx`):
-   - Normalize keys with `String(row.HuntCode ?? '').replace(/\uFEFF/g,'').replace(/\u00A0/g,' ').trim().toUpperCase()`.
-   - Accept any non-empty `Page` (including `"0"` if present) by checking `!= null && String(...).trim() !== ''`.
-   - Look up using the same normalization on `row.Tag`.
-   - Render the link whenever `pageNum` is a non-empty string.
+Before sending, please tell me the **exact name of the attribute column that holds the unit number** so the labels render correctly.
 
-2. **Add a one-time dev console log** in each table (gated on `import.meta.env.DEV`) printing:
-   - `codePages.length`, the keys of the first row, and the size of `huntCodeMap`.
-   This will immediately reveal if the file is parsing as 0 rows, missing the expected columns, or producing an empty map — and we can remove it once confirmed working.
+### Page behavior
 
-3. **Bump `CSV_VERSION`** in `src/utils/csvVersion.ts` from `"3"` to `"4"` so the edge function's 5-minute cache and any browser cache are bypassed for the new files.
+- Route: `/unit_map`, public (no auth gate), added to `App.tsx` above the catch-all.
+- Google Maps JS API loaded via the existing Google Maps connector browser key (`VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`), async with `callback=initMap`, no `mapId`.
+- Map initialized at Colorado center (~39.55, -105.78), zoom 7, `mapTypeId: 'hybrid'` (satellite + road/place labels). Standard zoom/pan controls enabled.
+- GeoJSON loaded via `map.data.loadGeoJson('/data/colorado_gmu.geojson')`.
+- Boundary style: semi-transparent fill, solid stroke in the brand mid-green (`#598749`), 1.5–2px. Hover state thickens the stroke.
+- Unit number labels: for each feature, compute a label point (use `turf.pointOnFeature` or a simple centroid for convex units) and place a `google.maps.Marker` with a transparent icon and a styled `label` showing the unit number. Labels are kept readable with a white text-shadow / outline.
+- Optional small refinement: hide labels below zoom 7 to avoid clutter (toggle marker visibility on `zoom_changed`).
+- Click a unit → info window with the unit number (room to add more later).
 
-No backend, schema, or styling changes. Scope is limited to the three Draw `*New.tsx` tables and the CSV version constant.
+### Technical section
 
-## Verification
+Files to add/change:
 
-After the change, open the Elk/Pronghorn/Deer Draw pages and confirm:
-- Hunt Code cells render as clickable links again.
-- The dev console shows a non-zero `huntCodeMap` size and the expected first-row keys (`HuntCode`, `Page`).
+- `src/pages/UnitMap.tsx` — the page component. Loads the Maps JS API once via a small loader effect, defines `window.initMap`, creates the map, loads the GeoJSON, styles features, generates centroid markers from the loaded features (inside the `addfeature` data event), wires click handler.
+- `src/App.tsx` — import `UnitMap` and add `<Route path="/unit_map" element={<UnitMap />} />` above the `*` route.
+- `public/data/colorado_gmu.geojson` — converted boundary data (added once you upload the shapefile).
+- Add `@turf/turf` (or just `@turf/centroid` + `@turf/point-on-feature`) for reliable label placement inside concave polygons.
 
-If the map is still empty after normalization, the console log will tell us exactly what's in the CSV so we can adjust (e.g., a renamed column or wrong delimiter).
+No backend, edge function, or DB changes — the GeoJSON is static and the map runs entirely client-side using the already-configured Google Maps connector.
+
+### What I need from you to proceed
+
+1. Zip and upload the shapefile bundle (`.shp`, `.dbf`, `.shx`, `.prj`, optional `.cpg`).
+2. The attribute column name that holds the unit number.
+3. Confirm you'd like me to also link `/unit_map` from the nav, or leave it as a direct URL only for now.
