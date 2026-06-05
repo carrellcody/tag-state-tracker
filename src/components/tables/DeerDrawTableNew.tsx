@@ -564,9 +564,19 @@ export function DeerDrawTableNew() {
                       </div>
                     </th>
                   ))}
+                  {yearGroupedColumns['2025'].map(col => (
+                    <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
+                      <div className="flex items-center gap-1">
+                        <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
+                          <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
+                          {sortColumn === col && (sortDirection === "asc" ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />)}
+                        </div>
+                      </div>
+                    </th>
+                  ))}
                 </>
               )}
-              {yearGroupedColumns['2025'].map(col => (
+              {yearGroupedColumns['2026'].map(col => (
                 <th key={col} className="border border-border p-2 text-left text-primary-foreground relative">
                   <div className="flex items-center gap-1">
                     <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
