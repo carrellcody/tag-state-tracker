@@ -1037,6 +1037,8 @@ export function ElkDrawTableNew() {
                           "Chance_at_DOL23",
                           "Drawn_out_level24",
                           "Chance_at_DOL24",
+                          "Drawn_out_level25",
+                          "Chance_at_DOL25",
                         ].includes(col);
                         const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? "bg-hybrid-highlight" : "";
 
