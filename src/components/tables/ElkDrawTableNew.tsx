@@ -91,6 +91,7 @@ export function ElkDrawTableNew() {
     setCurrentPage(1);
   }, [
     unitSearch,
+    huntCodeFilter,
     sexFilter,
     seasonWeapons,
     hunterClass,
