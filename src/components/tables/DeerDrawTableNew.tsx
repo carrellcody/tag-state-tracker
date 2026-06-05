@@ -46,6 +46,7 @@ export function DeerDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("deerDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("deerDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("deerDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("deerDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("deerDrawNew_hunterClass", "A_R");
