@@ -1,45 +1,15 @@
-## /unit_map page
+## Problem
 
-A new public page that shows Colorado satellite imagery with Game Management Unit (GMU) boundaries overlaid, and the unit number labeled at the center of each unit. Users can pan and zoom.
+The `/unit_map` page shows "Google Maps browser key is not configured" because the Google Maps Platform connector isn't linked to this project yet. The code expects `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`, which gets injected automatically once the connector is connected.
 
-### Boundary data — what to send
+## Plan
 
-Please zip and upload your shapefile bundle. A shapefile is actually a set of files that must travel together:
+1. Link the Lovable-managed Google Maps Platform connector to the project (no API key needed from you — Lovable provides it).
+2. Restart the dev preview so the new env variable is picked up.
+3. Verify the map loads at `/unit_map` with Colorado satellite imagery, GMU boundaries, and unit-number labels.
 
-- `units.shp` (geometry)
-- `units.dbf` (attributes — needs a column with the unit number, e.g. `GMUID` or `UNIT`)
-- `units.shx` (index)
-- `units.prj` (projection — important so I can reproject to WGS84/lat-lon for the web map)
-- optional: `.cpg`
+## Notes
 
-I'll convert that to a single optimized **GeoJSON** file (reprojected to EPSG:4326, simplified to keep the file small/fast), commit it under `public/data/colorado_gmu.geojson`, and load it client-side. If you happen to already have a GeoJSON export, send that instead and we skip the conversion.
-
-Before sending, please tell me the **exact name of the attribute column that holds the unit number** so the labels render correctly.
-
-### Page behavior
-
-- Route: `/unit_map`, public (no auth gate), added to `App.tsx` above the catch-all.
-- Google Maps JS API loaded via the existing Google Maps connector browser key (`VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`), async with `callback=initMap`, no `mapId`.
-- Map initialized at Colorado center (~39.55, -105.78), zoom 7, `mapTypeId: 'hybrid'` (satellite + road/place labels). Standard zoom/pan controls enabled.
-- GeoJSON loaded via `map.data.loadGeoJson('/data/colorado_gmu.geojson')`.
-- Boundary style: semi-transparent fill, solid stroke in the brand mid-green (`#598749`), 1.5–2px. Hover state thickens the stroke.
-- Unit number labels: for each feature, compute a label point (use `turf.pointOnFeature` or a simple centroid for convex units) and place a `google.maps.Marker` with a transparent icon and a styled `label` showing the unit number. Labels are kept readable with a white text-shadow / outline.
-- Optional small refinement: hide labels below zoom 7 to avoid clutter (toggle marker visibility on `zoom_changed`).
-- Click a unit → info window with the unit number (room to add more later).
-
-### Technical section
-
-Files to add/change:
-
-- `src/pages/UnitMap.tsx` — the page component. Loads the Maps JS API once via a small loader effect, defines `window.initMap`, creates the map, loads the GeoJSON, styles features, generates centroid markers from the loaded features (inside the `addfeature` data event), wires click handler.
-- `src/App.tsx` — import `UnitMap` and add `<Route path="/unit_map" element={<UnitMap />} />` above the `*` route.
-- `public/data/colorado_gmu.geojson` — converted boundary data (added once you upload the shapefile).
-- Add `@turf/turf` (or just `@turf/centroid` + `@turf/point-on-feature`) for reliable label placement inside concave polygons.
-
-No backend, edge function, or DB changes — the GeoJSON is static and the map runs entirely client-side using the already-configured Google Maps connector.
-
-### What I need from you to proceed
-
-1. Zip and upload the shapefile bundle (`.shp`, `.dbf`, `.shx`, `.prj`, optional `.cpg`).
-2. The attribute column name that holds the unit number.
-3. Confirm you'd like me to also link `/unit_map` from the nav, or leave it as a direct URL only for now.
+- The managed key is referrer-restricted to `*.lovable.app` / `*.lovableproject.com`, so it will work in preview and on `tag-state-tracker.lovable.app`.
+- On your custom domains (`tallotags.com`, `taggout.com`) the managed key will not work — you'd need your own Google Cloud API key with those domains in the referrer allowlist. Let me know if you want to set that up now or later.
+- No code changes are required; `UnitMap.tsx` is already wired to the expected env variable.
