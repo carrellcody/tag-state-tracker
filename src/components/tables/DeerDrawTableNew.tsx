@@ -342,7 +342,10 @@ export function DeerDrawTableNew() {
         <div className="flex items-center justify-between">
           <Label className="text-sm leading-tight">Show tags that don't require burning your preference points (Leftover / Choice 2-4)</Label>
           <Switch checked={showNoPointsOnly} onCheckedChange={setShowNoPointsOnly} />
-        </div>
+      </div>
+
+      <HuntCodeSearchFilter allCodes={allHuntCodes} selected={huntCodeFilter} onChange={setHuntCodeFilter} />
+
       </div>
 
       <div className="space-y-2">
