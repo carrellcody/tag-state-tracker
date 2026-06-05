@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from "./TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -54,6 +55,7 @@ export function ElkDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("elkDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("elkDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("elkDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("elkDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("elkDrawNew_hunterClass", "A_R");
@@ -89,6 +91,7 @@ export function ElkDrawTableNew() {
     setCurrentPage(1);
   }, [
     unitSearch,
+    huntCodeFilter,
     sexFilter,
     seasonWeapons,
     hunterClass,
@@ -177,8 +180,15 @@ export function ElkDrawTableNew() {
     return map;
   }, [subtableData]);
 
+  const allHuntCodes = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r: any) => { if (r?.Tag) set.add(String(r.Tag)); });
+    return Array.from(set).sort();
+  }, [data]);
+
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
       const isNewTag = String(row.New || "").trim() === "New";
       const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
@@ -252,6 +262,7 @@ export function ElkDrawTableNew() {
   }, [
     data,
     unitSearch,
+    huntCodeFilter,
     sexFilter,
     seasonWeapons,
     hunterClass,
@@ -508,6 +519,9 @@ export function ElkDrawTableNew() {
           <Label>Search Units</Label>
           <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={(e) => setUnitSearch(e.target.value)} />
         </div>
+
+        <HuntCodeSearchFilter allCodes={allHuntCodes} selected={huntCodeFilter} onChange={setHuntCodeFilter} />
+
 
         <div className="space-y-2">
           <Label>Your Elk Preference Points</Label>

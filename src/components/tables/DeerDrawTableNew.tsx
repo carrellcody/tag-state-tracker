@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from './TableHeaderHelp';
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -45,6 +46,7 @@ export function DeerDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("deerDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("deerDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("deerDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("deerDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("deerDrawNew_hunterClass", "A_R");
@@ -75,7 +77,7 @@ export function DeerDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -134,8 +136,15 @@ export function DeerDrawTableNew() {
     return map;
   }, [subtableData]);
 
+  const allHuntCodes = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r: any) => { if (r?.Tag) set.add(String(r.Tag)); });
+    return Array.from(set).sort();
+  }, [data]);
+
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
       const isNewTag = String(row.New || '').trim() === 'New';
       const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
@@ -192,7 +201,7 @@ export function DeerDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -333,7 +342,10 @@ export function DeerDrawTableNew() {
         <div className="flex items-center justify-between">
           <Label className="text-sm leading-tight">Show tags that don't require burning your preference points (Leftover / Choice 2-4)</Label>
           <Switch checked={showNoPointsOnly} onCheckedChange={setShowNoPointsOnly} />
-        </div>
+      </div>
+
+      <HuntCodeSearchFilter allCodes={allHuntCodes} selected={huntCodeFilter} onChange={setHuntCodeFilter} />
+
       </div>
 
       <div className="space-y-2">

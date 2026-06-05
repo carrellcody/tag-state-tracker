@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from '@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from './TableHeaderHelp';
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -45,6 +46,7 @@ export function AntelopeDrawTableNew() {
   const [expandedRows, setExpandedRows] = useState<Set<number>>(new Set());
   const [showMobileFilters, setShowMobileFilters] = useState(true);
   const [unitSearch, setUnitSearch] = usePersistedState("antelopeDrawNew_unitSearch", "");
+  const [huntCodeFilter, setHuntCodeFilter] = usePersistedState<string[]>("antelopeDrawNew_huntCodeFilter", []);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("antelopeDrawNew_sexFilter", ["All"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("antelopeDrawNew_seasonWeapons", ["Any"]);
   const [hunterClass, setHunterClass] = usePersistedState("antelopeDrawNew_hunterClass", "A_R");
@@ -75,7 +77,7 @@ export function AntelopeDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -134,8 +136,15 @@ export function AntelopeDrawTableNew() {
     return map;
   }, [subtableData]);
 
+  const allHuntCodes = useMemo(() => {
+    const set = new Set<string>();
+    data.forEach((r: any) => { if (r?.Tag) set.add(String(r.Tag)); });
+    return Array.from(set).sort();
+  }, [data]);
+
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
+      if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
       const isNewTag = String(row.New || '').trim() === 'New';
       const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
@@ -192,7 +201,7 @@ export function AntelopeDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -340,6 +349,9 @@ export function AntelopeDrawTableNew() {
         <Label>Search Units</Label>
         <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={e => setUnitSearch(e.target.value)} />
       </div>
+
+      <HuntCodeSearchFilter allCodes={allHuntCodes} selected={huntCodeFilter} onChange={setHuntCodeFilter} />
+
 
       <div className="space-y-2">
         <Label>Your Pronghorn Preference Points</Label>
