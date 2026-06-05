@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import pointOnFeature from "@turf/point-on-feature";
+import type { Feature, GeoJsonProperties, Geometry } from "geojson";
 import { SEOHead } from "@/components/SEOHead";
 
 // The attribute key on each GeoJSON feature that holds the unit number.
@@ -15,25 +16,46 @@ const COLORADO_CENTER = { lat: 39.0, lng: -105.55 };
 const INITIAL_ZOOM = 7;
 const LABEL_MIN_ZOOM = 6;
 
+type GeoJsonFeature = Feature<Geometry, GeoJsonProperties>;
+type GoogleMapFeature = {
+  getProperty?: (name: string) => unknown;
+  toGeoJson: (callback: (feature: GeoJsonFeature) => void) => void;
+};
+type GoogleMapFeatureEvent = { feature: GoogleMapFeature; latLng?: unknown };
+type GoogleMarker = { setVisible: (visible: boolean) => void; setMap: (map: null) => void };
+type GoogleMapData = {
+  setStyle: (style: Record<string, unknown>) => void;
+  addListener: (eventName: string, handler: (event: GoogleMapFeatureEvent) => void) => void;
+  overrideStyle: (feature: GoogleMapFeature, style: Record<string, unknown>) => void;
+  revertStyle: () => void;
+  loadGeoJson: (url: string, options: unknown, callback: () => void) => void;
+};
+type GoogleMap = {
+  data: GoogleMapData;
+  getZoom: () => number | undefined;
+  addListener: (eventName: string, handler: () => void) => void;
+};
+type GoogleMapsNamespace = {
+  maps: {
+    Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
+    InfoWindow: new () => {
+      setContent: (content: string) => void;
+      setPosition: (position: unknown) => void;
+      open: (map: GoogleMap) => void;
+    };
+    Marker: new (options: Record<string, unknown>) => GoogleMarker;
+    SymbolPath: { CIRCLE: unknown };
+  };
+};
+
 declare global {
   interface Window {
     initUnitMap?: () => void;
-    google?: any;
+    google?: GoogleMapsNamespace;
   }
 }
 
-function pickUnitNumber(props: Record<string, unknown> | null): string | null {
-  if (!props) return null;
-  for (const key of UNIT_PROPERTY_CANDIDATES) {
-    const v = props[key];
-    if (v !== undefined && v !== null && String(v).trim() !== "") {
-      return String(v);
-    }
-  }
-  return null;
-}
-
-function pickUnitNumberFromFeature(feature: any): string | null {
+function pickUnitNumberFromFeature(feature: GoogleMapFeature): string | null {
   for (const key of UNIT_PROPERTY_CANDIDATES) {
     const v = feature.getProperty?.(key);
     if (v !== undefined && v !== null && String(v).trim() !== "") {
@@ -52,8 +74,8 @@ function getCssHslToken(tokenName: string): string {
 
 const UnitMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const mapInstanceRef = useRef<any>(null);
-  const labelMarkersRef = useRef<any[]>([]);
+  const mapInstanceRef = useRef<GoogleMap | null>(null);
+  const labelMarkersRef = useRef<GoogleMarker[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState<string>("");
 
