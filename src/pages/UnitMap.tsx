@@ -110,7 +110,7 @@ const UnitMap: React.FC = () => {
         strokeWeight: 1.6,
       });
 
-      map.data.addListener("mouseover", (e: any) => {
+      map.data.addListener("mouseover", (e: GoogleMapFeatureEvent) => {
         map.data.overrideStyle(e.feature, { strokeWeight: 3, fillOpacity: 0.18 });
       });
       map.data.addListener("mouseout", () => {
@@ -118,7 +118,7 @@ const UnitMap: React.FC = () => {
       });
 
       const infoWindow = new window.google.maps.InfoWindow();
-      map.data.addListener("click", (e: any) => {
+      map.data.addListener("click", (e: GoogleMapFeatureEvent) => {
         const unit = pickUnitNumberFromFeature(e.feature);
         if (!unit) return;
         infoWindow.setContent(
@@ -128,12 +128,12 @@ const UnitMap: React.FC = () => {
         infoWindow.open(map);
       });
 
-      const addLabelForFeature = (feature: any) => {
+      const addLabelForFeature = (feature: GoogleMapFeature) => {
         const unit = pickUnitNumberFromFeature(feature);
         if (!unit) return;
-        feature.toGeoJson((gj: any) => {
+        feature.toGeoJson((gj: GeoJsonFeature) => {
           try {
-            const pt = pointOnFeature(gj as any);
+            const pt = pointOnFeature(gj);
             const [lng, lat] = pt.geometry.coordinates;
             const marker = new window.google.maps.Marker({
               position: { lat, lng },
@@ -161,7 +161,7 @@ const UnitMap: React.FC = () => {
         });
       };
 
-      map.data.addListener("addfeature", (e: any) => addLabelForFeature(e.feature));
+      map.data.addListener("addfeature", (e: GoogleMapFeatureEvent) => addLabelForFeature(e.feature));
 
       const updateLabelVisibility = () => {
         const visible = (map.getZoom() ?? INITIAL_ZOOM) >= LABEL_MIN_ZOOM;
