@@ -622,7 +622,7 @@ export function DeerDrawTableNew() {
                       }
                     }
                     const isHybrid = isHybridEligible(row);
-                    const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24'].includes(col);
+                    const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24', 'Drawn_out_level25', 'Chance_at_DOL25'].includes(col);
                     const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? 'bg-hybrid-highlight' : '';
 
                     return <td key={col} className={`border border-border p-2 ${hybridHighlightClass}`} style={col === "Valid GMUs" || col === "Notes" ? { maxWidth: "150px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } : {}}>
