@@ -201,7 +201,7 @@ export function AntelopeDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
