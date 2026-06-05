@@ -77,7 +77,7 @@ export function AntelopeDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
