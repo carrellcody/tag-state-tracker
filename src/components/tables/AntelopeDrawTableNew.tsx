@@ -350,6 +350,9 @@ export function AntelopeDrawTableNew() {
         <Input placeholder="e.g. 10, 1, 15" value={unitSearch} onChange={e => setUnitSearch(e.target.value)} />
       </div>
 
+      <HuntCodeSearchFilter allCodes={allHuntCodes} selected={huntCodeFilter} onChange={setHuntCodeFilter} />
+
+
       <div className="space-y-2">
         <Label>Your Pronghorn Preference Points</Label>
         <div className="flex items-center gap-2">
