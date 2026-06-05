@@ -45,6 +45,7 @@ import AdminUpload from "./pages/AdminUpload";
 import AdminDashboard from "./pages/AdminDashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Leftovers from "./pages/Leftovers";
+import UnitMap from "./pages/UnitMap";
 
 const queryClient = new QueryClient();
 
@@ -96,6 +97,7 @@ const App = () => (
               <Route path="/admin/upload" element={<AdminUpload />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/leftovers" element={<Leftovers />} />
+              <Route path="/unit_map" element={<UnitMap />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
