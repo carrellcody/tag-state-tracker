@@ -5,7 +5,8 @@ import { Link, Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download, Mail, Send, FlaskConical } from "lucide-react";
+import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download, Mail, Send, FlaskConical, ShieldCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 
@@ -42,6 +43,34 @@ const AdminDashboard: React.FC = () => {
   const [sendingTest, setSendingTest] = useState(false);
   const [recentRuns, setRecentRuns] = useState<any[]>([]);
   const [runsLoading, setRunsLoading] = useState(false);
+  const [grantTarget, setGrantTarget] = useState("");
+  const [grantBusy, setGrantBusy] = useState<"grant" | "revoke" | null>(null);
+
+  const runGrant = async (action: "grant" | "revoke") => {
+    const target = grantTarget.trim();
+    if (!target) {
+      toast({ title: "Enter an email or user ID", variant: "destructive" });
+      return;
+    }
+    if (action === "revoke" && !confirm(`Revoke Pro access from ${target}?`)) return;
+    setGrantBusy(action);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-grant-subscription", {
+        body: { target, action },
+      });
+      if (error) throw error;
+      const p = (data as any)?.profile;
+      toast({
+        title: action === "grant" ? "Pro access granted" : "Pro access revoked",
+        description: p ? `${p.email} → ${p.subscription_status}` : "Done",
+      });
+      setGrantTarget("");
+    } catch (err: any) {
+      toast({ title: "Action failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setGrantBusy(null);
+    }
+  };
 
   const loadRecentRuns = async () => {
     setRunsLoading(true);
@@ -235,6 +264,39 @@ const AdminDashboard: React.FC = () => {
             </CardContent>
           </Card>
         </div>
+
+        {/* Grant Pro access */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" />
+              Grant Pro Access
+            </CardTitle>
+            <CardDescription>
+              Manually grant or revoke Pro for any user by email or user ID. Granting sets a manual override so Stripe sync won't undo it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Input
+              placeholder="user@example.com or user UUID"
+              value={grantTarget}
+              onChange={(e) => setGrantTarget(e.target.value)}
+              disabled={grantBusy !== null}
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => runGrant("grant")} disabled={grantBusy !== null}>
+                {grantBusy === "grant" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
+                Grant Pro
+              </Button>
+              <Button variant="outline" onClick={() => runGrant("revoke")} disabled={grantBusy !== null}>
+                {grantBusy === "revoke" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                Revoke Pro
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+
 
         {/* File list */}
         <Card>
