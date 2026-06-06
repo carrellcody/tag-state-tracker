@@ -265,6 +265,39 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </div>
 
+        {/* Grant Pro access */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-foreground flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5" />
+              Grant Pro Access
+            </CardTitle>
+            <CardDescription>
+              Manually grant or revoke Pro for any user by email or user ID. Granting sets a manual override so Stripe sync won't undo it.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Input
+              placeholder="user@example.com or user UUID"
+              value={grantTarget}
+              onChange={(e) => setGrantTarget(e.target.value)}
+              disabled={grantBusy !== null}
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => runGrant("grant")} disabled={grantBusy !== null}>
+                {grantBusy === "grant" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <ShieldCheck className="h-4 w-4 mr-2" />}
+                Grant Pro
+              </Button>
+              <Button variant="outline" onClick={() => runGrant("revoke")} disabled={grantBusy !== null}>
+                {grantBusy === "revoke" ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : null}
+                Revoke Pro
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+
+
         {/* File list */}
         <Card>
           <CardHeader>
