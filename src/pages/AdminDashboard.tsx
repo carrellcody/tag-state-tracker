@@ -5,7 +5,8 @@ import { Link, Navigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download, Mail, Send, FlaskConical } from "lucide-react";
+import { Loader2, Users, CreditCard, FileText, Upload, Eye, Download, Mail, Send, FlaskConical, ShieldCheck } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { SEOHead } from "@/components/SEOHead";
 import { useToast } from "@/hooks/use-toast";
 
