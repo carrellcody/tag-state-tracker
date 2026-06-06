@@ -1,15 +1,25 @@
-## Problem
+# Grant Pro Access to charles.jerniganii@gmail.com
 
-The `/unit_map` page shows "Google Maps browser key is not configured" because the Google Maps Platform connector isn't linked to this project yet. The code expects `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`, which gets injected automatically once the connector is connected.
+## Why your update is failing
+
+The `profiles` table has a `BEFORE UPDATE` trigger (`prevent_profile_subscription_self_update`) that **raises an exception** any time `subscription_status`, `product_id`, `subscription_end`, `subscription_manual_override`, `stripe_customer_id`, or promo fields change — unless the caller is `service_role` or has the `admin` role.
+
+That trigger fires regardless of RLS, so editing the row from the Lovable Cloud table editor (which runs as `authenticated`, not `service_role`) will always throw `Not allowed to modify subscription-related or identity fields`. That's the error you're seeing.
+
+The right way to grant comp access to this user is to run a service-role UPDATE that also flips on `subscription_manual_override`, so the next `check-subscription` call won't immediately sync Stripe back over the top and downgrade them.
 
 ## Plan
 
-1. Link the Lovable-managed Google Maps Platform connector to the project (no API key needed from you — Lovable provides it).
-2. Restart the dev preview so the new env variable is picked up.
-3. Verify the map loads at `/unit_map` with Colorado satellite imagery, GMU boundaries, and unit-number labels.
+1. Run a service-role UPDATE on `public.profiles` for id `5241f557-cf2d-461a-bf0d-eb9e7d0fbf1b`:
+   - `subscription_status = 'active'`
+   - `product_id = 'prod_TQEkp6iEC7tmTK'` (Pro tier, per project memory)
+   - `subscription_manual_override = true` (so `check-subscription` returns these values verbatim and never overwrites them from Stripe)
+   - `subscription_end = NULL` (manual grants are open-ended; the override flag is what gates access)
+2. Verify with a read query that the row now shows `subscription_status = 'active'` and `subscription_manual_override = true`.
+3. Ask the user to refresh their browser (or sign out / back in) so `AuthContext` re-runs `check-subscription` and picks up Pro entitlements.
 
-## Notes
+## Notes / alternatives
 
-- The managed key is referrer-restricted to `*.lovable.app` / `*.lovableproject.com`, so it will work in preview and on `tag-state-tracker.lovable.app`.
-- On your custom domains (`tallotags.com`, `taggout.com`) the managed key will not work — you'd need your own Google Cloud API key with those domains in the referrer allowlist. Let me know if you want to set that up now or later.
-- No code changes are required; `UnitMap.tsx` is already wired to the expected env variable.
+- If you'd rather this user pay through Stripe normally, the fix instead is to have them complete checkout — do **not** edit the row by hand; the trigger is doing its job.
+- If you want a reusable admin UI for comp grants, that's a separate, larger change (admin page + edge function running as service role). Say the word and I'll plan it.
+- I will **not** modify the trigger or RLS — they're protecting against privilege escalation and should stay.
