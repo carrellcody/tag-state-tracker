@@ -43,6 +43,34 @@ const AdminDashboard: React.FC = () => {
   const [sendingTest, setSendingTest] = useState(false);
   const [recentRuns, setRecentRuns] = useState<any[]>([]);
   const [runsLoading, setRunsLoading] = useState(false);
+  const [grantTarget, setGrantTarget] = useState("");
+  const [grantBusy, setGrantBusy] = useState<"grant" | "revoke" | null>(null);
+
+  const runGrant = async (action: "grant" | "revoke") => {
+    const target = grantTarget.trim();
+    if (!target) {
+      toast({ title: "Enter an email or user ID", variant: "destructive" });
+      return;
+    }
+    if (action === "revoke" && !confirm(`Revoke Pro access from ${target}?`)) return;
+    setGrantBusy(action);
+    try {
+      const { data, error } = await supabase.functions.invoke("admin-grant-subscription", {
+        body: { target, action },
+      });
+      if (error) throw error;
+      const p = (data as any)?.profile;
+      toast({
+        title: action === "grant" ? "Pro access granted" : "Pro access revoked",
+        description: p ? `${p.email} → ${p.subscription_status}` : "Done",
+      });
+      setGrantTarget("");
+    } catch (err: any) {
+      toast({ title: "Action failed", description: err.message ?? "Unknown error", variant: "destructive" });
+    } finally {
+      setGrantBusy(null);
+    }
+  };
 
   const loadRecentRuns = async () => {
     setRunsLoading(true);
