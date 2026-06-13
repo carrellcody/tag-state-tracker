@@ -62,7 +62,7 @@ export default function Home() {
           <h2 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-center">
             Colorado Parks & Wildlife Resources
           </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
             <a
               href="https://cpw.widencollective.com/assets/share/asset/erjzbk48be"
               target="_blank"
@@ -93,6 +93,15 @@ export default function Home() {
             >
               <Button variant="outline" className="w-full h-20">
                 Pronghorn Statistics
+              </Button>
+            </a>
+            <a
+              href="https://cpw.state.co.us/activities/hunting/big-game/hunting-bighorn-sheep/bighorn-sheep-statistics#4257225834-3696779871"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Button variant="outline" className="w-full h-20">
+                Sheep Statistics
               </Button>
             </a>
           </div>
