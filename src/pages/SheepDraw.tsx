@@ -98,8 +98,8 @@ export default function SheepDraw() {
     return data.filter((row) => {
       if (unitSearch.trim()) {
         const terms = unitSearch.split(",").map((s) => s.trim()).filter(Boolean);
-        const unit = String(row.Unit ?? "").trim();
-        if (!terms.some((t) => unit === t)) return false;
+        const unit = String(row.Unit ?? "").trim().toLowerCase();
+        if (!terms.some((t) => unit.includes(t.toLowerCase()))) return false;
       }
       const pts = toNum(row.points);
       if (pts === null || pts < minPoints || pts > maxPoints) return false;
