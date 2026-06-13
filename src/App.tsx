@@ -46,6 +46,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ResetPassword from "./pages/ResetPassword";
 import Leftovers from "./pages/Leftovers";
 import UnitMap from "./pages/UnitMap";
+import SheepDraw from "./pages/SheepDraw";
 
 const queryClient = new QueryClient();
 
@@ -98,6 +99,7 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/leftovers" element={<Leftovers />} />
               <Route path="/unit_map" element={<UnitMap />} />
+              <Route path="/sheep-draw" element={<SheepDraw />} />
               
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
