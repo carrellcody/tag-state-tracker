@@ -83,7 +83,7 @@ export default function SheepDraw() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, minPoints, maxPoints, sexFilter, weaponFilter]);
+  }, [unitSearch, minPoints, maxPoints, sexFilter, weaponFilter, resnrFilter]);
 
   const filtered = useMemo(() => {
     const sexMatches = sexFilter.includes("All")
