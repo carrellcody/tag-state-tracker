@@ -2,19 +2,9 @@ import { useState, useMemo, useEffect } from "react";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
 import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Filter, ChevronUp, ChevronDown } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { SEOHead } from "@/components/SEOHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePersistedState } from "@/hooks/usePersistedState";
@@ -44,6 +34,20 @@ const COLUMNS: { key: keyof SheepRow; label: string }[] = [
   { key: "population", label: "2025 Population estimates" },
 ];
 
+// Sex UI option -> CSV value
+const SEX_OPTIONS: { value: string; label: string; match: string | null }[] = [
+  { value: "All", label: "All", match: null },
+  { value: "Either", label: "Either", match: "Either" },
+  { value: "Male", label: "Male", match: "Ram" },
+  { value: "Female", label: "Female", match: "Ewe" },
+];
+
+const WEAPON_OPTIONS: { value: string; label: string; match: string | null }[] = [
+  { value: "Any", label: "Any", match: null },
+  { value: "Archery", label: "Archery", match: "Archery" },
+  { value: "Rifle", label: "Rifle", match: "Rifle" },
+];
+
 const toNum = (v: any) => {
   const n = parseFloat(String(v ?? "").replace(/[,%$\s]/g, ""));
   return isNaN(n) ? null : n;
@@ -59,30 +63,12 @@ export default function SheepDraw() {
   const [unitSearch, setUnitSearch] = usePersistedState("sheepDraw_unitSearch", "");
   const [minPoints, setMinPoints] = usePersistedState("sheepDraw_minPoints", 0);
   const [maxPoints, setMaxPoints] = usePersistedState("sheepDraw_maxPoints", 30);
-  const [sexFilter, setSexFilter] = usePersistedState<string[]>("sheepDraw_sexFilter", []);
-  const [weaponFilter, setWeaponFilter] = usePersistedState<string[]>("sheepDraw_weaponFilter", []);
+  const [sexFilter, setSexFilter] = usePersistedState<string[]>("sheepDraw_sexFilter", ["All"]);
+  const [weaponFilter, setWeaponFilter] = usePersistedState<string[]>("sheepDraw_weaponFilter", ["Any"]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
-  const sexOptions = useMemo(() => {
-    const s = new Set<string>();
-    data.forEach((r) => {
-      const v = String(r.sex ?? "").trim();
-      if (v) s.add(v);
-    });
-    return Array.from(s).sort();
-  }, [data]);
-
-  const weaponOptions = useMemo(() => {
-    const s = new Set<string>();
-    data.forEach((r) => {
-      const v = String(r.weapon ?? "").trim();
-      if (v) s.add(v);
-    });
-    return Array.from(s).sort();
-  }, [data]);
 
   const pointsBounds = useMemo(() => {
     let max = 0;
@@ -98,6 +84,15 @@ export default function SheepDraw() {
   }, [unitSearch, minPoints, maxPoints, sexFilter, weaponFilter]);
 
   const filtered = useMemo(() => {
+    const sexMatches = sexFilter.includes("All")
+      ? null
+      : SEX_OPTIONS.filter((o) => sexFilter.includes(o.value) && o.match)
+          .map((o) => o.match!.toLowerCase());
+    const weaponMatches = weaponFilter.includes("Any")
+      ? null
+      : WEAPON_OPTIONS.filter((o) => weaponFilter.includes(o.value) && o.match)
+          .map((o) => o.match!.toLowerCase());
+
     return data.filter((row) => {
       if (unitSearch.trim()) {
         const terms = unitSearch.split(",").map((s) => s.trim()).filter(Boolean);
@@ -107,11 +102,13 @@ export default function SheepDraw() {
       const pts = toNum(row.points);
       if (pts === null || pts < minPoints || pts > maxPoints) return false;
 
-      if (sexFilter.length > 0) {
-        if (!sexFilter.includes(String(row.sex ?? "").trim())) return false;
+      if (sexMatches && sexMatches.length > 0) {
+        const v = String(row.sex ?? "").trim().toLowerCase();
+        if (!sexMatches.includes(v)) return false;
       }
-      if (weaponFilter.length > 0) {
-        if (!weaponFilter.includes(String(row.weapon ?? "").trim())) return false;
+      if (weaponMatches && weaponMatches.length > 0) {
+        const v = String(row.weapon ?? "").trim().toLowerCase();
+        if (!weaponMatches.includes(v)) return false;
       }
       return true;
     });
@@ -148,13 +145,34 @@ export default function SheepDraw() {
     }
   };
 
-  const toggleArrayValue = (
-    arr: string[],
-    val: string,
-    setter: (v: string[]) => void
-  ) => {
-    if (arr.includes(val)) setter(arr.filter((v) => v !== val));
-    else setter([...arr, val]);
+  const toggleSex = (value: string, checked: boolean) => {
+    if (value === "All") {
+      setSexFilter(checked ? ["All"] : []);
+    } else {
+      const next = checked
+        ? [...sexFilter.filter((s) => s !== "All"), value]
+        : sexFilter.filter((s) => s !== value);
+      setSexFilter(next.length === 0 ? ["All"] : next);
+    }
+  };
+
+  const toggleWeapon = (value: string, checked: boolean) => {
+    if (value === "Any") {
+      setWeaponFilter(checked ? ["Any"] : []);
+    } else {
+      const next = checked
+        ? [...weaponFilter.filter((s) => s !== "Any"), value]
+        : weaponFilter.filter((s) => s !== value);
+      setWeaponFilter(next.length === 0 ? ["Any"] : next);
+    }
+  };
+
+  const clearFilters = () => {
+    setUnitSearch("");
+    setMinPoints(0);
+    setMaxPoints(pointsBounds.max);
+    setSexFilter(["All"]);
+    setWeaponFilter(["Any"]);
   };
 
   return (
@@ -171,193 +189,213 @@ export default function SheepDraw() {
         </p>
       </div>
 
-      {isMobile && (
-        <div className="mb-2 px-1">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowMobileFilters((v) => !v)}
-            className="w-full"
-          >
-            <Filter className="h-4 w-4 mr-2" />
-            {showMobileFilters ? "Hide" : "Show"} Filters
-          </Button>
-        </div>
-      )}
-
       <div className="flex flex-col lg:flex-row gap-4 h-full">
         <aside
-          className={`w-full lg:w-64 bg-card p-4 rounded-lg border space-y-5 overflow-y-auto ${
+          className={`w-full lg:w-64 bg-card p-4 rounded-lg border space-y-4 overflow-y-auto ${
             !showMobileFilters ? "hidden" : "block"
           } md:block`}
         >
-          <div>
-            <Label htmlFor="unit-search" className="text-sm font-semibold">
-              Unit search
-            </Label>
+          <Button
+            onClick={() => setShowMobileFilters(false)}
+            className="w-full mb-4 md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
+          >
+            Apply filters and view data
+          </Button>
+          <h3 className="font-semibold text-lg">Filters</h3>
+
+          <div className="space-y-2">
+            <Label>Search Units</Label>
             <Input
-              id="unit-search"
               placeholder="e.g. S1, S32"
               value={unitSearch}
               onChange={(e) => setUnitSearch(e.target.value)}
-              className="mt-1"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Comma-separate for multiple units.
-            </p>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-semibold">
-              Minimum bonus points: {minPoints}
-            </Label>
-            <Slider
-              value={[minPoints]}
+            <Label>Minimum Bonus Points: {minPoints}</Label>
+            <input
+              type="range"
               min={pointsBounds.min}
               max={pointsBounds.max}
-              step={1}
-              onValueChange={(v) => setMinPoints(v[0])}
+              value={minPoints}
+              onChange={(e) => setMinPoints(Number(e.target.value))}
+              className="w-full"
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-semibold">
-              Maximum bonus points: {maxPoints}
-            </Label>
-            <Slider
-              value={[maxPoints]}
+            <Label>Maximum Bonus Points: {maxPoints}</Label>
+            <input
+              type="range"
               min={pointsBounds.min}
               max={pointsBounds.max}
-              step={1}
-              onValueChange={(v) => setMaxPoints(v[0])}
+              value={maxPoints}
+              onChange={(e) => setMaxPoints(Number(e.target.value))}
+              className="w-full"
             />
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-semibold">Sex</Label>
-            {sexOptions.length === 0 && (
-              <p className="text-xs text-muted-foreground">No options yet.</p>
-            )}
-            {sexOptions.map((opt) => (
-              <div key={opt} className="flex items-center gap-2">
-                <Checkbox
-                  id={`sex-${opt}`}
-                  checked={sexFilter.includes(opt)}
-                  onCheckedChange={() => toggleArrayValue(sexFilter, opt, setSexFilter)}
-                />
-                <Label htmlFor={`sex-${opt}`} className="text-sm font-normal cursor-pointer">
-                  {opt}
-                </Label>
-              </div>
-            ))}
+            <Label>Sex</Label>
+            <div className="space-y-1">
+              {SEX_OPTIONS.map(({ value, label }) => (
+                <div key={value} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={`sheep-sex-${value}`}
+                    checked={sexFilter.includes(value)}
+                    onChange={(e) => toggleSex(value, e.target.checked)}
+                    className="rounded"
+                  />
+                  <Label htmlFor={`sheep-sex-${value}`} className="cursor-pointer">
+                    {label}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">
-            <Label className="text-sm font-semibold">Weapon</Label>
-            {weaponOptions.length === 0 && (
-              <p className="text-xs text-muted-foreground">No options yet.</p>
-            )}
-            {weaponOptions.map((opt) => (
-              <div key={opt} className="flex items-center gap-2">
-                <Checkbox
-                  id={`weapon-${opt}`}
-                  checked={weaponFilter.includes(opt)}
-                  onCheckedChange={() =>
-                    toggleArrayValue(weaponFilter, opt, setWeaponFilter)
-                  }
-                />
-                <Label
-                  htmlFor={`weapon-${opt}`}
-                  className="text-sm font-normal cursor-pointer"
-                >
-                  {opt}
-                </Label>
-              </div>
-            ))}
+            <Label>Weapon</Label>
+            <div className="space-y-1">
+              {WEAPON_OPTIONS.map(({ value, label }) => (
+                <div key={value} className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id={`sheep-weapon-${value}`}
+                    checked={weaponFilter.includes(value)}
+                    onChange={(e) => toggleWeapon(value, e.target.checked)}
+                    className="rounded"
+                  />
+                  <Label htmlFor={`sheep-weapon-${value}`} className="cursor-pointer">
+                    {label}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <Button variant="outline" className="w-full" onClick={clearFilters}>
+            Clear Filters
+          </Button>
+
+          <Button
+            onClick={() => setShowMobileFilters(false)}
+            className="w-full mt-4 md:hidden shadow-[0_4px_0_0_hsl(180,30%,45%)] hover:shadow-[0_2px_0_0_hsl(180,30%,45%)] hover:translate-y-[2px] active:shadow-none active:translate-y-[4px] transition-all"
+          >
+            Apply filters and view data
+          </Button>
         </aside>
 
-        <div className="flex-1 flex flex-col min-h-0">
+        <main
+          className={`flex-1 overflow-hidden flex flex-col ${
+            showMobileFilters ? "hidden" : "flex"
+          } md:flex`}
+        >
+          <Button
+            onClick={() => setShowMobileFilters(true)}
+            className="mb-4 md:hidden"
+            variant="outline"
+          >
+            <Filter className="w-4 h-4 mr-2" />
+            Filters
+          </Button>
+
+          <div className="mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+            <p className="text-sm text-muted-foreground">
+              {sorted.length} tag{sorted.length === 1 ? "" : "s"} match
+            </p>
+            <div className="flex items-center gap-4 flex-wrap">
+              <p className="text-sm text-muted-foreground">
+                Page {currentPage} of {totalPages}
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage === 1}
+                  onClick={() => setCurrentPage((p) => p - 1)}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={currentPage >= totalPages}
+                  onClick={() => setCurrentPage((p) => p + 1)}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          </div>
+
           {loading ? (
             <div className="p-8 text-center">Loading sheep draw data...</div>
           ) : error ? (
             <div className="p-8 text-center text-destructive">Error: {error}</div>
           ) : (
-            <>
-              <div className="flex-1 overflow-auto border rounded-lg bg-card">
-                <Table>
-                  <TableHeader className="sticky top-0 bg-card z-10">
-                    <TableRow>
-                      {COLUMNS.map((c) => (
-                        <TableHead
-                          key={c.key as string}
+            <div className="overflow-auto flex-1">
+              <table className="w-full border-collapse bg-card">
+                <thead className="sticky top-0 gradient-primary z-10">
+                  <tr>
+                    {COLUMNS.map((c) => (
+                      <th
+                        key={c.key as string}
+                        className="border border-border p-2 text-left text-primary-foreground"
+                      >
+                        <div
+                          className="cursor-pointer flex items-center gap-1"
                           onClick={() => handleSort(c.key as string)}
-                          className="cursor-pointer select-none whitespace-nowrap"
                         >
-                          <span className="inline-flex items-center gap-1">
-                            {c.label}
-                            {sortColumn === c.key &&
-                              (sortDirection === "asc" ? (
-                                <ChevronUp className="h-3 w-3" />
-                              ) : (
-                                <ChevronDown className="h-3 w-3" />
-                              ))}
-                          </span>
-                        </TableHead>
-                      ))}
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {paginated.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={COLUMNS.length} className="text-center py-8 text-muted-foreground">
-                          No matching tags.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      paginated.map((row, i) => (
-                        <TableRow key={i}>
-                          {COLUMNS.map((c) => (
-                            <TableCell key={c.key as string} className="whitespace-nowrap">
-                              {String(row[c.key] ?? "")}
-                            </TableCell>
-                          ))}
-                        </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-
-              <div className="flex items-center justify-between mt-2 px-1 text-sm">
-                <span className="text-muted-foreground">
-                  {sorted.length} result{sorted.length === 1 ? "" : "s"}
-                </span>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    Prev
-                  </Button>
-                  <span>
-                    Page {currentPage} of {totalPages}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
-                    disabled={currentPage >= totalPages}
-                  >
-                    Next
-                  </Button>
-                </div>
-              </div>
-            </>
+                          <span>{c.label}</span>
+                          {sortColumn === c.key &&
+                            (sortDirection === "asc" ? (
+                              <ChevronUp className="w-4 h-4" />
+                            ) : (
+                              <ChevronDown className="w-4 h-4" />
+                            ))}
+                        </div>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {paginated.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={COLUMNS.length}
+                        className="border border-border p-8 text-center text-muted-foreground"
+                      >
+                        No matching tags.
+                      </td>
+                    </tr>
+                  ) : (
+                    paginated.map((row, i) => (
+                      <tr key={i} className="group hover:bg-accent">
+                        {COLUMNS.map((c) => (
+                          <td
+                            key={c.key as string}
+                            className="border border-border p-2"
+                          >
+                            {c.key === "Tag" ? (
+                              <span className="text-primary-dark group-hover:text-primary">
+                                {String(row[c.key] ?? "")}
+                              </span>
+                            ) : (
+                              String(row[c.key] ?? "")
+                            )}
+                          </td>
+                        ))}
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
           )}
-        </div>
+        </main>
       </div>
     </div>
   );
