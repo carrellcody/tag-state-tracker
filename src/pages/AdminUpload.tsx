@@ -35,6 +35,7 @@ const ALLOWED_FILES = [
   "antHarvest24.csv",
   "antOTC25Test.csv",
   "antOTC25.csv",
+  "sheepfinal26.csv",
 ];
 
 interface UploadResult {
