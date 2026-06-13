@@ -21,6 +21,7 @@ type SheepRow = {
   population?: string;
   sex?: string;
   weapon?: string;
+  ResNR?: string;
   [k: string]: any;
 };
 
@@ -65,6 +66,7 @@ export default function SheepDraw() {
   const [maxPoints, setMaxPoints] = usePersistedState("sheepDraw_maxPoints", 30);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("sheepDraw_sexFilter", ["All"]);
   const [weaponFilter, setWeaponFilter] = usePersistedState<string[]>("sheepDraw_weaponFilter", ["Any"]);
+  const [resnrFilter, setResnrFilter] = usePersistedState<string>("sheepDraw_resnrFilter", "All");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -81,7 +83,7 @@ export default function SheepDraw() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, minPoints, maxPoints, sexFilter, weaponFilter]);
+  }, [unitSearch, minPoints, maxPoints, sexFilter, weaponFilter, resnrFilter]);
 
   const filtered = useMemo(() => {
     const sexMatches = sexFilter.includes("All")
@@ -110,9 +112,13 @@ export default function SheepDraw() {
         const v = String(row.weapon ?? "").trim().toLowerCase();
         if (!weaponMatches.includes(v)) return false;
       }
+      if (resnrFilter !== "All") {
+        const v = String(row.ResNR ?? "").trim().toLowerCase();
+        if (v !== resnrFilter.toLowerCase()) return false;
+      }
       return true;
     });
-  }, [data, unitSearch, minPoints, maxPoints, sexFilter, weaponFilter]);
+  }, [data, unitSearch, minPoints, maxPoints, sexFilter, weaponFilter, resnrFilter]);
 
   const sorted = useMemo(() => {
     if (!sortColumn) return filtered;
@@ -173,6 +179,7 @@ export default function SheepDraw() {
     setMaxPoints(pointsBounds.max);
     setSexFilter(["All"]);
     setWeaponFilter(["Any"]);
+    setResnrFilter("All");
   };
 
   return (
@@ -234,6 +241,31 @@ export default function SheepDraw() {
               onChange={(e) => setMaxPoints(Number(e.target.value))}
               className="w-full"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Residency</Label>
+            <div className="space-y-1">
+              {[
+                { value: "All", label: "All" },
+                { value: "Res", label: "Resident" },
+                { value: "NR", label: "Non-Resident" },
+              ].map(({ value, label }) => (
+                <div key={value} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id={`sheep-resnr-${value}`}
+                    name="sheep-resnr"
+                    checked={resnrFilter === value}
+                    onChange={() => setResnrFilter(value)}
+                    className="rounded-full"
+                  />
+                  <Label htmlFor={`sheep-resnr-${value}`} className="cursor-pointer">
+                    {label}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">
