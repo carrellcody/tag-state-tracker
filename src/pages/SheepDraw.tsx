@@ -179,6 +179,7 @@ export default function SheepDraw() {
     setMaxPoints(pointsBounds.max);
     setSexFilter(["All"]);
     setWeaponFilter(["Any"]);
+    setResnrFilter("All");
   };
 
   return (
@@ -240,6 +241,31 @@ export default function SheepDraw() {
               onChange={(e) => setMaxPoints(Number(e.target.value))}
               className="w-full"
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>Residency</Label>
+            <div className="space-y-1">
+              {[
+                { value: "All", label: "All" },
+                { value: "Res", label: "Resident" },
+                { value: "NR", label: "Non-Resident" },
+              ].map(({ value, label }) => (
+                <div key={value} className="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    id={`sheep-resnr-${value}`}
+                    name="sheep-resnr"
+                    checked={resnrFilter === value}
+                    onChange={() => setResnrFilter(value)}
+                    className="rounded-full"
+                  />
+                  <Label htmlFor={`sheep-resnr-${value}`} className="cursor-pointer">
+                    {label}
+                  </Label>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div className="space-y-2">
