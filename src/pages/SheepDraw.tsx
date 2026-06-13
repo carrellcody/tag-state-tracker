@@ -21,6 +21,7 @@ type SheepRow = {
   population?: string;
   sex?: string;
   weapon?: string;
+  ResNR?: string;
   [k: string]: any;
 };
 
