@@ -28,7 +28,7 @@ type SheepRow = {
 const COLUMNS: { key: keyof SheepRow; label: string }[] = [
   { key: "Tag", label: "Tag" },
   { key: "Unit", label: "Unit" },
-  { key: "points", label: "Bonus Points" },
+  { key: "points", label: "Weighted Points" },
   { key: "applicants", label: "Applicants" },
   { key: "draw_odds_pct", label: "Draw odds for an individual" },
   { key: "Successful", label: "2025 Successful applicants" },
@@ -220,7 +220,7 @@ export default function SheepDraw() {
           </div>
 
           <div className="space-y-2">
-            <Label>Minimum Bonus Points: {minPoints}</Label>
+            <Label>Minimum Weighted Points: {minPoints}</Label>
             <input
               type="range"
               min={pointsBounds.min}
@@ -232,7 +232,7 @@ export default function SheepDraw() {
           </div>
 
           <div className="space-y-2">
-            <Label>Maximum Bonus Points: {maxPoints}</Label>
+            <Label>Maximum Weighted Points: {maxPoints}</Label>
             <input
               type="range"
               min={pointsBounds.min}
