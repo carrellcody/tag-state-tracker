@@ -66,6 +66,7 @@ export default function SheepDraw() {
   const [maxPoints, setMaxPoints] = usePersistedState("sheepDraw_maxPoints", 30);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("sheepDraw_sexFilter", ["All"]);
   const [weaponFilter, setWeaponFilter] = usePersistedState<string[]>("sheepDraw_weaponFilter", ["Any"]);
+  const [resnrFilter, setResnrFilter] = usePersistedState<string>("sheepDraw_resnrFilter", "All");
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
