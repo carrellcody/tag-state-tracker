@@ -112,9 +112,13 @@ export default function SheepDraw() {
         const v = String(row.weapon ?? "").trim().toLowerCase();
         if (!weaponMatches.includes(v)) return false;
       }
+      if (resnrFilter !== "All") {
+        const v = String(row.ResNR ?? "").trim().toLowerCase();
+        if (v !== resnrFilter.toLowerCase()) return false;
+      }
       return true;
     });
-  }, [data, unitSearch, minPoints, maxPoints, sexFilter, weaponFilter]);
+  }, [data, unitSearch, minPoints, maxPoints, sexFilter, weaponFilter, resnrFilter]);
 
   const sorted = useMemo(() => {
     if (!sortColumn) return filtered;
