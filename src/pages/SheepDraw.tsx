@@ -31,12 +31,12 @@ type SheepRow = {
 const COLUMNS: { key: keyof SheepRow; label: string }[] = [
   { key: "Tag", label: "Tag" },
   { key: "Unit", label: "Unit" },
+  { key: "Quota", label: "Total Quota" },
+  { key: "population", label: "2025 Population estimates" },
   { key: "points", label: "Weighted Points" },
   { key: "applicants", label: "Applicants" },
   { key: "draw_odds_pct", label: "Draw odds for an individual" },
   { key: "Successful", label: "2025 Successful applicants" },
-  { key: "Quota", label: "Total Quota" },
-  { key: "population", label: "2025 Population estimates" },
 ];
 
 // Sex UI option -> CSV value
