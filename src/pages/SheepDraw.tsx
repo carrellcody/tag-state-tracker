@@ -35,6 +35,7 @@ const COLUMNS: { key: keyof SheepRow; label: string }[] = [
   { key: "applicants", label: "Applicants" },
   { key: "draw_odds_pct", label: "Draw odds for an individual" },
   { key: "Successful", label: "2025 Successful applicants" },
+  { key: "Quota", label: "Total Quota" },
   { key: "population", label: "2025 Population estimates" },
 ];
 
@@ -443,7 +444,7 @@ function SheepDrawContent() {
                     </tr>
                   ) : (
                     paginated.map((row, i) => {
-                      const mergeKeys = ["Tag", "Unit", "population"];
+                      const mergeKeys = ["Tag", "Unit", "population", "Quota"];
                       const tag = String(row.Tag ?? "");
                       const prevTag = i > 0 ? String(paginated[i - 1].Tag ?? "") : null;
                       const isFirstOfGroup = tag !== prevTag;
