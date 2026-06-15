@@ -58,6 +58,41 @@ const toNum = (v: any) => {
 };
 
 export default function SheepDraw() {
+  const { user, subscriptionStatus, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
+  const tier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasAccess = !!user && tier === "pro";
+
+  if (!authLoading && !hasAccess) {
+    return (
+      <div className="container mx-auto pt-2 pb-10 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <SEOHead
+          title="Colorado Bighorn Sheep Draw Odds 2026 | TalloTags"
+          description="Colorado bighorn sheep draw odds, applicants, success and population estimates for 2026."
+          canonicalPath="/sheep-draw"
+        />
+        <h1 className="text-3xl font-bold mb-3">Colorado Bighorn Sheep Draw Odds</h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          Access to sheep draw statistics requires a Pro membership.
+        </p>
+        <Button
+          size="lg"
+          onClick={() => navigate(user ? "/subscription" : "/auth")}
+        >
+          Sign up for access! - 30 day free trial, cancel anytime
+        </Button>
+      </div>
+    );
+  }
+
+  if (authLoading) {
+    return <div className="container mx-auto p-8 text-center">Loading...</div>;
+  }
+
+  return <SheepDrawContent />;
+}
+
+function SheepDrawContent() {
   const { data, loading, error } = useCsvData<SheepRow>(
     `/data/sheepfinal26.csv?v=${CSV_VERSION}`
   );
