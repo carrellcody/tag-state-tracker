@@ -442,24 +442,42 @@ function SheepDrawContent() {
                       </td>
                     </tr>
                   ) : (
-                    paginated.map((row, i) => (
-                      <tr key={i} className="group hover:bg-accent">
-                        {COLUMNS.map((c) => (
-                          <td
-                            key={c.key as string}
-                            className="border border-border p-2"
-                          >
-                            {c.key === "Tag" ? (
-                              <span className="text-primary-dark group-hover:text-primary">
-                                {String(row[c.key] ?? "")}
-                              </span>
-                            ) : (
-                              String(row[c.key] ?? "")
-                            )}
-                          </td>
-                        ))}
-                      </tr>
-                    ))
+                    paginated.map((row, i) => {
+                      const mergeKeys = ["Tag", "Unit", "population"];
+                      const tag = String(row.Tag ?? "");
+                      const prevTag = i > 0 ? String(paginated[i - 1].Tag ?? "") : null;
+                      const isFirstOfGroup = tag !== prevTag;
+                      let rowSpan = 1;
+                      if (isFirstOfGroup) {
+                        for (let j = i + 1; j < paginated.length; j++) {
+                          if (String(paginated[j].Tag ?? "") === tag) rowSpan++;
+                          else break;
+                        }
+                      }
+                      return (
+                        <tr key={i} className="group hover:bg-accent">
+                          {COLUMNS.map((c) => {
+                            const isMergeCol = mergeKeys.includes(c.key as string);
+                            if (isMergeCol && !isFirstOfGroup) return null;
+                            return (
+                              <td
+                                key={c.key as string}
+                                rowSpan={isMergeCol ? rowSpan : 1}
+                                className="border border-border p-2 align-top"
+                              >
+                                {c.key === "Tag" ? (
+                                  <span className="text-primary-dark group-hover:text-primary">
+                                    {String(row[c.key] ?? "")}
+                                  </span>
+                                ) : (
+                                  String(row[c.key] ?? "")
+                                )}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
