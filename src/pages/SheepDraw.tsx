@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
 import { Input } from "@/components/ui/input";
@@ -8,6 +9,8 @@ import { Filter, ChevronUp, ChevronDown } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { usePersistedState } from "@/hooks/usePersistedState";
+import { useAuth } from "@/contexts/AuthContext";
+import { getTierFromProductId } from "@/utils/subscriptionTiers";
 
 const ROWS_PER_PAGE = 50;
 
