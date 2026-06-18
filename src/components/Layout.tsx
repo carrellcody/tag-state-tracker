@@ -102,6 +102,16 @@ export default function Layout({ children }: LayoutProps) {
         },
       ],
     },
+    {
+      label: "Sheep",
+      type: "sheep" as const,
+      items: [
+        {
+          to: "/sheep-draw",
+          label: "Draw Stats",
+        },
+      ],
+    },
   ];
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
   // While loading, assume user has access to avoid greying out menus prematurely
