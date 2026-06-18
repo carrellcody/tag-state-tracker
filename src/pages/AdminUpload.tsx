@@ -36,6 +36,7 @@ const ALLOWED_FILES = [
   "antOTC25Test.csv",
   "antOTC25.csv",
   "sheepfinal26.csv",
+  "secondarydraw26.csv",
 ];
 
 interface UploadResult {
