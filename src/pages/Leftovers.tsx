@@ -415,8 +415,9 @@ export default function Leftovers() {
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col lg:min-h-0 min-w-0">
-                  <div className="overflow-auto flex-1 lg:min-h-0 min-w-0 w-full border rounded-md">
-                    <table className="min-w-[1120px] w-full caption-bottom text-sm">
+                  <div className="flex-1 lg:min-h-0 min-w-0 w-full overflow-x-auto touch-pan-x pb-2">
+                    <div className="min-w-[1500px] h-full lg:min-h-0 overflow-y-auto border rounded-md">
+                      <table className="w-full caption-bottom text-sm">
                       <thead className="[&_tr]:border-b">
                         <tr className="border-b transition-colors">
                           {COLUMNS.map((c) => (
@@ -451,7 +452,8 @@ export default function Leftovers() {
                           ))
                         )}
                       </tbody>
-                    </table>
+                      </table>
+                    </div>
                   </div>
                   <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
                     <div className="text-xs text-muted-foreground">
