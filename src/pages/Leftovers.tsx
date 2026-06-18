@@ -404,42 +404,67 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="overflow-auto lg:flex-1 lg:min-h-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {COLUMNS.map((c) => (
-                          <TableHead key={c.key} className={`whitespace-nowrap ${c.className || ""}`}>
-                            {c.label}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredRows.length === 0 ? (
+                <div className="flex-1 flex flex-col lg:min-h-0">
+                  <div className="overflow-auto flex-1 lg:min-h-0">
+                    <Table>
+                      <TableHeader>
                         <TableRow>
-                          <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
-                            No tags match the current filters.
-                          </TableCell>
+                          {COLUMNS.map((c) => (
+                            <TableHead key={c.key} className={`whitespace-nowrap sticky top-0 z-10 bg-background ${c.className || ""}`}>
+                              {c.label}
+                            </TableHead>
+                          ))}
                         </TableRow>
-                      ) : (
-                        filteredRows.map((row, i) => (
-                          <TableRow key={i}>
-                            {COLUMNS.map((c) => (
-                              <TableCell
-                                key={c.key}
-                                className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
-                              >
-                                {row[c.key] ?? ""}
-                              </TableCell>
-                            ))}
+                      </TableHeader>
+                      <TableBody>
+                        {filteredRows.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
+                              No tags match the current filters.
+                            </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                  <div className="text-xs text-muted-foreground mt-2 px-2">
-                    Showing {filteredRows.length} of {data.length} tags
+                        ) : (
+                          pagedRows.map((row, i) => (
+                            <TableRow key={i}>
+                              {COLUMNS.map((c) => (
+                                <TableCell
+                                  key={c.key}
+                                  className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
+                                >
+                                  {row[c.key] ?? ""}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
+                    <div className="text-xs text-muted-foreground">
+                      Showing {startIdx}–{endIdx} of {filteredRows.length} tags
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={safePage <= 1}
+                      >
+                        Previous
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        Page {safePage} of {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={safePage >= totalPages}
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
