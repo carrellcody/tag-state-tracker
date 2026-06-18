@@ -226,7 +226,12 @@ export default function Leftovers() {
       </Card>
 
       <div className="mb-4">
-        <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
+        <div className="flex flex-wrap items-center gap-3">
+          <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
+          <span className="inline-flex items-center rounded-md bg-destructive/15 px-3 py-1 text-sm font-semibold text-destructive whitespace-nowrap">
+            Apply by the June 30th Deadline!
+          </span>
+        </div>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
           Combined leftover tag list across all species.
         </p>
