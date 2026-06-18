@@ -211,12 +211,11 @@ export default function Leftovers() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4 min-h-[calc(100vh-12rem)]">
+      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4">
         <div className="space-y-4">
           <TagAlertsSection />
-
-
           <Card>
+
             <CardHeader>
               <CardTitle className="text-lg">Filters</CardTitle>
               <CardDescription>Narrow the leftover list</CardDescription>
