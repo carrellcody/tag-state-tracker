@@ -1,46 +1,20 @@
-# Admin "Grant Pro Access" Tool
+## Changes to `src/pages/Leftovers.tsx`
 
-Adds a small admin-only panel on `/admin` for granting and revoking Pro to any user by email or user ID, backed by a service-role edge function so it bypasses the `prevent_profile_subscription_self_update` trigger safely.
+### 1. Sticky table header
+- On the `TableHeader`'s `TableHead` cells, add `sticky top-0 z-10 bg-background` so column names remain visible while the table body scrolls inside its existing `overflow-auto` container.
 
-## Scope
+### 2. Pagination (100 rows per page, matching draw pages)
+- Add `const PAGE_SIZE = 100` and `const [page, setPage] = useState(1)`.
+- Reset `page` to 1 whenever any filter input changes (via `useEffect` on the filter dependency list, mirroring the draw tables).
+- Derive `totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))` and `pagedRows = filteredRows.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE)`.
+- Render `pagedRows` in the table body instead of `filteredRows`.
+- Below the table, add a pagination bar styled the same as the draw tables: "Previous" button (disabled when `page === 1`), "Page X of Y" text, "Next" button (disabled when `page === totalPages`). Update the row-count line to read "Showing N–M of T tags".
 
-- One new edge function: `admin-grant-subscription`
-- One new section in the existing `AdminDashboard` page (already gated by `has_role(uid, 'admin')`)
-- No DB schema changes, no policy changes, no trigger changes
+### 3. Banner restyle and copy update
+- Replace the `Card` classes `border-primary/30 bg-primary/5` with thicker border + light green background (e.g. `border-2 border-primary bg-[hsl(var(--primary)/0.12)]` using the existing primary token; no hardcoded colors).
+- Remove the large "Welcome" / "Learn More" `CardTitle` heading. Keep only the collapse/expand button, right-aligned, in the header row.
+- Replace the `bannerText` string with the new three-paragraph copy. Render as three `<p>` blocks with `space-y-2`. In the first paragraph, wrap "Welcome to the leftover page!" in `<strong>` so only that phrase is bold.
+- When collapsed, show a compact one-line label (e.g. "Learn more about leftover tags") next to the expand button so the user can still find it; expanding restores the full text.
 
-## Edge function: `supabase/functions/admin-grant-subscription/index.ts`
-
-- `verify_jwt = false` (default); validates JWT in code via `supabaseClient.auth.getUser(token)`
-- Verifies the caller has `admin` role using the existing `has_role` SQL function (service-role client)
-- Accepts JSON body (Zod-validated):
-  - `target` — either a UUID or an email string
-  - `action` — `"grant"` or `"revoke"`
-  - optional `product_id` (defaults to `prod_TQEkp6iEC7tmTK`, the Pro tier)
-- Resolves target → user id (lookup in `profiles` by id or email)
-- Using the service-role client, updates `profiles`:
-  - **grant**: `subscription_status='active'`, `product_id=<chosen>`, `subscription_manual_override=true`, `subscription_end=NULL`
-  - **revoke**: `subscription_status='inactive'`, `product_id=NULL`, `subscription_manual_override=false`, `subscription_end=NULL`
-- Service role bypasses the trigger's check (the trigger explicitly allows `auth.role()='service_role'`)
-- Returns the updated profile snapshot
-- Full CORS + structured error responses
-
-## UI: new section in `src/pages/AdminDashboard.tsx`
-
-A "Grant Pro Access" card containing:
-- Text input: user email or user ID
-- Two buttons: **Grant Pro** and **Revoke Pro**
-- Calls `supabase.functions.invoke('admin-grant-subscription', { body: { target, action } })`
-- Toast on success/error, shows the resulting status
-
-No routing changes — `/admin` already exists and is admin-gated. Non-admins never see it.
-
-## Security notes
-
-- Trigger and RLS stay untouched — they continue protecting against privilege escalation
-- Only authenticated users with `admin` role in `user_roles` can call the function; everyone else gets 403
-- Granting still flips `subscription_manual_override=true` so `check-subscription` won't sync Stripe back over the comp
-
-## Out of scope
-
-- Bulk grants, expiring grants, audit log table — say the word and I'll add them in a follow-up
-- Editing other profile fields from the admin panel
+### Out of scope
+No changes to filters, data loading, or other pages.
