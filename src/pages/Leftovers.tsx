@@ -172,6 +172,14 @@ export default function Leftovers() {
     });
   }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
 
+  useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pagedRows = filteredRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const startIdx = filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
+  const endIdx = Math.min(safePage * PAGE_SIZE, filteredRows.length);
+
   const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
 
   return (
