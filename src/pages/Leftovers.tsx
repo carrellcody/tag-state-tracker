@@ -191,8 +191,8 @@ export default function Leftovers() {
       <Card className="mb-4 border-2 border-primary bg-[hsl(var(--primary)/0.12)]">
         {bannerOpen ? (
           <CardContent className="p-2 text-base leading-relaxed">
-            <div className="flex items-start gap-2">
-              <div className="flex-1 space-y-2">
+            <div className="relative">
+              <div className="space-y-2 text-center px-10">
                 <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
                 <p>Reissued tags are published weekly starting in August. To get alerted when a specific tag you're looking hits the reissue list, <strong>sign up for Tag Alerts</strong> to receive an email when your tag shows up.</p>
                 <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!) using promo code <strong>50TALLO</strong>, and also gain access to all tables for draw odds, harvest stats, and unit information.</p>
@@ -202,6 +202,7 @@ export default function Leftovers() {
                 size="icon"
                 aria-label="Collapse banner"
                 onClick={() => setBannerOpen(false)}
+                className="absolute top-0 right-0"
               >
                 <Minus className="h-4 w-4" />
               </Button>
