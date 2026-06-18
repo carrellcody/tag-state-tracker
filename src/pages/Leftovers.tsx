@@ -416,40 +416,43 @@ export default function Leftovers() {
                 </div>
               ) : (
                 <div className="flex-1 flex flex-col lg:min-h-0">
-                  <div className="overflow-auto flex-1 lg:min-h-0">
-                    <Table>
-                      <TableHeader>
-                        <TableRow>
+                  <div className="overflow-auto flex-1 lg:min-h-0 border rounded-md">
+                    <table className="w-full caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b transition-colors">
                           {COLUMNS.map((c) => (
-                            <TableHead key={c.key} className={`whitespace-nowrap sticky top-0 z-10 bg-background ${c.className || ""}`}>
+                            <th
+                              key={c.key}
+                              className={`h-10 px-2 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
+                            >
                               {c.label}
-                            </TableHead>
+                            </th>
                           ))}
-                        </TableRow>
-                      </TableHeader>
-                      <TableBody>
+                        </tr>
+                      </thead>
+                      <tbody className="[&_tr:last-child]:border-0">
                         {filteredRows.length === 0 ? (
-                          <TableRow>
-                            <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
+                          <tr className="border-b">
+                            <td colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
                               No tags match the current filters.
-                            </TableCell>
-                          </TableRow>
+                            </td>
+                          </tr>
                         ) : (
                           pagedRows.map((row, i) => (
-                            <TableRow key={i}>
+                            <tr key={i} className="border-b transition-colors hover:bg-muted/50">
                               {COLUMNS.map((c) => (
-                                <TableCell
+                                <td
                                   key={c.key}
-                                  className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
+                                  className={`px-2 py-2 align-middle ${c.className ? c.className : "whitespace-nowrap"}`}
                                 >
                                   {row[c.key] ?? ""}
-                                </TableCell>
+                                </td>
                               ))}
-                            </TableRow>
+                            </tr>
                           ))
                         )}
-                      </TableBody>
-                    </Table>
+                      </tbody>
+                    </table>
                   </div>
                   <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
                     <div className="text-xs text-muted-foreground">
