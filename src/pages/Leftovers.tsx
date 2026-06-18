@@ -213,9 +213,8 @@ export default function Leftovers() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4 min-h-[calc(100vh-12rem)]">
         <div className="space-y-4">
-
-
           <TagAlertsSection />
+
 
           <Card>
             <CardHeader>
