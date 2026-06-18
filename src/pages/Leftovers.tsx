@@ -180,8 +180,6 @@ export default function Leftovers() {
   const startIdx = filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
   const endIdx = Math.min(safePage * PAGE_SIZE, filteredRows.length);
 
-  const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
-
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-auto lg:h-full lg:overflow-hidden flex flex-col">
       <SEOHead
@@ -191,12 +189,12 @@ export default function Leftovers() {
       />
 
       {/* Welcome banner */}
-      <Card className="mb-4 border-primary/30 bg-primary/5">
+      <Card className="mb-4 border-2 border-primary bg-[hsl(var(--primary)/0.12)]">
         <CardHeader className="py-3">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="text-lg">
-              {bannerOpen ? "Welcome" : "Learn More"}
-            </CardTitle>
+            {!bannerOpen ? (
+              <span className="text-sm font-medium">Learn more about leftover tags</span>
+            ) : <span />}
             <Button
               variant="ghost"
               size="icon"
@@ -208,8 +206,10 @@ export default function Leftovers() {
           </div>
         </CardHeader>
         {bannerOpen && (
-          <CardContent className="pt-0 text-sm leading-relaxed">
-            {bannerText}
+          <CardContent className="pt-0 text-sm leading-relaxed space-y-2">
+            <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
+            <p>Resissued tags are published weekly starting in August. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued.</p>
+            <p>To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.</p>
           </CardContent>
         )}
       </Card>
