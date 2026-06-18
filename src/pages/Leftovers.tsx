@@ -173,7 +173,7 @@ export default function Leftovers() {
   const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-auto lg:h-[calc(100vh-8rem)] lg:overflow-hidden flex flex-col">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-auto lg:h-full lg:overflow-hidden flex flex-col">
       <SEOHead
         title="Colorado Secondary & Leftover Tags | TalloTags"
         description="Colorado secondary and leftover draw tags across deer, elk, and pronghorn — set up tag alerts and browse upcoming leftover lists."
