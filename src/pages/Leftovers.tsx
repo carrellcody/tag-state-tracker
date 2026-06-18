@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+const PAGE_SIZE = 100;
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/SEOHead";
@@ -95,6 +96,7 @@ export default function Leftovers() {
   const [tagSearch, setTagSearch] = usePersistedState<string>("leftovers_tagSearch", "");
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
   const [bannerOpen, setBannerOpen] = useState(true);
+  const [page, setPage] = useState(1);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
     isSignedIn ? `/data/secondarydraw26.csv?v=${CSV_VERSION}` : ""
@@ -170,7 +172,13 @@ export default function Leftovers() {
     });
   }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
 
-  const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
+  useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
+
+  const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  const pagedRows = filteredRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const startIdx = filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
+  const endIdx = Math.min(safePage * PAGE_SIZE, filteredRows.length);
 
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-auto lg:h-full lg:overflow-hidden flex flex-col">
@@ -181,12 +189,12 @@ export default function Leftovers() {
       />
 
       {/* Welcome banner */}
-      <Card className="mb-4 border-primary/30 bg-primary/5">
+      <Card className="mb-4 border-2 border-primary bg-[hsl(var(--primary)/0.12)]">
         <CardHeader className="py-3">
           <div className="flex items-center justify-between gap-2">
-            <CardTitle className="text-lg">
-              {bannerOpen ? "Welcome" : "Learn More"}
-            </CardTitle>
+            {!bannerOpen ? (
+              <span className="text-sm font-medium">Learn more about leftover tags</span>
+            ) : <span />}
             <Button
               variant="ghost"
               size="icon"
@@ -198,8 +206,10 @@ export default function Leftovers() {
           </div>
         </CardHeader>
         {bannerOpen && (
-          <CardContent className="pt-0 text-sm leading-relaxed">
-            {bannerText}
+          <CardContent className="pt-0 text-sm leading-relaxed space-y-2">
+            <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
+            <p>Resissued tags are published weekly starting in August. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued.</p>
+            <p>To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.</p>
           </CardContent>
         )}
       </Card>
@@ -394,42 +404,67 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="overflow-auto lg:flex-1 lg:min-h-0">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        {COLUMNS.map((c) => (
-                          <TableHead key={c.key} className={`whitespace-nowrap ${c.className || ""}`}>
-                            {c.label}
-                          </TableHead>
-                        ))}
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {filteredRows.length === 0 ? (
+                <div className="flex-1 flex flex-col lg:min-h-0">
+                  <div className="overflow-auto flex-1 lg:min-h-0">
+                    <Table>
+                      <TableHeader>
                         <TableRow>
-                          <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
-                            No tags match the current filters.
-                          </TableCell>
+                          {COLUMNS.map((c) => (
+                            <TableHead key={c.key} className={`whitespace-nowrap sticky top-0 z-10 bg-background ${c.className || ""}`}>
+                              {c.label}
+                            </TableHead>
+                          ))}
                         </TableRow>
-                      ) : (
-                        filteredRows.map((row, i) => (
-                          <TableRow key={i}>
-                            {COLUMNS.map((c) => (
-                              <TableCell
-                                key={c.key}
-                                className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
-                              >
-                                {row[c.key] ?? ""}
-                              </TableCell>
-                            ))}
+                      </TableHeader>
+                      <TableBody>
+                        {filteredRows.length === 0 ? (
+                          <TableRow>
+                            <TableCell colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
+                              No tags match the current filters.
+                            </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
-                  </Table>
-                  <div className="text-xs text-muted-foreground mt-2 px-2">
-                    Showing {filteredRows.length} of {data.length} tags
+                        ) : (
+                          pagedRows.map((row, i) => (
+                            <TableRow key={i}>
+                              {COLUMNS.map((c) => (
+                                <TableCell
+                                  key={c.key}
+                                  className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
+                                >
+                                  {row[c.key] ?? ""}
+                                </TableCell>
+                              ))}
+                            </TableRow>
+                          ))
+                        )}
+                      </TableBody>
+                    </Table>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
+                    <div className="text-xs text-muted-foreground">
+                      Showing {startIdx}–{endIdx} of {filteredRows.length} tags
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={safePage <= 1}
+                      >
+                        Previous
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        Page {safePage} of {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={safePage >= totalPages}
+                      >
+                        Next
+                      </Button>
+                    </div>
                   </div>
                 </div>
               )}
