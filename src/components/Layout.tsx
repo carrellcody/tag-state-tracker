@@ -112,8 +112,10 @@ export default function Layout({ children }: LayoutProps) {
     setShowSubscriptionDialog(true);
   };
   const isActive = (path: string) => location.pathname === path;
+  const isFixedHeightPage = location.pathname === "/leftovers";
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className={`min-h-screen flex flex-col ${isFixedHeightPage ? "lg:h-screen lg:overflow-hidden" : ""}`}>
       {/* Header */}
       <header className="sticky top-0 z-50 w-full border-b border-border bg-card shadow-subtle">
         <div className="container mx-auto px-4">
@@ -329,7 +331,7 @@ export default function Layout({ children }: LayoutProps) {
       <main className="flex-1 min-h-0">{children}</main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card mt-auto">
+      <footer className={`border-t border-border bg-card mt-auto ${isFixedHeightPage ? "lg:hidden" : ""}`}>
         <div className="container mx-auto px-4 py-[10px]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
             <p>© 2025 Tag Season. All rights reserved.</p>
