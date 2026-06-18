@@ -68,14 +68,14 @@ const LIST_OPTIONS = [
 const COLUMNS: { key: string; label: string; className?: string }[] = [
   { key: "Tag", label: "Tag" },
   { key: "rem", label: "Remaining Tags" },
-  { key: "Valid_GMUs", label: "Valid GMUs" },
+  { key: "Valid_GMUs", label: "Valid GMUs", className: "max-w-[8rem] whitespace-normal" },
   { key: "Dates", label: "Dates", className: "w-28 whitespace-normal" },
   { key: "List", label: "List" },
   { key: "Percent_Success", label: "Harvest Success Rate" },
   { key: "Public_Acres", label: "Public Acres" },
   { key: "Public_Percent", label: "Percent Public Land" },
-  { key: "Drawn_out_level_A_R", label: "Drawn out level (Resident)" },
-  { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident)" },
+  { key: "Drawn_out_level_A_R", label: "Drawn out level (Resident 2026)" },
+  { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident 2026)" },
 ];
 
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
