@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Minus, Plus, AlertTriangle } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useCsvData } from "@/hooks/useCsvData";
@@ -232,7 +231,7 @@ export default function Leftovers() {
         </p>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-4">
         <div className="lg:h-full lg:min-h-0 lg:overflow-y-auto space-y-4">
           <TagAlertsSection />
           <Card>
@@ -396,9 +395,9 @@ export default function Leftovers() {
           </Card>
         </div>
 
-        <div className="lg:h-full lg:min-h-0">
-          <Card className="lg:h-full flex flex-col">
-            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0">
+        <div className="lg:h-full lg:min-h-0 min-w-0">
+          <Card className="lg:h-full flex flex-col min-w-0">
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0">
               {!isSignedIn ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
                   <p className="text-muted-foreground">
@@ -415,15 +414,15 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col lg:min-h-0">
-                  <div className="overflow-auto flex-1 lg:min-h-0 border rounded-md">
-                    <table className="w-full caption-bottom text-sm">
+                <div className="flex-1 flex flex-col lg:min-h-0 min-w-0">
+                  <div className="flex-1 lg:min-h-0 min-w-0 w-full max-w-full overflow-auto border rounded-md">
+                    <table className="min-w-max caption-bottom text-sm">
                       <thead className="[&_tr]:border-b">
                         <tr className="border-b transition-colors">
                           {COLUMNS.map((c) => (
                             <th
                               key={c.key}
-                              className={`h-10 px-2 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
+                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
                             >
                               {c.label}
                             </th>
@@ -443,7 +442,7 @@ export default function Leftovers() {
                               {COLUMNS.map((c) => (
                                 <td
                                   key={c.key}
-                                  className={`px-2 py-2 align-middle ${c.className ? c.className : "whitespace-nowrap"}`}
+                                  className={`px-4 py-2 align-middle ${c.className ? c.className : "whitespace-nowrap"}`}
                                 >
                                   {row[c.key] ?? ""}
                                 </td>
