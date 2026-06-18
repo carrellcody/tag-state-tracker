@@ -141,33 +141,60 @@ export default function TagAlertsSection() {
 
   if (!isPro) {
     return (
-      <Card id="tag-alerts" className="scroll-mt-20 opacity-75">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Lock className="h-4 w-4" />
-            Tag Alerts
-          </CardTitle>
-          <CardDescription>
-            Receive an alert email whenever one of your saved tag codes appears on the leftover list
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="rounded-md border bg-muted/40 p-4 text-sm">
-            <p className="mb-3 text-muted-foreground">
-              Tag alerts are a Pro feature. Upgrade your subscription to save tag codes and receive weekly leftover alerts.
-            </p>
-            <Button asChild size="sm">
-              <Link to="/subscription">Upgrade to Pro</Link>
-            </Button>
-          </div>
-          <div aria-hidden className="pointer-events-none select-none opacity-50">
-            <Button variant="outline" disabled>
-              <Plus className="mr-2 h-4 w-4" />
-              Add tag alert
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <>
+        <Card
+          id="tag-alerts"
+          className="scroll-mt-20 cursor-pointer hover:bg-accent/30 transition-colors"
+          onClick={() => setUpgradeOpen(true)}
+        >
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lock className="h-4 w-4" />
+              Tag Alerts
+            </CardTitle>
+            <CardDescription>
+              Receive an alert email whenever one of your saved tag codes appears on the leftover list
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div aria-hidden className="pointer-events-none select-none opacity-50">
+              <Button variant="outline" disabled>
+                <Plus className="mr-2 h-4 w-4" />
+                Add tag alert
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        <Dialog open={upgradeOpen} onOpenChange={setUpgradeOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Pro account required</DialogTitle>
+              <DialogDescription asChild>
+                <div className="space-y-2 pt-2">
+                  <p>
+                    <Link
+                      to="/subscription"
+                      className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium"
+                      onClick={() => setUpgradeOpen(false)}
+                    >
+                      Sign up
+                    </Link>{' '}
+                    for a Pro account to enable tag alerts.
+                  </p>
+                  <p>
+                    Get 50% off your first year ($10/year!) with promo code <strong>50TALLO</strong>
+                  </p>
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button asChild onClick={() => setUpgradeOpen(false)}>
+                <Link to="/subscription">Go to subscription</Link>
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      </>
     );
   }
 
