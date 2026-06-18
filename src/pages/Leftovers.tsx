@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Loader2, Minus, Plus, AlertTriangle } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useCsvData } from "@/hooks/useCsvData";
@@ -232,7 +231,7 @@ export default function Leftovers() {
         </p>
       </div>
 
-      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4">
+      <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[360px_minmax(0,1fr)] gap-4">
         <div className="lg:h-full lg:min-h-0 lg:overflow-y-auto space-y-4">
           <TagAlertsSection />
           <Card>
@@ -396,9 +395,9 @@ export default function Leftovers() {
           </Card>
         </div>
 
-        <div className="lg:h-full lg:min-h-0">
-          <Card className="lg:h-full flex flex-col">
-            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0">
+        <div className="lg:h-full lg:min-h-0 min-w-0">
+          <Card className="lg:h-full flex flex-col min-w-0">
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0">
               {!isSignedIn ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
                   <p className="text-muted-foreground">
@@ -415,9 +414,9 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col lg:min-h-0">
-                  <div className="overflow-auto flex-1 lg:min-h-0 border rounded-md">
-                    <table className="w-full caption-bottom text-sm">
+                <div className="flex-1 flex flex-col lg:min-h-0 min-w-0">
+                  <div className="overflow-auto flex-1 lg:min-h-0 min-w-0 w-full border rounded-md">
+                    <table className="min-w-[1120px] w-full caption-bottom text-sm">
                       <thead className="[&_tr]:border-b">
                         <tr className="border-b transition-colors">
                           {COLUMNS.map((c) => (
