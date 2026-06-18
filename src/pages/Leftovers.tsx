@@ -247,156 +247,143 @@ export default function Leftovers() {
               <CardDescription>Narrow the leftover list</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
-              {!isSignedIn ? (
-                <div className="text-center space-y-3 py-4">
-                  <p className="text-sm text-muted-foreground">
-                    Create a free account to use filters and browse the leftover list.
+              <div className="space-y-2">
+                <Label htmlFor="leftovers-unit-search">Search Units</Label>
+                <Input
+                  id="leftovers-unit-search"
+                  placeholder="e.g. 3, 5, 10"
+                  value={unitSearch}
+                  onChange={(e) => setUnitSearch(e.target.value)}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="leftovers-tag-search">Search Tags</Label>
+                <Input
+                  id="leftovers-tag-search"
+                  placeholder="e.g. AM003O1R"
+                  value={tagSearch}
+                  onChange={(e) => setTagSearch(e.target.value)}
+                />
+                {invalidTagTerms.length > 0 && (
+                  <p className="flex items-start gap-1 text-xs text-destructive">
+                    <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                    <span>
+                      Invalid tag format: {invalidTagTerms.join(", ")}. Tags should follow the format LLNNNLNL (e.g. AM003O1R).
+                    </span>
                   </p>
-                  <Button className="w-full" onClick={() => navigate("/auth")}>
-                    Sign up for free
-                  </Button>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label>Species</Label>
+                <div className="space-y-2">
+                  {SPECIES_OPTIONS.map((opt) => (
+                    <div key={opt.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`leftovers-species-${opt.value}`}
+                        checked={species.includes(opt.value)}
+                        onCheckedChange={(c) => toggleSpecies(opt.value, c === true)}
+                      />
+                      <Label htmlFor={`leftovers-species-${opt.value}`} className="cursor-pointer font-normal">
+                        {opt.label}
+                      </Label>
+                    </div>
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <div className="space-y-2">
-                    <Label htmlFor="leftovers-unit-search">Search Units</Label>
-                    <Input
-                      id="leftovers-unit-search"
-                      placeholder="e.g. 3, 5, 10"
-                      value={unitSearch}
-                      onChange={(e) => setUnitSearch(e.target.value)}
-                    />
-                  </div>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label htmlFor="leftovers-tag-search">Search Tags</Label>
-                    <Input
-                      id="leftovers-tag-search"
-                      placeholder="e.g. AM003O1R"
-                      value={tagSearch}
-                      onChange={(e) => setTagSearch(e.target.value)}
-                    />
-                    {invalidTagTerms.length > 0 && (
-                      <p className="flex items-start gap-1 text-xs text-destructive">
-                        <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
-                        <span>
-                          Invalid tag format: {invalidTagTerms.join(", ")}. Tags should follow the format LLNNNLNL (e.g. AM003O1R).
-                        </span>
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Species</Label>
-                    <div className="space-y-2">
-                      {SPECIES_OPTIONS.map((opt) => (
-                        <div key={opt.value} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`leftovers-species-${opt.value}`}
-                            checked={species.includes(opt.value)}
-                            onCheckedChange={(c) => toggleSpecies(opt.value, c === true)}
-                          />
-                          <Label htmlFor={`leftovers-species-${opt.value}`} className="cursor-pointer font-normal">
-                            {opt.label}
-                          </Label>
-                        </div>
-                      ))}
+              <div className="space-y-2">
+                <Label>Season / Weapon</Label>
+                <div className="grid grid-cols-2 gap-y-1.5">
+                  {SEASON_WEAPON_OPTIONS.map((opt) => (
+                    <div key={opt.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`leftovers-season-${opt.value}`}
+                        checked={seasonWeapons.includes(opt.value)}
+                        onCheckedChange={(c) => toggleSeasonWeapon(opt.value, c === true)}
+                      />
+                      <Label htmlFor={`leftovers-season-${opt.value}`} className="cursor-pointer font-normal text-sm">
+                        {opt.label}
+                      </Label>
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label>Season / Weapon</Label>
-                    <div className="grid grid-cols-2 gap-y-1.5">
-                      {SEASON_WEAPON_OPTIONS.map((opt) => (
-                        <div key={opt.value} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`leftovers-season-${opt.value}`}
-                            checked={seasonWeapons.includes(opt.value)}
-                            onCheckedChange={(c) => toggleSeasonWeapon(opt.value, c === true)}
-                          />
-                          <Label htmlFor={`leftovers-season-${opt.value}`} className="cursor-pointer font-normal text-sm">
-                            {opt.label}
-                          </Label>
-                        </div>
-                      ))}
+              <div className="space-y-2">
+                <Label>Sex</Label>
+                <div className="space-y-2">
+                  {SEX_OPTIONS.map((opt) => (
+                    <div key={opt.value} className="flex items-center space-x-2">
+                      <Checkbox
+                        id={`leftovers-sex-${opt.value}`}
+                        checked={sexFilter.includes(opt.value)}
+                        onCheckedChange={(c) => toggleSex(opt.value, c === true)}
+                      />
+                      <Label htmlFor={`leftovers-sex-${opt.value}`} className="cursor-pointer font-normal">
+                        {opt.label}
+                      </Label>
                     </div>
-                  </div>
+                  ))}
+                </div>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label>Sex</Label>
-                    <div className="space-y-2">
-                      {SEX_OPTIONS.map((opt) => (
-                        <div key={opt.value} className="flex items-center space-x-2">
-                          <Checkbox
-                            id={`leftovers-sex-${opt.value}`}
-                            checked={sexFilter.includes(opt.value)}
-                            onCheckedChange={(c) => toggleSex(opt.value, c === true)}
-                          />
-                          <Label htmlFor={`leftovers-sex-${opt.value}`} className="cursor-pointer font-normal">
-                            {opt.label}
-                          </Label>
-                        </div>
-                      ))}
+              <div className="space-y-2">
+                <Label>List</Label>
+                <RadioGroup value={listFilter} onValueChange={setListFilter}>
+                  {LIST_OPTIONS.map((opt) => (
+                    <div key={opt.value} className="flex items-center space-x-2">
+                      <RadioGroupItem value={opt.value} id={`leftovers-list-${opt.value}`} />
+                      <Label htmlFor={`leftovers-list-${opt.value}`} className="cursor-pointer font-normal">
+                        {opt.label}
+                      </Label>
                     </div>
-                  </div>
+                  ))}
+                </RadioGroup>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label>List</Label>
-                    <RadioGroup value={listFilter} onValueChange={setListFilter}>
-                      {LIST_OPTIONS.map((opt) => (
-                        <div key={opt.value} className="flex items-center space-x-2">
-                          <RadioGroupItem value={opt.value} id={`leftovers-list-${opt.value}`} />
-                          <Label htmlFor={`leftovers-list-${opt.value}`} className="cursor-pointer font-normal">
-                            {opt.label}
-                          </Label>
-                        </div>
-                      ))}
-                    </RadioGroup>
+              <div className="space-y-2">
+                <Label>PLO Tags</Label>
+                <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="any" id="leftovers-plo-any" />
+                    <Label htmlFor="leftovers-plo-any" className="cursor-pointer font-normal">Show all</Label>
                   </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="only" id="leftovers-plo-only" />
+                    <Label htmlFor="leftovers-plo-only" className="cursor-pointer font-normal">Show only PLO tags</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="none" id="leftovers-plo-none" />
+                    <Label htmlFor="leftovers-plo-none" className="cursor-pointer font-normal">Don't show PLO tags</Label>
+                  </div>
+                </RadioGroup>
+              </div>
 
-                  <div className="space-y-2">
-                    <Label>PLO Tags</Label>
-                    <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="any" id="leftovers-plo-any" />
-                        <Label htmlFor="leftovers-plo-any" className="cursor-pointer font-normal">Show all</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="only" id="leftovers-plo-only" />
-                        <Label htmlFor="leftovers-plo-only" className="cursor-pointer font-normal">Show only PLO tags</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="none" id="leftovers-plo-none" />
-                        <Label htmlFor="leftovers-plo-none" className="cursor-pointer font-normal">Don't show PLO tags</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+              <div className="space-y-2">
+                <Label>Minimum success rate: {minSuccessRate}%</Label>
+                <Slider
+                  value={[minSuccessRate]}
+                  onValueChange={(v) => setMinSuccessRate(v[0])}
+                  min={0}
+                  max={100}
+                  step={1}
+                />
+              </div>
 
-                  <div className="space-y-2">
-                    <Label>Minimum success rate: {minSuccessRate}%</Label>
-                    <Slider
-                      value={[minSuccessRate]}
-                      onValueChange={(v) => setMinSuccessRate(v[0])}
-                      min={0}
-                      max={100}
-                      step={1}
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>
-                      Minimum drawn out level (resident): {minDOL === 0 ? "Any" : minDOL}
-                    </Label>
-                    <Slider
-                      value={[minDOL]}
-                      onValueChange={(v) => setMinDOL(v[0])}
-                      min={0}
-                      max={maxDOL}
-                      step={1}
-                    />
-                  </div>
-                </>
-              )}
+              <div className="space-y-2">
+                <Label>
+                  Minimum drawn out level (resident): {minDOL === 0 ? "Any" : minDOL}
+                </Label>
+                <Slider
+                  value={[minDOL]}
+                  onValueChange={(v) => setMinDOL(v[0])}
+                  min={0}
+                  max={maxDOL}
+                  step={1}
+                />
+              </div>
             </CardContent>
           </Card>
         </div>
