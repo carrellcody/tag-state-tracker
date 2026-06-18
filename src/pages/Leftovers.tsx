@@ -1,17 +1,17 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTierFromProductId, canAccessElk } from "@/utils/subscriptionTiers";
 import { SEOHead } from "@/components/SEOHead";
 import TagAlertsSection from "@/components/TagAlertsSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Bell, Loader2 } from "lucide-react";
+import { Loader2, Minus, Plus, AlertTriangle } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
@@ -22,7 +22,6 @@ const SPECIES_OPTIONS = [
   { value: "A", label: "Pronghorn" },
 ];
 
-// value = matcher fn key
 const SEASON_WEAPON_OPTIONS = [
   { value: "Any", label: "Any" },
   { value: "Archery", label: "Archery" },
@@ -66,11 +65,11 @@ const LIST_OPTIONS = [
   { value: "C", label: "List C" },
 ];
 
-const COLUMNS: { key: string; label: string }[] = [
+const COLUMNS: { key: string; label: string; className?: string }[] = [
   { key: "Tag", label: "Tag" },
   { key: "rem", label: "Remaining Tags" },
   { key: "Valid_GMUs", label: "Valid GMUs" },
-  { key: "Dates", label: "Dates" },
+  { key: "Dates", label: "Dates", className: "w-28 whitespace-normal" },
   { key: "List", label: "List" },
   { key: "Percent_Success", label: "Harvest Success Rate" },
   { key: "Public_Acres", label: "Public Acres" },
@@ -79,16 +78,12 @@ const COLUMNS: { key: string; label: string }[] = [
   { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident)" },
 ];
 
+const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
+
 export default function Leftovers() {
-  const { subscriptionStatus, loading } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
-  const hasAccess = canAccessElk(currentTier);
-  useEffect(() => {
-    if (!loading && !hasAccess) {
-      navigate("/subscription");
-    }
-  }, [hasAccess, loading, navigate]);
+  const isSignedIn = !!user;
 
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v2", ["D", "E", "A"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
@@ -96,30 +91,52 @@ export default function Leftovers() {
   const [listFilter, setListFilter] = usePersistedState<string>("leftovers_list", "any");
   const [ploFilter, setPloFilter] = usePersistedState<string>("leftovers_plo", "any");
   const [minSuccessRate, setMinSuccessRate] = usePersistedState<number>("leftovers_minSuccess", 0);
-  const [filterToMyTags, setFilterToMyTags] = useState(false);
+  const [unitSearch, setUnitSearch] = usePersistedState<string>("leftovers_unitSearch", "");
+  const [tagSearch, setTagSearch] = usePersistedState<string>("leftovers_tagSearch", "");
+  const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
+  const [bannerOpen, setBannerOpen] = useState(true);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
-    `/data/secondarydraw26.csv?v=${CSV_VERSION}`
+    isSignedIn ? `/data/secondarydraw26.csv?v=${CSV_VERSION}` : ""
   );
 
   const toggleSpecies = (val: string, checked: boolean) => {
     setSpecies(checked ? [...species, val] : species.filter((s) => s !== val));
   };
-
   const toggleSex = (val: string, checked: boolean) => {
     setSexFilter(checked ? [...sexFilter, val] : sexFilter.filter((s) => s !== val));
   };
-
   const toggleSeasonWeapon = (val: string, checked: boolean) => {
-    if (val === "Any") {
-      setSeasonWeapons(["Any"]);
-      return;
-    }
+    if (val === "Any") { setSeasonWeapons(["Any"]); return; }
     const next = checked
       ? [...seasonWeapons.filter((s) => s !== "Any"), val]
       : seasonWeapons.filter((s) => s !== val);
     setSeasonWeapons(next.length === 0 ? ["Any"] : next);
   };
+
+  // Compute max DOL_A_R from data
+  const maxDOL = useMemo(() => {
+    let max = 0;
+    for (const row of data || []) {
+      const v = parseFloat(row.Drawn_out_level_A_R);
+      if (!isNaN(v) && v > max) max = v;
+    }
+    return Math.ceil(max) || 10;
+  }, [data]);
+
+  // Parse search inputs
+  const unitTerms = useMemo(
+    () => unitSearch.split(",").map(s => s.trim()).filter(Boolean),
+    [unitSearch]
+  );
+  const tagTerms = useMemo(
+    () => tagSearch.split(",").map(s => s.trim()).filter(Boolean),
+    [tagSearch]
+  );
+  const invalidTagTerms = useMemo(
+    () => tagTerms.filter(t => !TAG_REGEX.test(t)),
+    [tagTerms]
+  );
 
   const filteredRows = useMemo(() => {
     return (data || []).filter((row) => {
@@ -133,11 +150,27 @@ export default function Leftovers() {
       if (!isNaN(pct) && pct < minSuccessRate) return false;
       if (minSuccessRate > 0 && isNaN(pct)) return false;
       if (!matchSeasonWeapon((row.SeasonWeapon || "").trim(), seasonWeapons)) return false;
+
+      if (unitTerms.length > 0) {
+        const units = String(row.Valid_GMUs || "").split(",").map(u => u.trim());
+        if (!unitTerms.some(term => units.some(u => u === term))) return false;
+      }
+
+      if (tagTerms.length > 0) {
+        const tag = String(row.Tag || "").trim().toUpperCase();
+        if (!tagTerms.some(t => tag === t.toUpperCase())) return false;
+      }
+
+      if (minDOL > 0) {
+        const dol = parseFloat(row.Drawn_out_level_A_R);
+        if (isNaN(dol) || dol < minDOL) return false;
+      }
+
       return true;
     });
-  }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons]);
+  }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
 
-  if (loading || !hasAccess) return null;
+  const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
 
   return (
     <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6">
@@ -147,10 +180,34 @@ export default function Leftovers() {
         canonicalPath="/leftovers"
       />
 
+      {/* Welcome banner */}
+      <Card className="mb-4 border-primary/30 bg-primary/5">
+        <CardHeader className="py-3">
+          <div className="flex items-center justify-between gap-2">
+            <CardTitle className="text-lg">
+              {bannerOpen ? "Welcome" : "Learn More"}
+            </CardTitle>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label={bannerOpen ? "Collapse banner" : "Expand banner"}
+              onClick={() => setBannerOpen(v => !v)}
+            >
+              {bannerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
+            </Button>
+          </div>
+        </CardHeader>
+        {bannerOpen && (
+          <CardContent className="pt-0 text-sm leading-relaxed">
+            {bannerText}
+          </CardContent>
+        )}
+      </Card>
+
       <div className="mb-4">
         <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
-          Combined leftover tag list across all species. Set up tag alerts to be notified when a tag you want goes on the list.
+          Combined leftover tag list across all species.
         </p>
       </div>
 
@@ -164,111 +221,156 @@ export default function Leftovers() {
               <CardDescription>Narrow the leftover list</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
-              <Button
-                variant={filterToMyTags ? "default" : "outline"}
-                className="w-full"
-                onClick={() => setFilterToMyTags((v) => !v)}
-              >
-                <Bell className="mr-2 h-4 w-4" />
-                {filterToMyTags ? "Showing my tag list" : "Filter for my tag list"}
-              </Button>
-
-              <div className="space-y-2">
-                <Label>Species</Label>
-                <div className="space-y-2">
-                  {SPECIES_OPTIONS.map((opt) => (
-                    <div key={opt.value} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`leftovers-species-${opt.value}`}
-                        checked={species.includes(opt.value)}
-                        onCheckedChange={(c) => toggleSpecies(opt.value, c === true)}
-                      />
-                      <Label htmlFor={`leftovers-species-${opt.value}`} className="cursor-pointer font-normal">
-                        {opt.label}
-                      </Label>
-                    </div>
-                  ))}
+              {!isSignedIn ? (
+                <div className="text-center space-y-3 py-4">
+                  <p className="text-sm text-muted-foreground">
+                    Create a free account to use filters and browse the leftover list.
+                  </p>
+                  <Button className="w-full" onClick={() => navigate("/auth")}>
+                    Sign up for free
+                  </Button>
                 </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Season / Weapon</Label>
-                <div className="grid grid-cols-2 gap-y-1.5">
-                  {SEASON_WEAPON_OPTIONS.map((opt) => (
-                    <div key={opt.value} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`leftovers-season-${opt.value}`}
-                        checked={seasonWeapons.includes(opt.value)}
-                        onCheckedChange={(c) => toggleSeasonWeapon(opt.value, c === true)}
-                      />
-                      <Label htmlFor={`leftovers-season-${opt.value}`} className="cursor-pointer font-normal text-sm">
-                        {opt.label}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>Sex</Label>
-                <div className="space-y-2">
-                  {SEX_OPTIONS.map((opt) => (
-                    <div key={opt.value} className="flex items-center space-x-2">
-                      <Checkbox
-                        id={`leftovers-sex-${opt.value}`}
-                        checked={sexFilter.includes(opt.value)}
-                        onCheckedChange={(c) => toggleSex(opt.value, c === true)}
-                      />
-                      <Label htmlFor={`leftovers-sex-${opt.value}`} className="cursor-pointer font-normal">
-                        {opt.label}
-                      </Label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label>List</Label>
-                <RadioGroup value={listFilter} onValueChange={setListFilter}>
-                  {LIST_OPTIONS.map((opt) => (
-                    <div key={opt.value} className="flex items-center space-x-2">
-                      <RadioGroupItem value={opt.value} id={`leftovers-list-${opt.value}`} />
-                      <Label htmlFor={`leftovers-list-${opt.value}`} className="cursor-pointer font-normal">
-                        {opt.label}
-                      </Label>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </div>
-
-              <div className="space-y-2">
-                <Label>PLO Tags</Label>
-                <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="any" id="leftovers-plo-any" />
-                    <Label htmlFor="leftovers-plo-any" className="cursor-pointer font-normal">Show all</Label>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <Label htmlFor="leftovers-unit-search">Search Units</Label>
+                    <Input
+                      id="leftovers-unit-search"
+                      placeholder="e.g. 3, 5, 10"
+                      value={unitSearch}
+                      onChange={(e) => setUnitSearch(e.target.value)}
+                    />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="only" id="leftovers-plo-only" />
-                    <Label htmlFor="leftovers-plo-only" className="cursor-pointer font-normal">Show only PLO tags</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="none" id="leftovers-plo-none" />
-                    <Label htmlFor="leftovers-plo-none" className="cursor-pointer font-normal">Don't show PLO tags</Label>
-                  </div>
-                </RadioGroup>
-              </div>
 
-              <div className="space-y-2">
-                <Label>Minimum success rate: {minSuccessRate}%</Label>
-                <Slider
-                  value={[minSuccessRate]}
-                  onValueChange={(v) => setMinSuccessRate(v[0])}
-                  min={0}
-                  max={100}
-                  step={1}
-                />
-              </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="leftovers-tag-search">Search Tags</Label>
+                    <Input
+                      id="leftovers-tag-search"
+                      placeholder="e.g. AM003O1R"
+                      value={tagSearch}
+                      onChange={(e) => setTagSearch(e.target.value)}
+                    />
+                    {invalidTagTerms.length > 0 && (
+                      <p className="flex items-start gap-1 text-xs text-destructive">
+                        <AlertTriangle className="h-3.5 w-3.5 mt-0.5 shrink-0" />
+                        <span>
+                          Invalid tag format: {invalidTagTerms.join(", ")}. Tags should follow the format LLNNNLNL (e.g. AM003O1R).
+                        </span>
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Species</Label>
+                    <div className="space-y-2">
+                      {SPECIES_OPTIONS.map((opt) => (
+                        <div key={opt.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`leftovers-species-${opt.value}`}
+                            checked={species.includes(opt.value)}
+                            onCheckedChange={(c) => toggleSpecies(opt.value, c === true)}
+                          />
+                          <Label htmlFor={`leftovers-species-${opt.value}`} className="cursor-pointer font-normal">
+                            {opt.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Season / Weapon</Label>
+                    <div className="grid grid-cols-2 gap-y-1.5">
+                      {SEASON_WEAPON_OPTIONS.map((opt) => (
+                        <div key={opt.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`leftovers-season-${opt.value}`}
+                            checked={seasonWeapons.includes(opt.value)}
+                            onCheckedChange={(c) => toggleSeasonWeapon(opt.value, c === true)}
+                          />
+                          <Label htmlFor={`leftovers-season-${opt.value}`} className="cursor-pointer font-normal text-sm">
+                            {opt.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Sex</Label>
+                    <div className="space-y-2">
+                      {SEX_OPTIONS.map((opt) => (
+                        <div key={opt.value} className="flex items-center space-x-2">
+                          <Checkbox
+                            id={`leftovers-sex-${opt.value}`}
+                            checked={sexFilter.includes(opt.value)}
+                            onCheckedChange={(c) => toggleSex(opt.value, c === true)}
+                          />
+                          <Label htmlFor={`leftovers-sex-${opt.value}`} className="cursor-pointer font-normal">
+                            {opt.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>List</Label>
+                    <RadioGroup value={listFilter} onValueChange={setListFilter}>
+                      {LIST_OPTIONS.map((opt) => (
+                        <div key={opt.value} className="flex items-center space-x-2">
+                          <RadioGroupItem value={opt.value} id={`leftovers-list-${opt.value}`} />
+                          <Label htmlFor={`leftovers-list-${opt.value}`} className="cursor-pointer font-normal">
+                            {opt.label}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>PLO Tags</Label>
+                    <RadioGroup value={ploFilter} onValueChange={setPloFilter}>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="any" id="leftovers-plo-any" />
+                        <Label htmlFor="leftovers-plo-any" className="cursor-pointer font-normal">Show all</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="only" id="leftovers-plo-only" />
+                        <Label htmlFor="leftovers-plo-only" className="cursor-pointer font-normal">Show only PLO tags</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="none" id="leftovers-plo-none" />
+                        <Label htmlFor="leftovers-plo-none" className="cursor-pointer font-normal">Don't show PLO tags</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>Minimum success rate: {minSuccessRate}%</Label>
+                    <Slider
+                      value={[minSuccessRate]}
+                      onValueChange={(v) => setMinSuccessRate(v[0])}
+                      min={0}
+                      max={100}
+                      step={1}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label>
+                      Minimum drawn out level (resident): {minDOL === 0 ? "Any" : minDOL}
+                    </Label>
+                    <Slider
+                      value={[minDOL]}
+                      onValueChange={(v) => setMinDOL(v[0])}
+                      min={0}
+                      max={maxDOL}
+                      step={1}
+                    />
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -276,7 +378,14 @@ export default function Leftovers() {
         <div>
           <Card>
             <CardContent className="p-2 sm:p-4">
-              {csvLoading ? (
+              {!isSignedIn ? (
+                <div className="text-center py-12 space-y-4">
+                  <p className="text-muted-foreground">
+                    Sign up for a free account to view the leftover tag list.
+                  </p>
+                  <Button onClick={() => navigate("/auth")}>Sign up for free</Button>
+                </div>
+              ) : csvLoading || loading ? (
                 <div className="flex items-center justify-center py-12">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
@@ -290,7 +399,9 @@ export default function Leftovers() {
                     <TableHeader>
                       <TableRow>
                         {COLUMNS.map((c) => (
-                          <TableHead key={c.key} className="whitespace-nowrap">{c.label}</TableHead>
+                          <TableHead key={c.key} className={`whitespace-nowrap ${c.className || ""}`}>
+                            {c.label}
+                          </TableHead>
                         ))}
                       </TableRow>
                     </TableHeader>
@@ -305,7 +416,10 @@ export default function Leftovers() {
                         filteredRows.map((row, i) => (
                           <TableRow key={i}>
                             {COLUMNS.map((c) => (
-                              <TableCell key={c.key} className="whitespace-nowrap py-2">
+                              <TableCell
+                                key={c.key}
+                                className={`py-2 ${c.className ? c.className : "whitespace-nowrap"}`}
+                              >
                                 {row[c.key] ?? ""}
                               </TableCell>
                             ))}
