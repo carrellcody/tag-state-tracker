@@ -86,13 +86,15 @@ serve(async (req) => {
       return jsonResponse({ error: "Unauthorized" }, 401);
     }
 
+    const isSignedInFile = SIGNED_IN_FILES.has(filename);
+
     const adminClient = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
       { auth: { persistSession: false } }
     );
 
-    // For non-public files, require authenticated user with active subscription
+    // For non-public files, require authenticated user
     if (!isPublicFile) {
       const supabase = createClient(
         Deno.env.get("SUPABASE_URL")!,
@@ -107,27 +109,30 @@ serve(async (req) => {
         return jsonResponse({ error: "Unauthorized" }, 401);
       }
 
-      const { data: roleRow } = await adminClient
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", userId)
-        .eq("role", "admin")
-        .maybeSingle();
+      // Files that only require sign-in skip the Pro check
+      if (!isSignedInFile) {
+        const { data: roleRow } = await adminClient
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId)
+          .eq("role", "admin")
+          .maybeSingle();
 
-      if (!roleRow) {
-        const { data: profile, error: profileError } = await adminClient
-          .from("profiles")
-          .select("subscription_status, subscription_manual_override, product_id")
-          .eq("id", userId)
-          .single();
+        if (!roleRow) {
+          const { data: profile, error: profileError } = await adminClient
+            .from("profiles")
+            .select("subscription_status, subscription_manual_override, product_id")
+            .eq("id", userId)
+            .single();
 
-        const hasActiveProSubscription =
-          !profileError &&
-          profile?.subscription_status === "active" &&
-          (profile.subscription_manual_override === true || PRO_PRODUCT_IDS.has(profile.product_id ?? ""));
+          const hasActiveProSubscription =
+            !profileError &&
+            profile?.subscription_status === "active" &&
+            (profile.subscription_manual_override === true || PRO_PRODUCT_IDS.has(profile.product_id ?? ""));
 
-        if (!hasActiveProSubscription) {
-          return jsonResponse({ error: "Subscription required" }, 403);
+          if (!hasActiveProSubscription) {
+            return jsonResponse({ error: "Subscription required" }, 403);
+          }
         }
       }
     }
