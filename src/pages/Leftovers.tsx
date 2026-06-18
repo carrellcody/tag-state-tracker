@@ -211,9 +211,10 @@ export default function Leftovers() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4 min-h-[calc(100vh-12rem)]">
         <div className="space-y-4">
           <TagAlertsSection />
+
 
           <Card>
             <CardHeader>
@@ -375,26 +376,26 @@ export default function Leftovers() {
           </Card>
         </div>
 
-        <div>
-          <Card>
-            <CardContent className="p-2 sm:p-4">
+        <div className="h-full min-h-0">
+          <Card className="h-full flex flex-col">
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col min-h-0">
               {!isSignedIn ? (
-                <div className="text-center py-12 space-y-4">
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
                   <p className="text-muted-foreground">
                     Sign up for a free account to view the leftover tag list.
                   </p>
                   <Button onClick={() => navigate("/auth")}>Sign up for free</Button>
                 </div>
               ) : csvLoading || loading ? (
-                <div className="flex items-center justify-center py-12">
+                <div className="flex-1 flex items-center justify-center py-12">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
               ) : error ? (
-                <div className="text-center py-12 text-destructive text-sm">
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 text-destructive text-sm">
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="overflow-auto max-h-[calc(100vh-12rem)]">
+                <div className="overflow-auto flex-1 min-h-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
