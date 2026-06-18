@@ -173,7 +173,7 @@ export default function Leftovers() {
   const bannerText = `Welcome to the leftover page. All leftover tags, whether on the secondary draw, or on the reissue lists that will be published weekly starting in August, will be updated here. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued. To enable tag alerts, sign up for our Pro account now for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.`;
 
   return (
-    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-full flex flex-col">
+    <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-6 h-auto lg:h-full lg:overflow-hidden flex flex-col">
       <SEOHead
         title="Colorado Secondary & Leftover Tags | TalloTags"
         description="Colorado secondary and leftover draw tags across deer, elk, and pronghorn — set up tag alerts and browse upcoming leftover lists."
@@ -212,7 +212,7 @@ export default function Leftovers() {
       </div>
 
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-[360px_1fr] gap-4">
-        <div className="h-full min-h-0 overflow-auto space-y-4">
+        <div className="lg:h-full lg:min-h-0 lg:overflow-y-auto space-y-4">
           <TagAlertsSection />
           <Card>
 
@@ -375,9 +375,9 @@ export default function Leftovers() {
           </Card>
         </div>
 
-        <div className="h-full min-h-0">
-          <Card className="h-full flex flex-col">
-            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col min-h-0">
+        <div className="lg:h-full lg:min-h-0">
+          <Card className="lg:h-full flex flex-col">
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0">
               {!isSignedIn ? (
                 <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
                   <p className="text-muted-foreground">
@@ -394,7 +394,7 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="overflow-auto flex-1 min-h-0">
+                <div className="overflow-auto lg:flex-1 lg:min-h-0">
                   <Table>
                     <TableHeader>
                       <TableRow>
