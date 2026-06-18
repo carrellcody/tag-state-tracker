@@ -96,6 +96,7 @@ export default function Leftovers() {
   const [tagSearch, setTagSearch] = usePersistedState<string>("leftovers_tagSearch", "");
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
   const [bannerOpen, setBannerOpen] = useState(true);
+  const [page, setPage] = useState(1);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
     isSignedIn ? `/data/secondarydraw26.csv?v=${CSV_VERSION}` : ""
