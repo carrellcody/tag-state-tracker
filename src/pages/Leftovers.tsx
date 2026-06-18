@@ -194,8 +194,8 @@ export default function Leftovers() {
             <div className="flex items-start gap-2">
               <div className="flex-1 space-y-2">
                 <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
-                <p>Resissued tags are published weekly starting in August. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued.</p>
-                <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.</p>
+                <p>Reissued tags are published weekly starting in August. To get alerted when a specific tag you're looking hits the reissue list, <strong>sign up for Tag Alerts</strong> to receive an email when your tag shows up.</p>
+                <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!) using promo code <strong>50TALLO</strong>, and also gain access to all tables for draw odds, harvest stats, and unit information.</p>
               </div>
               <Button
                 variant="ghost"
