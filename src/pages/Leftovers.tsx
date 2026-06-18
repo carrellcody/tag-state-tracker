@@ -190,26 +190,37 @@ export default function Leftovers() {
 
       {/* Welcome banner */}
       <Card className="mb-4 border-2 border-primary bg-[hsl(var(--primary)/0.12)]">
-        <CardHeader className="py-3">
-          <div className="flex items-start justify-between gap-2">
-            {!bannerOpen ? (
-              <span className="text-base font-medium">Learn more about leftover tags</span>
-            ) : <span />}
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={bannerOpen ? "Collapse banner" : "Expand banner"}
-              onClick={() => setBannerOpen(v => !v)}
-            >
-              {bannerOpen ? <Minus className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
-            </Button>
-          </div>
-        </CardHeader>
-        {bannerOpen && (
-          <CardContent className="pt-0 text-base leading-relaxed space-y-2">
-            <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
-            <p>Resissued tags are published weekly starting in August. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued.</p>
-            <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.</p>
+        {bannerOpen ? (
+          <CardContent className="p-2 text-base leading-relaxed">
+            <div className="flex items-start gap-2">
+              <div className="flex-1 space-y-2">
+                <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
+                <p>Resissued tags are published weekly starting in August. To sign up for tag alerts so that you don't miss a tag you're looking for when it's published on the reissue list, sign up for tag alerts to get weekly emails letting you know if any tags you're interested in have been reissued.</p>
+                <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!), and also gain access to all tables for draw odds tables, harvest stats, and unit information.</p>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Collapse banner"
+                onClick={() => setBannerOpen(false)}
+              >
+                <Minus className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        ) : (
+          <CardContent className="p-2 text-base font-medium">
+            <div className="flex items-start justify-between gap-2">
+              <span>Learn more about leftover tags</span>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Expand banner"
+                onClick={() => setBannerOpen(true)}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
           </CardContent>
         )}
       </Card>
