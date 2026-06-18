@@ -410,7 +410,7 @@ export default function Leftovers() {
                       <TableHeader>
                         <TableRow>
                           {COLUMNS.map((c) => (
-                            <TableHead key={c.key} className={`whitespace-nowrap sticky top-0 z-10 bg-background ${c.className || ""}`}>
+                            <TableHead key={c.key} className={`whitespace-nowrap text-base align-top sticky top-0 z-10 bg-background ${c.className || ""}`}>
                               {c.label}
                             </TableHead>
                           ))}
