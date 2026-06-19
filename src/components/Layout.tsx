@@ -152,15 +152,11 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Species menus right after Home */}
               {speciesMenus.map((menu) => {
-                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
                 return (
                   <NavigationMenu key={menu.label}>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger
-                          className={`font-medium ${isRestricted ? "opacity-50 cursor-not-allowed" : ""}`}
-                          disabled={isRestricted}
-                        >
+                        <NavigationMenuTrigger className="font-medium">
                           {menu.label}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
@@ -168,21 +164,12 @@ export default function Layout({ children }: LayoutProps) {
                             {menu.items.map((item) => (
                               <li key={item.to}>
                                 <NavigationMenuLink asChild>
-                                  {isRestricted ? (
-                                    <button
-                                      onClick={handleRestrictedClick}
-                                      className="block w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-50 cursor-not-allowed"
-                                    >
-                                      {item.label}
-                                    </button>
-                                  ) : (
-                                    <Link
-                                      to={item.to}
-                                      className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                                    >
-                                      {item.label}
-                                    </Link>
-                                  )}
+                                  <Link
+                                    to={item.to}
+                                    className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                                  >
+                                    {item.label}
+                                  </Link>
                                 </NavigationMenuLink>
                               </li>
                             ))}
