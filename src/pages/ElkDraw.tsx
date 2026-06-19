@@ -1,25 +1,40 @@
 import { ElkDrawTable } from "@/components/tables/ElkDrawTable";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { getTierFromProductId, canAccessElk } from "@/utils/subscriptionTiers";
 import { SEOHead } from "@/components/SEOHead";
 
 export default function ElkDraw() {
-  const { subscriptionStatus, loading } = useAuth();
+  const { user, subscriptionStatus, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasAccess = canAccessElk(currentTier);
 
-  useEffect(() => {
-    // Wait for auth to finish loading before checking access
-    if (!loading && !canAccessElk(currentTier)) {
-      navigate("/subscription");
-    }
-  }, [currentTier, navigate, loading]);
+  if (!authLoading && !hasAccess) {
+    return (
+      <div className="container mx-auto pt-2 pb-10 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <SEOHead
+          title="Colorado Elk Hunting Draw Odds 2026 | TalloTags"
+          description="Colorado elk draw odds and preference point statistics for 2026 hunting season. Analyze draw success rates by unit, season, and weapon type."
+          canonicalPath="/elk-draw-old"
+        />
+        <h1 className="text-3xl font-bold mb-3">Colorado Elk Draw Odds</h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          Access to Elk draw statistics requires a Pro membership.
+        </p>
+        <Button
+          size="lg"
+          onClick={() => navigate(user ? "/subscription" : "/auth")}
+        >
+          Sign up for access! - 30 day free trial, cancel anytime
+        </Button>
+      </div>
+    );
+  }
 
-  // Show nothing while loading or if no access
-  if (loading || !canAccessElk(currentTier)) {
-    return null;
+  if (authLoading) {
+    return <div className="container mx-auto p-8 text-center">Loading...</div>;
   }
 
   return (

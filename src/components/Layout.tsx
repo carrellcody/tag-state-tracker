@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, UserCircle } from "lucide-react";
 import { useState } from "react";
@@ -18,17 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
 
 import taggoutLogosmall from "@/assets/blacktext-17-2.png";
 interface LayoutProps {
@@ -36,10 +26,8 @@ interface LayoutProps {
 }
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
-  const { user, signOut, subscriptionStatus, loading } = useAuth();
+  const { user, signOut } = useAuth();
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/leftovers", label: "Secondary / Leftover Tags" },
@@ -113,14 +101,6 @@ export default function Layout({ children }: LayoutProps) {
       ],
     },
   ];
-  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
-  // While loading, assume user has access to avoid greying out menus prematurely
-  const hasElkAccess = loading ? true : canAccessElk(currentTier);
-  const hasDeerAccess = loading ? true : canAccessDeer(currentTier);
-  const handleRestrictedClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowSubscriptionDialog(true);
-  };
   const isActive = (path: string) => location.pathname === path;
   const isFixedHeightPage = location.pathname === "/leftovers";
 
@@ -152,15 +132,11 @@ export default function Layout({ children }: LayoutProps) {
 
               {/* Species menus right after Home */}
               {speciesMenus.map((menu) => {
-                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
                 return (
                   <NavigationMenu key={menu.label}>
                     <NavigationMenuList>
                       <NavigationMenuItem>
-                        <NavigationMenuTrigger
-                          className={`font-medium ${isRestricted ? "opacity-50 cursor-not-allowed" : ""}`}
-                          disabled={isRestricted}
-                        >
+                        <NavigationMenuTrigger className="font-medium">
                           {menu.label}
                         </NavigationMenuTrigger>
                         <NavigationMenuContent>
@@ -168,21 +144,12 @@ export default function Layout({ children }: LayoutProps) {
                             {menu.items.map((item) => (
                               <li key={item.to}>
                                 <NavigationMenuLink asChild>
-                                  {isRestricted ? (
-                                    <button
-                                      onClick={handleRestrictedClick}
-                                      className="block w-full text-left px-3 py-2 rounded-md hover:bg-accent transition-colors opacity-50 cursor-not-allowed"
-                                    >
-                                      {item.label}
-                                    </button>
-                                  ) : (
-                                    <Link
-                                      to={item.to}
-                                      className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
-                                    >
-                                      {item.label}
-                                    </Link>
-                                  )}
+                                  <Link
+                                    to={item.to}
+                                    className="block px-3 py-2 rounded-md hover:bg-accent transition-colors"
+                                  >
+                                    {item.label}
+                                  </Link>
                                 </NavigationMenuLink>
                               </li>
                             ))}
@@ -259,42 +226,22 @@ export default function Layout({ children }: LayoutProps) {
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
               {speciesMenus.map((menu) => {
-                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
                 return (
                   <div key={menu.label} className="space-y-1">
-                    <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? "opacity-50" : ""}`}>
+                    <div className="px-3 py-2 font-semibold text-sm">
                       {menu.label}
                     </div>
-                    {menu.items.map((item) =>
-                      isRestricted ? (
-                        <button
-                          key={item.to}
-                          onClick={(e) => {
-                            setMobileMenuOpen(false);
-                            handleRestrictedClick(e);
-                          }}
-                          className="w-full"
+                    {menu.items.map((item) => (
+                      <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)}>
+                        <Button
+                          variant={isActive(item.to) ? "default" : "ghost"}
+                          className="w-full justify-start pl-6"
+                          size="sm"
                         >
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start pl-6 opacity-50 cursor-not-allowed"
-                            size="sm"
-                          >
-                            {item.label}
-                          </Button>
-                        </button>
-                      ) : (
-                        <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)}>
-                          <Button
-                            variant={isActive(item.to) ? "default" : "ghost"}
-                            className="w-full justify-start pl-6"
-                            size="sm"
-                          >
-                            {item.label}
-                          </Button>
-                        </Link>
-                      ),
-                    )}
+                          {item.label}
+                        </Button>
+                      </Link>
+                    ))}
                   </div>
                 );
               })}
@@ -370,26 +317,6 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </footer>
-
-      {/* Subscription Dialog */}
-      <AlertDialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Pro Plan Required</AlertDialogTitle>
-            <AlertDialogDescription>Purchase pro plan to view deer and elk data</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowSubscriptionDialog(false);
-                window.open("https://buy.stripe.com/7sYfZhaewf7795M0n83AY00");
-              }}
-            >
-              Subscribe Now
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

@@ -1,22 +1,42 @@
 import { DeerDrawTableNew } from "@/components/tables/DeerDrawTableNew";
+import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import { getTierFromProductId, canAccessDeer } from "@/utils/subscriptionTiers";
 import { SEOHead } from "@/components/SEOHead";
 
 export default function DeerDrawNew() {
-  const { subscriptionStatus, loading } = useAuth();
+  const { user, subscriptionStatus, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
-  useEffect(() => {
-    if (!loading && !canAccessDeer(currentTier)) {
-      navigate("/subscription");
-    }
-  }, [currentTier, navigate, loading]);
-  if (loading || !canAccessDeer(currentTier)) {
-    return null;
+  const hasAccess = canAccessDeer(currentTier);
+
+  if (!authLoading && !hasAccess) {
+    return (
+      <div className="container mx-auto pt-2 pb-10 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <SEOHead
+          title="Colorado Mule Deer Draw Odds 2026 | TalloTags"
+          description="Colorado mule deer draw odds and preference point statistics for 2026 with enhanced harvest and land data."
+          canonicalPath="/deer-draw"
+        />
+        <h1 className="text-3xl font-bold mb-3">Colorado Deer Draw Odds</h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          Access to Deer draw statistics requires a Pro membership.
+        </p>
+        <Button
+          size="lg"
+          onClick={() => navigate(user ? "/subscription" : "/auth")}
+        >
+          Sign up for access! - 30 day free trial, cancel anytime
+        </Button>
+      </div>
+    );
   }
+
+  if (authLoading) {
+    return <div className="container mx-auto p-8 text-center">Loading...</div>;
+  }
+
   return (
     <div className="container mx-auto pt-2 pb-10 h-auto lg:h-[calc(100vh-8rem)]">
       <SEOHead
