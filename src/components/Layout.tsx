@@ -26,10 +26,8 @@ interface LayoutProps {
 }
 export default function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [showSubscriptionDialog, setShowSubscriptionDialog] = useState(false);
-  const { user, signOut, subscriptionStatus, loading } = useAuth();
+  const { user, signOut } = useAuth();
   const navLinks = [
     { to: "/", label: "Home" },
     { to: "/leftovers", label: "Secondary / Leftover Tags" },
