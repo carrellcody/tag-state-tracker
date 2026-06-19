@@ -101,14 +101,6 @@ export default function Layout({ children }: LayoutProps) {
       ],
     },
   ];
-  const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
-  // While loading, assume user has access to avoid greying out menus prematurely
-  const hasElkAccess = loading ? true : canAccessElk(currentTier);
-  const hasDeerAccess = loading ? true : canAccessDeer(currentTier);
-  const handleRestrictedClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    setShowSubscriptionDialog(true);
-  };
   const isActive = (path: string) => location.pathname === path;
   const isFixedHeightPage = location.pathname === "/leftovers";
 
@@ -325,26 +317,6 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       </footer>
-
-      {/* Subscription Dialog */}
-      <AlertDialog open={showSubscriptionDialog} onOpenChange={setShowSubscriptionDialog}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Pro Plan Required</AlertDialogTitle>
-            <AlertDialogDescription>Purchase pro plan to view deer and elk data</AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogAction
-              onClick={() => {
-                setShowSubscriptionDialog(false);
-                window.open("https://buy.stripe.com/7sYfZhaewf7795M0n83AY00");
-              }}
-            >
-              Subscribe Now
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }
