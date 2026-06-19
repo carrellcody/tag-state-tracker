@@ -1,23 +1,40 @@
-import { OTCDeerTableNew } from '@/components/tables/OTCDeerTableNew';
-import { useAuth } from '@/contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
-import { getTierFromProductId, canAccessDeer } from '@/utils/subscriptionTiers';
-import { SEOHead } from '@/components/SEOHead';
+import { OTCDeerTableNew } from "@/components/tables/OTCDeerTableNew";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
+import { getTierFromProductId, canAccessDeer } from "@/utils/subscriptionTiers";
+import { SEOHead } from "@/components/SEOHead";
 
 export default function OTCDeerNew() {
-  const { subscriptionStatus, loading } = useAuth();
+  const { user, subscriptionStatus, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const currentTier = getTierFromProductId(subscriptionStatus?.product_id || null);
+  const hasAccess = canAccessDeer(currentTier);
 
-  useEffect(() => {
-    if (!loading && !canAccessDeer(currentTier)) {
-      navigate('/subscription');
-    }
-  }, [currentTier, navigate, loading]);
+  if (!authLoading && !hasAccess) {
+    return (
+      <div className="container mx-auto pt-2 pb-10 flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <SEOHead
+          title="Colorado OTC Deer Units | TalloTags"
+          description="Colorado over-the-counter mule deer unit data with DAU population estimates and harvest statistics."
+          canonicalPath="/otc-deer"
+        />
+        <h1 className="text-3xl font-bold mb-3">OTC Deer Units</h1>
+        <p className="text-muted-foreground mb-6 max-w-md">
+          Access to OTC Deer statistics requires a Pro membership.
+        </p>
+        <Button
+          size="lg"
+          onClick={() => navigate(user ? "/subscription" : "/auth")}
+        >
+          Sign up for access! - 30 day free trial, cancel anytime
+        </Button>
+      </div>
+    );
+  }
 
-  if (loading || !canAccessDeer(currentTier)) {
-    return null;
+  if (authLoading) {
+    return <div className="container mx-auto p-8 text-center">Loading...</div>;
   }
 
   return (
