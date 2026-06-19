@@ -1,20 +1,15 @@
-## Changes to `src/pages/Leftovers.tsx`
+## Update OG social preview image
 
-### 1. Sticky table header
-- On the `TableHeader`'s `TableHead` cells, add `sticky top-0 z-10 bg-background` so column names remain visible while the table body scrolls inside its existing `overflow-auto` container.
+The new OG card has already been generated and uploaded to the CDN:
+`/__l5e/assets-v1/6140d385-6610-475d-afae-e1237543d319/og-card-v2.png`
 
-### 2. Pagination (100 rows per page, matching draw pages)
-- Add `const PAGE_SIZE = 100` and `const [page, setPage] = useState(1)`.
-- Reset `page` to 1 whenever any filter input changes (via `useEffect` on the filter dependency list, mirroring the draw tables).
-- Derive `totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE))` and `pagedRows = filteredRows.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE)`.
-- Render `pagedRows` in the table body instead of `filteredRows`.
-- Below the table, add a pagination bar styled the same as the draw tables: "Previous" button (disabled when `page === 1`), "Page X of Y" text, "Next" button (disabled when `page === totalPages`). Update the row-count line to read "Showing N–M of T tags".
+### Changes
 
-### 3. Banner restyle and copy update
-- Replace the `Card` classes `border-primary/30 bg-primary/5` with thicker border + light green background (e.g. `border-2 border-primary bg-[hsl(var(--primary)/0.12)]` using the existing primary token; no hardcoded colors).
-- Remove the large "Welcome" / "Learn More" `CardTitle` heading. Keep only the collapse/expand button, right-aligned, in the header row.
-- Replace the `bannerText` string with the new three-paragraph copy. Render as three `<p>` blocks with `space-y-2`. In the first paragraph, wrap "Welcome to the leftover page!" in `<strong>` so only that phrase is bold.
-- When collapsed, show a compact one-line label (e.g. "Learn more about leftover tags") next to the expand button so the user can still find it; expanding restores the full text.
+1. **Save the `.asset.json` pointer** at `src/assets/og-card-v2.png.asset.json` so the asset is tracked in the project.
+2. **Update `index.html`** — replace the two references to `https://tallotags.com/og-image.png` (lines 39 and 46) with the absolute CDN URL `https://tallotags.com/__l5e/assets-v1/6140d385-6610-475d-afae-e1237543d319/og-card-v2.png` for both `og:image` and `twitter:image`. Using a new filename (rather than overwriting `og-image.png`) forces Facebook/LinkedIn/Twitter to re-scrape instead of serving their cached copy.
 
-### Out of scope
-No changes to filters, data loading, or other pages.
+### Note on cache
+
+Even after publishing, Facebook may keep showing the old preview until it re-fetches. To force-refresh, paste the page URL into the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) and click "Scrape Again". LinkedIn has a similar [Post Inspector](https://www.linkedin.com/post-inspector/).
+
+After this is merged, publish the site for the new tags to go live.
