@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User, LogOut, UserCircle } from "lucide-react";
 import { useState } from "react";
@@ -18,17 +18,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { useAuth } from "@/contexts/AuthContext";
-import { getTierFromProductId, canAccessElk, canAccessDeer } from "@/utils/subscriptionTiers";
 
 import taggoutLogosmall from "@/assets/blacktext-17-2.png";
 interface LayoutProps {
