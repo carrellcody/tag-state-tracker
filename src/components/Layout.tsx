@@ -246,42 +246,22 @@ export default function Layout({ children }: LayoutProps) {
           {mobileMenuOpen && (
             <nav className="md:hidden py-4 space-y-2 border-t border-border">
               {speciesMenus.map((menu) => {
-                const isRestricted = (menu.type === "elk" && !hasElkAccess) || (menu.type === "deer" && !hasDeerAccess);
                 return (
                   <div key={menu.label} className="space-y-1">
-                    <div className={`px-3 py-2 font-semibold text-sm ${isRestricted ? "opacity-50" : ""}`}>
+                    <div className="px-3 py-2 font-semibold text-sm">
                       {menu.label}
                     </div>
-                    {menu.items.map((item) =>
-                      isRestricted ? (
-                        <button
-                          key={item.to}
-                          onClick={(e) => {
-                            setMobileMenuOpen(false);
-                            handleRestrictedClick(e);
-                          }}
-                          className="w-full"
+                    {menu.items.map((item) => (
+                      <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)}>
+                        <Button
+                          variant={isActive(item.to) ? "default" : "ghost"}
+                          className="w-full justify-start pl-6"
+                          size="sm"
                         >
-                          <Button
-                            variant="ghost"
-                            className="w-full justify-start pl-6 opacity-50 cursor-not-allowed"
-                            size="sm"
-                          >
-                            {item.label}
-                          </Button>
-                        </button>
-                      ) : (
-                        <Link key={item.to} to={item.to} onClick={() => setMobileMenuOpen(false)}>
-                          <Button
-                            variant={isActive(item.to) ? "default" : "ghost"}
-                            className="w-full justify-start pl-6"
-                            size="sm"
-                          >
-                            {item.label}
-                          </Button>
-                        </Link>
-                      ),
-                    )}
+                          {item.label}
+                        </Button>
+                      </Link>
+                    ))}
                   </div>
                 );
               })}
