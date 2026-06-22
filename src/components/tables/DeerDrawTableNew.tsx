@@ -34,7 +34,7 @@ function isHybridEligible(row: any) {
 }
 
 export function DeerDrawTableNew() {
-  const { data, loading, error } = useCsvData(`/data/FullDeer26FinalNewHarv.csv?v=${CSV_VERSION}`);
+  const { data, loading, error } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
   const { data: subtableData } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
   const { data: codePages } = useCsvData(`/data/deer26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("deer_draw_new");
@@ -66,7 +66,7 @@ export function DeerDrawTableNew() {
   const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("deerDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("deerDrawNew_showHybridOnly", false);
-  const [showNewTags, setShowNewTags] = usePersistedState("deerDrawNew_showNewTags", true);
+  // showNewTags removed: FullDeer26Final.csv does not include a "New" column
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function DeerDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -145,10 +145,8 @@ export function DeerDrawTableNew() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
-      const isNewTag = String(row.New || '').trim() === 'New';
-      const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
-      if (!bypassPoints && showNoPointsOnly && row.nopoints !== 'Y') return false;
+      if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch.split(",").map(s => s.trim()).filter(Boolean);
@@ -183,7 +181,7 @@ export function DeerDrawTableNew() {
       if (ploFilter === "none" && row.PLO === "Yes") return false;
       if (rfwFilter === "only" && row.RFW !== "Yes") return false;
       if (rfwFilter === "none" && row.RFW === "Yes") return false;
-      if (!showHybridOnly && !showNoPointsOnly && !bypassPoints) {
+      if (!showHybridOnly && !showNoPointsOnly) {
         const dolStr = String(row.Drawn_out_level || "").trim();
         const isLeftoverOrChoice = dolStr === "Leftover" || dolStr.startsWith("Choice");
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
@@ -201,7 +199,7 @@ export function DeerDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -244,8 +242,8 @@ export function DeerDrawTableNew() {
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const visibleColumns = (showPreviousYears
-    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
-    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    ? ["Tag", "List", "Valid GMUs", "Dates", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    : ["Tag", "List", "Valid GMUs", "Dates", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
   ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
@@ -253,7 +251,6 @@ export function DeerDrawTableNew() {
     List: "List",
     "Valid GMUs": "Valid Units",
     Dates: "2026 Dates",
-    Quota: "Total tag quota",
     Drawn_out_level23: "Drawn Out Level",
     Chance_at_DOL23: "Chance at DOL",
     Drawn_out_level24: "Drawn Out Level",
@@ -282,7 +279,7 @@ export function DeerDrawTableNew() {
     '2026': ['Drawn_out_level', 'Chance_at_DOL']
   };
 
-  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
+  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates'];
   const nonGroupedColumnsAfter = (showPreviousYears
     ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
     : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
@@ -478,12 +475,8 @@ export function DeerDrawTableNew() {
         </RadioGroup>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm leading-tight">View New Tags?</Label>
-          <Switch checked={showNewTags} onCheckedChange={setShowNewTags} />
-        </div>
-      </div>
+
+
 
       <Button variant="outline" className="w-full" onClick={() => {
         setUnitSearch(""); setSexFilter(["All"]); setSeasonWeapons(["Any"]); setHunterClass("A_R");
