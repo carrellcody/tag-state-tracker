@@ -34,7 +34,7 @@ function isHybridEligible(row: any) {
 }
 
 export function DeerDrawTableNew() {
-  const { data, loading, error } = useCsvData(`/data/FullDeer26FinalNewHarv.csv?v=${CSV_VERSION}`);
+  const { data, loading, error } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
   const { data: subtableData } = useCsvData(`/data/DeerDraw25Subtable.csv?v=${CSV_VERSION}`);
   const { data: codePages } = useCsvData(`/data/deer26code_pages.csv?v=${CSV_VERSION}`);
   const { favorites, toggleFavorite, clearAllFavorites } = useFavorites("deer_draw_new");
