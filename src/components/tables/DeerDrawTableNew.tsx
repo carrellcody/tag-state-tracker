@@ -66,7 +66,7 @@ export function DeerDrawTableNew() {
   const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("deerDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("deerDrawNew_showHybridOnly", false);
-  const [showNewTags, setShowNewTags] = usePersistedState("deerDrawNew_showNewTags", true);
+  // showNewTags removed: FullDeer26Final.csv does not include a "New" column
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
