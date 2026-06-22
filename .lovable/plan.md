@@ -1,15 +1,42 @@
-## Update OG social preview image
+## Goal
 
-The new OG card has already been generated and uploaded to the CDN:
-`/__l5e/assets-v1/6140d385-6610-475d-afae-e1237543d319/og-card-v2.png`
+Fix outdated deer draw statistics on `/deer-draw` by pointing the table at the up-to-date `FullDeer26Final.csv` instead of the stale `FullDeer26FinalNewHarv.csv`.
 
-### Changes
+## Why the data is wrong today
 
-1. **Save the `.asset.json` pointer** at `src/assets/og-card-v2.png.asset.json` so the asset is tracked in the project.
-2. **Update `index.html`** — replace the two references to `https://tallotags.com/og-image.png` (lines 39 and 46) with the absolute CDN URL `https://tallotags.com/__l5e/assets-v1/6140d385-6610-475d-afae-e1237543d319/og-card-v2.png` for both `og:image` and `twitter:image`. Using a new filename (rather than overwriting `og-image.png`) forces Facebook/LinkedIn/Twitter to re-scrape instead of serving their cached copy.
+- `/deer-draw` → `DeerDrawNew` → `DeerDrawTableNew` currently fetches `FullDeer26FinalNewHarv.csv` (last updated 2026-05-14).
+- `FullDeer26Final.csv` (updated 2026-06-18) holds the correct, current draw stats.
+- Verified row `DM035O3R` / `A_NR`: NewHarv = `1 Pref Points` (wrong), Final = `2 Pref Points` (correct).
 
-### Note on cache
+## Column differences to reconcile
 
-Even after publishing, Facebook may keep showing the old preview until it re-fetches. To force-refresh, paste the page URL into the [Facebook Sharing Debugger](https://developers.facebook.com/tools/debug/) and click "Scrape Again". LinkedIn has a similar [Post Inspector](https://www.linkedin.com/post-inspector/).
+`FullDeer26Final.csv` is missing three columns the new table currently uses:
 
-After this is merged, publish the site for the new tags to go live.
+| Column | Used for | Resolution |
+|---|---|---|
+| `Quota` | Displayed as "Total tag quota" column | Remove from `visibleColumns`, `headerLabels`, `nonGroupedColumnsBefore`, and the row-rendering switch |
+| `Choice 1 Applicants` | Not referenced in the table — only present in subtable file | No change |
+| `New` | "View New Tags" toggle (bypasses point filters for new tags) | Remove the toggle + state + filter logic since the source no longer marks new tags |
+
+Columns that `Final` adds and the table can keep using as-is: `Drawn_out_level23/24/25`, `Chance_at_DOL23/24/25`, `DOAAdult*_1` (not currently rendered). The existing "Previous years" toggle already references the `25`/`24`/`23` columns, which now actually exist in the new source.
+
+## Changes
+
+`src/components/tables/DeerDrawTableNew.tsx`
+1. Line 37 — change fetch URL:
+   ```ts
+   const { data, loading, error } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
+   ```
+2. Remove `Quota` from `visibleColumns` (lines 247-248), `headerLabels` (line 256), and `nonGroupedColumnsBefore` (line 285).
+3. Remove the `Quota` cell from the row-cell renderer further down in the same file (the `switch`/`if` branch that outputs `row.Quota`).
+4. Remove the "View New Tags" feature:
+   - Delete `showNewTags` state (line 69) and its dependency in the page-reset effect (line 80).
+   - Delete the `isNewTag` / `bypassPoints` lines (148-149) and any branches relying on `bypassPoints` (lines 186, 191).
+   - Remove the toggle UI in the filter sidebar.
+5. Bump `CSV_VERSION` in `src/utils/csvVersion.ts` from `"4"` to `"5"` so browsers re-fetch immediately after deploy.
+
+## Out of scope
+
+- `/deer-draw-old` (the legacy `DeerDrawTable`) already uses `FullDeer26Final.csv` and is unaffected.
+- Elk and Pronghorn draw pages — not part of this report.
+- Re-uploading `FullDeer26FinalNewHarv.csv` — no longer needed; the file becomes unused on `/deer-draw` (still listed in `serve-csv` allow-list, harmless to leave).
