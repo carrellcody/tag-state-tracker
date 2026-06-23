@@ -476,12 +476,7 @@ export function AntelopeDrawTableNew() {
         </RadioGroup>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm leading-tight">View New Tags?</Label>
-          <Switch checked={showNewTags} onCheckedChange={setShowNewTags} />
-        </div>
-      </div>
+
 
       <Button variant="outline" className="w-full" onClick={() => {
         setUnitSearch(""); setSexFilter(["All"]); setSeasonWeapons(["Any"]); setHunterClass("A_R");
