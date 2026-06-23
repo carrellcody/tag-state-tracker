@@ -238,7 +238,7 @@ export function ElkDrawTableNew() {
       if (ploFilter === "none" && row.PLO === "Yes") return false;
       if (rfwFilter === "only" && row.RFW !== "Yes") return false;
       if (rfwFilter === "none" && row.RFW === "Yes") return false;
-      if (!showHybridOnly && !showNoPointsOnly && !bypassPoints) {
+      if (!showHybridOnly && !showNoPointsOnly) {
         const dolStr = String(row.Drawn_out_level || "").trim();
         const isLeftoverOrChoice = dolStr === "Leftover" || dolStr.startsWith("Choice");
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
