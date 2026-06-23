@@ -280,7 +280,7 @@ export function DeerDrawTableNew() {
     '2026': ['Drawn_out_level', 'Chance_at_DOL']
   };
 
-  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates'];
+  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
   const nonGroupedColumnsAfter = (showPreviousYears
     ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
     : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
