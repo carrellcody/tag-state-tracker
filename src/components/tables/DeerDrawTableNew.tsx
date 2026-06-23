@@ -242,8 +242,8 @@ export function DeerDrawTableNew() {
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const visibleColumns = (showPreviousYears
-    ? ["Tag", "List", "Valid GMUs", "Dates", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
-    : ["Tag", "List", "Valid GMUs", "Dates", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
   ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
@@ -251,6 +251,7 @@ export function DeerDrawTableNew() {
     List: "List",
     "Valid GMUs": "Valid Units",
     Dates: "2026 Dates",
+    Quota: "Quota",
     Drawn_out_level23: "Drawn Out Level",
     Chance_at_DOL23: "Chance at DOL",
     Drawn_out_level24: "Drawn Out Level",
@@ -279,7 +280,7 @@ export function DeerDrawTableNew() {
     '2026': ['Drawn_out_level', 'Chance_at_DOL']
   };
 
-  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates'];
+  const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
   const nonGroupedColumnsAfter = (showPreviousYears
     ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
     : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']

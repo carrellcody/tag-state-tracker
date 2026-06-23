@@ -78,7 +78,7 @@ export function ElkDrawTableNew() {
   const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("elkDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("elkDrawNew_showHybridOnly", false);
-  const [showNewTags, setShowNewTags] = usePersistedState("elkDrawNew_showNewTags", true);
+  
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
@@ -106,7 +106,6 @@ export function ElkDrawTableNew() {
     showNoPointsOnly,
     showHybridOnly,
     minSuccessRate,
-    showNewTags,
   ]);
 
   useEffect(() => {
@@ -189,10 +188,8 @@ export function ElkDrawTableNew() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
-      const isNewTag = String(row.New || "").trim() === "New";
-      const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
-      if (!bypassPoints && showNoPointsOnly && row.nopoints !== "Y") return false;
+      if (showNoPointsOnly && row.nopoints !== "Y") return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch
@@ -241,7 +238,7 @@ export function ElkDrawTableNew() {
       if (ploFilter === "none" && row.PLO === "Yes") return false;
       if (rfwFilter === "only" && row.RFW !== "Yes") return false;
       if (rfwFilter === "none" && row.RFW === "Yes") return false;
-      if (!showHybridOnly && !showNoPointsOnly && !bypassPoints) {
+      if (!showHybridOnly && !showNoPointsOnly) {
         const dolStr = String(row.Drawn_out_level || "").trim();
         const isLeftoverOrChoice = dolStr === "Leftover" || dolStr.startsWith("Choice");
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
@@ -277,7 +274,6 @@ export function ElkDrawTableNew() {
     showNoPointsOnly,
     showHybridOnly,
     minSuccessRate,
-    showNewTags,
   ]);
 
   const sortedData = useMemo(() => {
@@ -801,12 +797,8 @@ export function ElkDrawTableNew() {
           </RadioGroup>
         </div>
 
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <Label className="text-sm leading-tight">View New Tags?</Label>
-            <Switch checked={showNewTags} onCheckedChange={setShowNewTags} />
-          </div>
-        </div>
+
+
 
         <Button
           variant="outline"

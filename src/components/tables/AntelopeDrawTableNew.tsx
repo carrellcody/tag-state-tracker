@@ -66,7 +66,7 @@ export function AntelopeDrawTableNew() {
   const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("antelopeDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("antelopeDrawNew_showHybridOnly", false);
-  const [showNewTags, setShowNewTags] = usePersistedState("antelopeDrawNew_showNewTags", true);
+  
   const [showHybridHelp, setShowHybridHelp] = useState(false);
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function AntelopeDrawTableNew() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, showPreviousYears, showNoPointsOnly, showHybridOnly, minSuccessRate]);
 
   useEffect(() => {
     const loadPreferencePoints = async () => {
@@ -145,10 +145,8 @@ export function AntelopeDrawTableNew() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
-      const isNewTag = String(row.New || '').trim() === 'New';
-      const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
-      if (!bypassPoints && showNoPointsOnly && row.nopoints !== 'Y') return false;
+      if (showNoPointsOnly && row.nopoints !== 'Y') return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch.split(",").map(s => s.trim()).filter(Boolean);
@@ -183,7 +181,7 @@ export function AntelopeDrawTableNew() {
       if (ploFilter === "none" && row.PLO === "Yes") return false;
       if (rfwFilter === "only" && row.RFW !== "Yes") return false;
       if (rfwFilter === "none" && row.RFW === "Yes") return false;
-      if (!showHybridOnly && !showNoPointsOnly && !bypassPoints) {
+      if (!showHybridOnly && !showNoPointsOnly) {
         const dolStr = String(row.Drawn_out_level || "").trim();
         const isLeftoverOrChoice = dolStr === "Leftover" || dolStr.startsWith("Choice");
         const dol = isLeftoverOrChoice ? 0 : parseFloat(dolStr || "0");
@@ -201,7 +199,7 @@ export function AntelopeDrawTableNew() {
       }
       return true;
     });
-  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate, showNewTags]);
+  }, [data, unitSearch, huntCodeFilter, sexFilter, seasonWeapons, hunterClass, ploFilter, rfwFilter, minPoints, maxPoints, showNoApplicants, listFilter, showFavoritesOnly, favorites, showNoPointsOnly, showHybridOnly, minSuccessRate]);
 
   const sortedData = useMemo(() => {
     if (!sortColumn) return filteredData;
@@ -478,12 +476,7 @@ export function AntelopeDrawTableNew() {
         </RadioGroup>
       </div>
 
-      <div className="space-y-2">
-        <div className="flex items-center justify-between">
-          <Label className="text-sm leading-tight">View New Tags?</Label>
-          <Switch checked={showNewTags} onCheckedChange={setShowNewTags} />
-        </div>
-      </div>
+
 
       <Button variant="outline" className="w-full" onClick={() => {
         setUnitSearch(""); setSexFilter(["All"]); setSeasonWeapons(["Any"]); setHunterClass("A_R");
