@@ -188,10 +188,8 @@ export function ElkDrawTableNew() {
   const filteredData = useMemo(() => {
     return data.filter((row: any) => {
       if (huntCodeFilter.length > 0 && !huntCodeFilter.includes(row.Tag)) return false;
-      const isNewTag = String(row.New || "").trim() === "New";
-      const bypassPoints = showNewTags && isNewTag;
       if (showHybridOnly && !isHybridEligible(row)) return false;
-      if (!bypassPoints && showNoPointsOnly && row.nopoints !== "Y") return false;
+      if (showNoPointsOnly && row.nopoints !== "Y") return false;
       if (showFavoritesOnly && !favorites.has(row.Tag)) return false;
       if (unitSearch) {
         const searchTerms = unitSearch
