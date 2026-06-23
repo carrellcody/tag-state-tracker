@@ -274,7 +274,6 @@ export function ElkDrawTableNew() {
     showNoPointsOnly,
     showHybridOnly,
     minSuccessRate,
-    showNewTags,
   ]);
 
   const sortedData = useMemo(() => {
