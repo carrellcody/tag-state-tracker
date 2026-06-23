@@ -251,6 +251,7 @@ export function DeerDrawTableNew() {
     List: "List",
     "Valid GMUs": "Valid Units",
     Dates: "2026 Dates",
+    Quota: "Quota",
     Drawn_out_level23: "Drawn Out Level",
     Chance_at_DOL23: "Chance at DOL",
     Drawn_out_level24: "Drawn Out Level",
