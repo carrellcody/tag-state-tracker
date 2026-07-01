@@ -1127,6 +1127,7 @@ export function ElkDrawTableNew() {
                               })}
                             </tbody>
                           </table>
+                          <DolYearChart row={row} />
                         </td>
                       </tr>
                     )}
