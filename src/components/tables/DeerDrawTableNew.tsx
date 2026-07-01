@@ -63,7 +63,7 @@ export function DeerDrawTableNew() {
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("deerDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("deerDrawNew_showPreviousYears", false);
   const [showUnitStats, setShowUnitStats] = usePersistedState("deerDrawNew_showUnitStats", false);
-  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("deerDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("deerDrawNew_showHybridOnly", false);
   // showNewTags removed: FullDeer26Final.csv does not include a "New" column
@@ -242,8 +242,8 @@ export function DeerDrawTableNew() {
   if (error) return <div className="p-8 text-center text-destructive">Error: {error}</div>;
 
   const visibleColumns = (showPreviousYears
-    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
-    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm", "Notes"]
+    ? ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level23", "Chance_at_DOL23", "Drawn_out_level24", "Chance_at_DOL24", "Drawn_out_level25", "Chance_at_DOL25", "Drawn_out_level", "Chance_at_DOL", "slope", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Notes"]
+    : ["Tag", "List", "Valid GMUs", "Dates", "Quota", "Drawn_out_level", "Chance_at_DOL", "Chance_with_First_choice", "Sex", "Weapon", "Percent Success", "Total Hunters", "Total_Acres", "Public_Acres", "Public_Percent", "Notes"]
   ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const headerLabels: Record<string, string> = {
@@ -270,7 +270,6 @@ export function DeerDrawTableNew() {
     "Total_Acres": "Total Acres",
     "Public_Acres": "Public Acres",
     "Public_Percent": "Percent Public Land",
-    "Hunters_per_Public_Acre_norm": "Hunters per public acre - Normalized",
   };
 
   const yearGroupedColumns = {
@@ -282,8 +281,8 @@ export function DeerDrawTableNew() {
 
   const nonGroupedColumnsBefore = ['Tag', 'List', 'Valid GMUs', 'Dates', 'Quota'];
   const nonGroupedColumnsAfter = (showPreviousYears
-    ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
-    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Hunters_per_Public_Acre_norm', 'Notes']
+    ? ['slope', 'Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Notes']
+    : ['Chance_with_First_choice', 'Sex', 'Weapon', 'Percent Success', 'Total Hunters', 'Total_Acres', 'Public_Acres', 'Public_Percent', 'Notes']
   ).filter(c => showUnitStats || !UNIT_STAT_COLS.includes(c));
 
   const helpText: Record<string, string> = {
@@ -300,7 +299,6 @@ export function DeerDrawTableNew() {
     Chance_at_DOL: "Odds of drawing with the Drawn Out Level points in 2026.",
     slope: "Trend of points required over the last three draws. Green down = easier, Red up = harder.",
     Chance_with_First_choice: "Your odds of drawing with your preference points if this were your first choice in the 2026 draw.",
-    Hunters_per_Public_Acre_norm: "Higher numbers here means more hunters per public acre. A 1 is indicates that this tag has the highest density of hunters of all tags, and a 0 indicates that the unit has the lowest density of hunters among all tags. A 0.5 would indicate that the hunter density is half that of the most dense tag."
   };
 
   const renderTrendArrow = (value: any) => {

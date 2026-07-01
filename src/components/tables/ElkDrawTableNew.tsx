@@ -75,7 +75,7 @@ export function ElkDrawTableNew() {
   const [showFavoritesOnly, setShowFavoritesOnly] = usePersistedState("elkDrawNew_showFavoritesOnly", false);
   const [showPreviousYears, setShowPreviousYears] = usePersistedState("elkDrawNew_showPreviousYears", false);
   const [showUnitStats, setShowUnitStats] = usePersistedState("elkDrawNew_showUnitStats", false);
-  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent", "Hunters_per_Public_Acre_norm"];
+  const UNIT_STAT_COLS = ["Total_Acres", "Public_Acres", "Public_Percent"];
   const [showNoPointsOnly, setShowNoPointsOnly] = usePersistedState("elkDrawNew_showNoPointsOnly", false);
   const [showHybridOnly, setShowHybridOnly] = usePersistedState("elkDrawNew_showHybridOnly", false);
   
@@ -344,7 +344,6 @@ export function ElkDrawTableNew() {
         "Total_Acres",
         "Public_Acres",
         "Public_Percent",
-        "Hunters_per_Public_Acre_norm",
         "Notes",
       ]
     : [
@@ -363,7 +362,6 @@ export function ElkDrawTableNew() {
         "Total_Acres",
         "Public_Acres",
         "Public_Percent",
-        "Hunters_per_Public_Acre_norm",
         "Notes",
       ]
   ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
@@ -392,7 +390,6 @@ export function ElkDrawTableNew() {
     Total_Acres: "Total Acres",
     Public_Acres: "Public Acres",
     Public_Percent: "Percent Public Land",
-    Hunters_per_Public_Acre_norm: "Hunters per public acre - Normalized",
   };
 
   const yearGroupedColumns = {
@@ -414,7 +411,6 @@ export function ElkDrawTableNew() {
         "Total_Acres",
         "Public_Acres",
         "Public_Percent",
-        "Hunters_per_Public_Acre_norm",
         "Notes",
       ]
     : [
@@ -426,7 +422,6 @@ export function ElkDrawTableNew() {
         "Total_Acres",
         "Public_Acres",
         "Public_Percent",
-        "Hunters_per_Public_Acre_norm",
         "Notes",
       ]
   ).filter((c) => showUnitStats || !UNIT_STAT_COLS.includes(c));
@@ -446,8 +441,6 @@ export function ElkDrawTableNew() {
     slope: "Trend of points required over the last three draws. Green down = easier, Red up = harder.",
     Chance_with_First_choice:
       "Your odds of drawing with your preference points if this were your first choice in the 2026 draw.",
-    Hunters_per_Public_Acre_norm:
-      "Higher numbers here means more hunters per public acre. A 1 is indicates that this tag has the highest density of hunters of all tags, and a 0 indicates that the unit has the lowest density of hunters among all tags. A 0.5 would indicate that the hunter density is half that of the most dense tag.",
   };
 
   const renderTrendArrow = (value: any) => {
