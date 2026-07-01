@@ -15,6 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from "./TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
+import { DolYearChart } from "./DolYearChart";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -1093,8 +1094,8 @@ export function ElkDrawTableNew() {
                                 <th className="border p-1 bg-accent">Acres</th>
                                 <th className="border p-1 bg-accent">Public Acres</th>
                                 <th className="border p-1 bg-accent">DAU</th>
-                                <th className="border p-1 bg-accent">DAU Population Estimate</th>
-                                <th className="border p-1 bg-accent">DAU Bull:Cow ratio</th>
+                                <th className="border p-1 bg-accent w-24">DAU Population Estimate</th>
+                                <th className="border p-1 bg-accent w-24">DAU Bull:Cow ratio</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1120,13 +1121,14 @@ export function ElkDrawTableNew() {
                                     <td className="border p-1">{subRow.Acres || ""}</td>
                                     <td className="border p-1">{subRow["Acres Public"] || ""}</td>
                                     <td className="border p-1">{subRow.DAU || ""}</td>
-                                    <td className="border p-1">{subRow["Population"] || ""}</td>
-                                    <td className="border p-1">{subRow["Bull/Cow ratio"] || ""}</td>
+                                    <td className="border p-1 w-24">{subRow["Population"] || ""}</td>
+                                    <td className="border p-1 w-24">{subRow["Bull/Cow ratio"] || ""}</td>
                                   </tr>
                                 );
                               })}
                             </tbody>
                           </table>
+                          <DolYearChart row={row} />
                         </td>
                       </tr>
                     )}

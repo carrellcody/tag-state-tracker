@@ -15,6 +15,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { TableHeaderHelp } from './TableHeaderHelp';
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
+import { DolYearChart } from "./DolYearChart";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -645,8 +646,8 @@ export function AntelopeDrawTableNew() {
                           <th className="border p-1 bg-accent">Acres</th>
                           <th className="border p-1 bg-accent">Public Acres</th>
                           <th className="border p-1 bg-accent">DAU</th>
-                          <th className="border p-1 bg-accent">DAU Population Estimate</th>
-                          <th className="border p-1 bg-accent">DAU Buck:Doe ratio</th>
+                          <th className="border p-1 bg-accent w-24">DAU Population Estimate</th>
+                          <th className="border p-1 bg-accent w-24">DAU Buck:Doe ratio</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -660,12 +661,13 @@ export function AntelopeDrawTableNew() {
                             <td className="border p-1">{subRow.Acres || ''}</td>
                             <td className="border p-1">{subRow['Acres Public'] || ''}</td>
                             <td className="border p-1">{subRow.DAU || ''}</td>
-                            <td className="border p-1">{subRow['Population'] || ''}</td>
-                            <td className="border p-1">{subRow['Buck/Doe Ratio'] || ''}</td>
+                            <td className="border p-1 w-24">{subRow['Population'] || ''}</td>
+                            <td className="border p-1 w-24">{subRow['Buck/Doe Ratio'] || ''}</td>
                           </tr>;
                         })}
                       </tbody>
                     </table>
+                    <DolYearChart row={row} />
                   </td>
                 </tr>}
               </Fragment>;
