@@ -667,6 +667,7 @@ export function AntelopeDrawTableNew() {
                         })}
                       </tbody>
                     </table>
+                    <DolYearChart row={row} />
                   </td>
                 </tr>}
               </Fragment>;
