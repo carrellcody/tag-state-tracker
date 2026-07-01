@@ -661,8 +661,8 @@ export function DeerDrawTableNew() {
                             <td className="border p-1">{subRow.Acres || ''}</td>
                             <td className="border p-1">{subRow['Acres Public'] || ''}</td>
                             <td className="border p-1">{subRow.DAU || ''}</td>
-                            <td className="border p-1">{subRow['Post Hunt Estimate'] || ''}</td>
-                            <td className="border p-1">{subRow['Buck/ Doe ratio (per 100)'] || ''}</td>
+                            <td className="border p-1 w-24">{subRow['Post Hunt Estimate'] || ''}</td>
+                            <td className="border p-1 w-24">{subRow['Buck/ Doe ratio (per 100)'] || ''}</td>
                           </tr>;
                         })}
                       </tbody>
