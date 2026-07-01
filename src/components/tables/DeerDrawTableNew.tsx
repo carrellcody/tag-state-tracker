@@ -667,6 +667,7 @@ export function DeerDrawTableNew() {
                         })}
                       </tbody>
                     </table>
+                    <DolYearChart row={row} />
                   </td>
                 </tr>}
               </Fragment>;
