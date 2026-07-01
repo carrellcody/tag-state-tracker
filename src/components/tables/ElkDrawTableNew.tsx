@@ -1093,8 +1093,8 @@ export function ElkDrawTableNew() {
                                 <th className="border p-1 bg-accent">Acres</th>
                                 <th className="border p-1 bg-accent">Public Acres</th>
                                 <th className="border p-1 bg-accent">DAU</th>
-                                <th className="border p-1 bg-accent">DAU Population Estimate</th>
-                                <th className="border p-1 bg-accent">DAU Bull:Cow ratio</th>
+                                <th className="border p-1 bg-accent w-24">DAU Population Estimate</th>
+                                <th className="border p-1 bg-accent w-24">DAU Bull:Cow ratio</th>
                               </tr>
                             </thead>
                             <tbody>
