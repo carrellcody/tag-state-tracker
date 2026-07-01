@@ -1120,8 +1120,8 @@ export function ElkDrawTableNew() {
                                     <td className="border p-1">{subRow.Acres || ""}</td>
                                     <td className="border p-1">{subRow["Acres Public"] || ""}</td>
                                     <td className="border p-1">{subRow.DAU || ""}</td>
-                                    <td className="border p-1">{subRow["Population"] || ""}</td>
-                                    <td className="border p-1">{subRow["Bull/Cow ratio"] || ""}</td>
+                                    <td className="border p-1 w-24">{subRow["Population"] || ""}</td>
+                                    <td className="border p-1 w-24">{subRow["Bull/Cow ratio"] || ""}</td>
                                   </tr>
                                 );
                               })}
