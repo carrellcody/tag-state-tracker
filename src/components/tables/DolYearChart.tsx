@@ -14,12 +14,20 @@ const parseDol = (val: any): number | null => {
   return isNaN(n) ? null : n;
 };
 
+const formatDol = (v: number): string => {
+  if (v === -1) return "Choice 2";
+  if (v === -2) return "Choice 3";
+  if (v === -3) return "Choice 4";
+  if (v === -4) return "Leftovers";
+  return String(v);
+};
+
 export function DolYearChart({ row }: DolYearChartProps) {
   const data = [
-    { year: "2023", dol: parseDol(row.Drawn_out_level23 ?? row.DOLE23) },
-    { year: "2024", dol: parseDol(row.Drawn_out_level24 ?? row.DOLE24) },
-    { year: "2025", dol: parseDol(row.Drawn_out_level25 ?? row.DOLE25) },
-    { year: "2026", dol: parseDol(row.Drawn_out_level ?? row.DOLE26) },
+    { year: "2023", dol: parseDol(row.DOLE23) },
+    { year: "2024", dol: parseDol(row.DOLE24) },
+    { year: "2025", dol: parseDol(row.DOLE25) },
+    { year: "2026", dol: parseDol(row.DOLE26) },
   ];
 
   const anyData = data.some((d) => d.dol !== null);
@@ -30,14 +38,14 @@ export function DolYearChart({ row }: DolYearChartProps) {
       <div className="text-sm font-semibold mb-2">Drawn Out Level by Year</div>
       <div style={{ width: "100%", height: 220 }}>
         <ResponsiveContainer>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 0, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 10, right: 20, left: 20, bottom: 5 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
             <YAxis
-              allowDecimals={false}
+              tickFormatter={(v: number) => formatDol(v)}
               label={{ value: "Drawn Out Level", angle: -90, position: "insideLeft", style: { textAnchor: "middle" } }}
             />
-            <Tooltip />
+            <Tooltip formatter={(v: any) => (typeof v === "number" ? formatDol(v) : v)} />
             <Line
               type="linear"
               dataKey="dol"
