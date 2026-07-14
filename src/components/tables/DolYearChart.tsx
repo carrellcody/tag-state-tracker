@@ -63,11 +63,11 @@ export function DolYearChart({ row }: DolYearChartProps) {
   for (let i = yMin; i <= yMax; i++) ticks.push(i);
 
   return (
-    <div className="mt-4 w-full md:w-1/2">
-      <div className="text-sm font-semibold mb-2">Drawn Out Level by Year</div>
+    <div className="mt-4 w-full md:w-1/2 mx-auto">
+      <div className="text-sm font-semibold mb-2 text-center">Drawn Out Level by Year</div>
       <div style={{ width: "100%", height: 200 }}>
         <ResponsiveContainer>
-          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+          <LineChart data={data} margin={{ top: 10, right: 20, left: 10, bottom: 25 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" />
             <YAxis
