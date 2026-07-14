@@ -66,8 +66,8 @@ export function DolYearChart({ row }: DolYearChartProps) {
     <div className="mt-4 w-full md:w-1/2 mx-auto">
       <div className="text-sm font-semibold mb-2 text-center">Drawn Out Level by Year</div>
       <div className="bg-card rounded-md p-2" style={{ width: "100%", height: 200 }}>
-        <div className="relative h-full w-full pl-16">
-          <div className="absolute left-0 top-1/2 w-40 -translate-x-14 -translate-y-1/2 -rotate-90 text-center text-xs font-medium text-muted-foreground">
+        <div className="relative h-full w-full pl-10">
+          <div className="absolute left-0 top-1/2 w-40 -translate-x-8 -translate-y-1/2 -rotate-90 text-center text-sm font-medium text-muted-foreground">
             Drawn Out Level
           </div>
           <ResponsiveContainer>
