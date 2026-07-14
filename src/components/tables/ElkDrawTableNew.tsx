@@ -862,7 +862,7 @@ export function ElkDrawTableNew() {
         </div>
 
         <div className="overflow-auto flex-1">
-          <table className="w-full border-collapse bg-card" style={{ tableLayout: "fixed" }}>
+          <table className="w-full border-collapse bg-card" style={{ tableLayout: "fixed", minWidth: "max-content" }}>
             <thead className="sticky top-0 gradient-primary z-10">
               <tr>
                 <th rowSpan={2} className="border border-border p-2 text-left text-primary-foreground w-12"></th>
