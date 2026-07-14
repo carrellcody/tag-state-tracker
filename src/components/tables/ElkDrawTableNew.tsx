@@ -871,6 +871,17 @@ export function ElkDrawTableNew() {
                     key={col}
                     rowSpan={2}
                     className="border border-border p-2 text-left text-primary-foreground relative"
+                    style={
+                      col === "Valid GMUs"
+                        ? {
+                            width: "100px",
+                            maxWidth: "100px",
+                            whiteSpace: "normal",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }
+                        : undefined
+                    }
                   >
                     <div className="flex items-center gap-1">
                       <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
@@ -906,6 +917,17 @@ export function ElkDrawTableNew() {
                     key={col}
                     rowSpan={2}
                     className="border border-border p-2 text-left text-primary-foreground relative"
+                    style={
+                      col === "Notes"
+                        ? {
+                            width: "100px",
+                            maxWidth: "100px",
+                            whiteSpace: "normal",
+                            wordBreak: "break-word",
+                            overflowWrap: "break-word",
+                          }
+                        : undefined
+                    }
                   >
                     <div className="flex items-center gap-1">
                       <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
@@ -1045,16 +1067,17 @@ export function ElkDrawTableNew() {
                         return (
                           <td
                             key={col}
-                            className={`border border-border p-2 ${hybridHighlightClass}`}
+                            className={`border border-border p-2 align-top ${hybridHighlightClass}`}
                             style={
                               col === "Valid GMUs" || col === "Notes"
                                 ? {
-                                    maxWidth: "150px",
-                                    overflow: "hidden",
-                                    textOverflow: "ellipsis",
-                                    whiteSpace: "nowrap",
+                                    width: "100px",
+                                    maxWidth: "100px",
+                                    whiteSpace: "normal",
+                                    wordBreak: "break-word",
+                                    overflowWrap: "break-word",
                                   }
-                                : {}
+                                : undefined
                             }
                           >
                             {col === "Tag" ? (
