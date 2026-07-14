@@ -66,19 +66,23 @@ export function DolYearChart({ row }: DolYearChartProps) {
     <div className="mt-4 w-full md:w-1/2 mx-auto">
       <div className="text-sm font-semibold mb-2 text-center">Drawn Out Level by Year</div>
       <div className="bg-card rounded-md p-2" style={{ width: "100%", height: 200 }}>
-        <ResponsiveContainer>
-          <LineChart data={data} margin={{ top: 10, right: 30, left: 80, bottom: 35 }}>
+        <div className="relative h-full w-full pl-16">
+          <div className="absolute left-0 top-1/2 w-40 -translate-x-14 -translate-y-1/2 -rotate-90 text-center text-xs font-medium text-muted-foreground">
+            Drawn Out Level
+          </div>
+          <ResponsiveContainer>
+            <LineChart data={data} margin={{ top: 10, right: 30, left: 24, bottom: 35 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" tickMargin={10} interval={0} />
             <YAxis
               yAxisId="left"
               orientation="left"
+              width={76}
               domain={[yMin, yMax]}
               ticks={ticks}
               allowDecimals={false}
               tickFormatter={(v: number) => formatDol(v)}
               padding={{ bottom: 15 }}
-              label={{ value: "Drawn Out Level", angle: -90, position: "outsideLeft", offset: 50, style: { textAnchor: "middle" } }}
             />
             <Tooltip
               formatter={(_v: any, _n: any, item: any) => {
@@ -97,8 +101,9 @@ export function DolYearChart({ row }: DolYearChartProps) {
               dot={{ r: 4 }}
               connectNulls
             />
-          </LineChart>
-        </ResponsiveContainer>
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
