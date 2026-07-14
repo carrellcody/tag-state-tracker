@@ -88,6 +88,7 @@ export function DolYearChart({ row }: DolYearChartProps) {
               }}
             />
             <Line
+              yAxisId="right"
               type="linear"
               dataKey="dol"
               stroke="hsl(var(--primary))"
