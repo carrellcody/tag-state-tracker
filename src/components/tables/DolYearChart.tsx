@@ -65,9 +65,9 @@ export function DolYearChart({ row }: DolYearChartProps) {
   return (
     <div className="mt-4 w-full md:w-1/2 mx-auto">
       <div className="text-sm font-semibold mb-2 text-center">Drawn Out Level by Year</div>
-      <div style={{ width: "100%", height: 200 }}>
+      <div className="bg-card rounded-md p-2" style={{ width: "100%", height: 200 }}>
         <ResponsiveContainer>
-          <LineChart data={data} margin={{ top: 10, right: 45, left: 10, bottom: 30 }}>
+          <LineChart data={data} margin={{ top: 10, right: 55, left: 10, bottom: 30 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="year" tickMargin={8} />
             <YAxis
@@ -77,7 +77,7 @@ export function DolYearChart({ row }: DolYearChartProps) {
               ticks={ticks}
               allowDecimals={false}
               tickFormatter={(v: number) => formatDol(v)}
-              label={{ value: "Drawn Out Level", angle: 90, position: "outsideRight", offset: 10, style: { textAnchor: "middle" } }}
+              label={{ value: "Drawn Out Level", angle: 90, position: "outsideRight", offset: 15, style: { textAnchor: "middle" } }}
             />
             <Tooltip
               formatter={(_v: any, _n: any, item: any) => {
