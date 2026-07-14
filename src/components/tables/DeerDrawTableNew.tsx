@@ -518,7 +518,7 @@ export function DeerDrawTableNew() {
             <tr>
               <th rowSpan={2} className="border border-border p-2 text-left text-primary-foreground w-12"></th>
               {nonGroupedColumnsBefore.map(col => (
-                <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative" style={col === "Valid GMUs" ? { width: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
+                <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative" style={col === "Valid GMUs" ? { width: "100px", minWidth: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
                   <div className="flex items-center gap-1">
                     <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
                       <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
@@ -536,7 +536,7 @@ export function DeerDrawTableNew() {
               )}
               <th colSpan={2} className="border border-border p-2 text-center text-primary-foreground font-bold">2026</th>
               {nonGroupedColumnsAfter.map(col => (
-                <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative" style={col === "Notes" ? { width: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
+                <th key={col} rowSpan={2} className="border border-border p-2 text-left text-primary-foreground relative" style={col === "Notes" ? { width: "100px", minWidth: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
                   <div className="flex items-center gap-1">
                     <div className="cursor-pointer flex items-center gap-1" onClick={() => handleSort(col)}>
                       <TableHeaderHelp label={headerLabels[col] || col} helpText={helpText[col]} />
@@ -630,7 +630,7 @@ export function DeerDrawTableNew() {
                     const isHybridHighlightColumn = ['Drawn_out_level', 'Chance_at_DOL', 'Drawn_out_level23', 'Chance_at_DOL23', 'Drawn_out_level24', 'Chance_at_DOL24', 'Drawn_out_level25', 'Chance_at_DOL25'].includes(col);
                     const hybridHighlightClass = isHybrid && isHybridHighlightColumn ? 'bg-hybrid-highlight' : '';
 
-                    return <td key={col} className={`border border-border p-2 align-top ${hybridHighlightClass}`} style={col === "Valid GMUs" || col === "Notes" ? { width: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
+                    return <td key={col} className={`border border-border p-2 align-top ${hybridHighlightClass}`} style={col === "Valid GMUs" || col === "Notes" ? { width: "100px", minWidth: "100px", maxWidth: "100px", whiteSpace: "normal", wordBreak: "break-word", overflowWrap: "break-word" } : undefined}>
                       {col === "Tag" ? <div className="flex items-center gap-2 text-primary-dark group-hover:text-primary">
                         <span>{isExpanded ? "▼" : "▶"}</span>
                         <a href={pdfViewerUrl} target="_blank" rel="noopener noreferrer" className="hover:underline" onClick={e => e.stopPropagation()}>{huntCode}</a>
