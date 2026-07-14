@@ -19,6 +19,7 @@ const formatDol = (v: number): string => {
   if (v === -2) return "Choice 3";
   if (v === -3) return "Choice 4";
   if (v === -4) return "Leftovers";
+  if (v <= -5) return "";
   return String(v);
 };
 
