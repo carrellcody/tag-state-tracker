@@ -875,6 +875,7 @@ export function ElkDrawTableNew() {
                       col === "Valid GMUs"
                         ? {
                             width: "100px",
+                            minWidth: "100px",
                             maxWidth: "100px",
                             whiteSpace: "normal",
                             wordBreak: "break-word",
@@ -921,6 +922,7 @@ export function ElkDrawTableNew() {
                       col === "Notes"
                         ? {
                             width: "100px",
+                            minWidth: "100px",
                             maxWidth: "100px",
                             whiteSpace: "normal",
                             wordBreak: "break-word",
@@ -1072,6 +1074,7 @@ export function ElkDrawTableNew() {
                               col === "Valid GMUs" || col === "Notes"
                                 ? {
                                     width: "100px",
+                                    minWidth: "100px",
                                     maxWidth: "100px",
                                     whiteSpace: "normal",
                                     wordBreak: "break-word",
