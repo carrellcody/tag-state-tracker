@@ -35,6 +35,7 @@ type GoogleMapData = {
   addListener: (eventName: string, handler: (event: GoogleMapFeatureEvent) => void) => void;
   overrideStyle: (feature: GoogleMapFeature, style: Record<string, unknown>) => void;
   revertStyle: () => void;
+  addGeoJson: (geoJson: unknown) => void;
   loadGeoJson: (url: string, options: unknown, callback: () => void) => void;
 };
 type GoogleMap = {
@@ -59,8 +60,91 @@ type GoogleMapsNamespace = {
 declare global {
   interface Window {
     initUnitMap?: () => void;
+    gm_authFailure?: () => void;
     google?: GoogleMapsNamespace;
   }
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function normalizePosition(position: unknown): number[] | null {
+  if (!Array.isArray(position) || position.length < 2) return null;
+  const lng = Number(position[0]);
+  const lat = Number(position[1]);
+  if (!Number.isFinite(lng) || !Number.isFinite(lat)) return null;
+  return [lng, lat];
+}
+
+function samePosition(a: number[], b: number[]): boolean {
+  return a.length >= 2 && b.length >= 2 && a[0] === b[0] && a[1] === b[1];
+}
+
+function closeLinearRing(ring: unknown): number[][] {
+  if (!Array.isArray(ring)) return [];
+  const cleaned = ring
+    .map(normalizePosition)
+    .filter((position): position is number[] => Array.isArray(position));
+
+  if (cleaned.length === 0) return cleaned;
+
+  const first = cleaned[0];
+  while (cleaned.length < 4) {
+    cleaned.push([...first]);
+  }
+
+  const last = cleaned[cleaned.length - 1];
+  if (!samePosition(first, last)) {
+    cleaned.push([...first]);
+  }
+
+  return cleaned;
+}
+
+function sanitizeGeometry(geometry: unknown): void {
+  if (!isRecord(geometry)) return;
+
+  if (geometry.type === "Polygon" && Array.isArray(geometry.coordinates)) {
+    geometry.coordinates = geometry.coordinates.map(closeLinearRing);
+    return;
+  }
+
+  if (geometry.type === "MultiPolygon" && Array.isArray(geometry.coordinates)) {
+    geometry.coordinates = geometry.coordinates.map((polygon) => {
+      if (!Array.isArray(polygon)) return [];
+      return polygon.map(closeLinearRing);
+    });
+  }
+}
+
+function sanitizeGeoJson(geoJson: unknown): unknown {
+  if (!isRecord(geoJson)) return geoJson;
+
+  if (geoJson.type === "FeatureCollection" && Array.isArray(geoJson.features)) {
+    geoJson.features.forEach((feature) => {
+      if (!isRecord(feature)) return;
+      sanitizeGeometry(feature.geometry);
+    });
+    return geoJson;
+  }
+
+  if (geoJson.type === "Feature") {
+    sanitizeGeometry(geoJson.geometry);
+    return geoJson;
+  }
+
+  sanitizeGeometry(geoJson);
+  return geoJson;
+}
+
+async function loadSanitizedGeoJson(layer: GoogleMapData, url: string): Promise<void> {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to load map data: ${url}`);
+  }
+  const geoJson = sanitizeGeoJson(await response.json());
+  layer.addGeoJson(geoJson);
 }
 
 function pickUnitNumberFromFeature(feature: GoogleMapFeature): string | null {
@@ -93,6 +177,11 @@ const UnitMap: React.FC = () => {
       setErrorMsg("Google Maps browser key is not configured.");
       return;
     }
+
+    window.gm_authFailure = () => {
+      setStatus("error");
+      setErrorMsg("Google Maps is not authorized for this domain.");
+    };
 
     const initMap = () => {
       if (!mapRef.current || !window.google?.maps) return;
@@ -193,18 +282,19 @@ const UnitMap: React.FC = () => {
         };
       });
 
-      // Load both GeoJSON sources, then mark ready
-      let loadedCount = 0;
-      const onLayerLoaded = () => {
-        loadedCount += 1;
-        if (loadedCount === 2) {
+      Promise.all([
+        loadSanitizedGeoJson(map.data, "/data/colorado_gmu.geojson"),
+        loadSanitizedGeoJson(publicLandsLayer, "/data/colorado_public_lands.geojson"),
+      ])
+        .then(() => {
           updateLabelVisibility();
           setStatus("ready");
-        }
-      };
-
-      map.data.loadGeoJson("/data/colorado_gmu.geojson", null, onLayerLoaded);
-      publicLandsLayer.loadGeoJson("/data/colorado_public_lands.geojson", null, onLayerLoaded);
+        })
+        .catch((err) => {
+          console.error("Map data failed to load", err);
+          setStatus("error");
+          setErrorMsg("Failed to load map boundary data.");
+        });
     };
 
     // If the API is already loaded, just init.
@@ -241,6 +331,9 @@ const UnitMap: React.FC = () => {
     return () => {
       labelMarkersRef.current.forEach((m) => m.setMap(null));
       labelMarkersRef.current = [];
+      if (window.gm_authFailure) {
+        window.gm_authFailure = undefined;
+      }
     };
   }, []);
 
