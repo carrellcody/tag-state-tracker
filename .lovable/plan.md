@@ -1,56 +1,35 @@
-Add a public-lands overlay to the Colorado GMU unit map using the uploaded `PADUS4_1Fee_StateCO.kmz`. The overlay will shade National Forest green, BLM yellow, and State Land blue.
+## Diagnosis
 
-## What I found in the file
+The published bundle at `tallotags.com` still embeds the **managed** Google Maps browser key `AIzaSyBmvJph4LmrbtW7skeczzpBIyb9WWzFKo4`. That key is restricted to `*.lovable.app` referrers, so on `tallotags.com` Google returns "This page didn't load Google Maps correctly."
 
-The KMZ contains a single KML document with 6,582 placemarks. Each placemark has an HTML description table with these relevant fields:
+Evidence:
+- `.env` still contains `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY="AIzaSyBmvJph4LmrbtW7skeczzpBIyb9WWzFKo4"` — the managed key value.
+- The live JS bundle (`assets/index-DFBN7KEb.js`) contains only that same key.
+- The currently linked Google Maps connection appears to still be the managed one (the browser key value in `.env` did not change after the previous connect step).
 
-| Field | Example values |
-|-------|---------------|
-| `Own_Name` | `BLM`, `USFS`, `SFW`, `SPR`, `SLB`, `NPS`, `FWS`, etc. |
-| `d_Own_Name` | `Bureau of Land Management`, `Forest Service`, `State Fish and Wildlife`, etc. |
-| `Own_Type` / `d_Own_Type` | `FED` / `Federal`, `STAT` / `State`, `LOC` / `Local Government`, etc. |
-| `Des_Tp` / `d_Des_Tp` | `NF` / `National Forest`, `NP` / `National Park`, `SP` / `State Park`, etc. |
-
-Proposed mapping for the overlay:
-
-- **National Forest** → green: `Des_Tp === "NF"` OR `d_Des_Tp === "National Forest"` OR `Own_Name === "USFS"`
-- **BLM** → yellow: `Own_Name === "BLM"` OR `d_Own_Name === "Bureau of Land Management"`
-- **State Land** → blue: `Own_Type === "STAT"` OR `d_Own_Type === "State"`
-
-If you want different definitions (e.g., only State Parks in blue, or include National Parks), let me know.
+Since this is a client-side Vite app, the browser key is inlined at build time, so we need the correct key in `.env` **and** a republish.
 
 ## Plan
 
-1. **Convert and prepare the overlay data**
-   - Extract `doc.kml` from the KMZ.
-   - Convert KML → GeoJSON (using GDAL via `nix run nixpkgs#gdal`).
-   - Filter the GeoJSON to keep only features matching National Forest, BLM, or State Land definitions.
-   - Simplify geometries to keep the file small enough for web rendering (target < 5 MB; the raw KML is ~90 MB).
-   - Add a `Land_Type` property to each feature (`National Forest`, `BLM`, `State Land`) so the client can style by a single key.
-   - Save the result to `public/data/colorado_public_lands.geojson`.
+1. **Disconnect the current Google Maps connection** (`standard_connectors--disconnect` on `std_01ktc60sjyfbd80eaee6h4b1zw`) so the stale managed key stops populating `.env`.
+2. **Connect a fresh Google Maps connection** (`standard_connectors--connect` with `google_maps`) and, in the connect card, choose **Create new / custom** and paste the user's own Google API key (`@secret:GOOGLE_API_KEY`) — not the managed option. This should overwrite `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY` in `.env` with the user's key.
+3. **Verify** `.env` now shows the user's key (not `AIzaSyBmvJph4LmrbtW7skeczzpBIyb9WWzFKo4`).
+4. **Republish** the site so the new key is baked into the JS bundle. After deploy, confirm `tallotags.com/unit_map` renders.
 
-2. **Render the overlay on the unit map**
-   - In `src/pages/UnitMap.tsx`, load the new GeoJSON as a second `map.data` layer.
-   - Apply a `setStyle` callback that colors each feature by `Land_Type`:
-     - National Forest → green (`#22c55e`)
-     - BLM → yellow (`#eab308`)
-     - State Land → blue (`#3b82f6`)
-   - Use lower opacity fills and thin outlines so unit boundaries and labels remain visible on top.
-   - Keep the existing GMU boundary layer unchanged.
+## Prerequisites the user must confirm in Google Cloud Console
 
-3. **Add a legend**
-   - Add a small floating legend in the corner of the map showing the three colors and labels.
-   - Use the existing Tailwind/shadcn styling tokens.
+On the API key referenced by `@secret:GOOGLE_API_KEY`, the HTTP-referrer allowlist must include:
 
-4. **Verify**
-   - Confirm the GeoJSON loads without errors.
-   - Confirm the overlay renders and the colors match the requested land types.
-   - Confirm the GMU labels and click-to-identify-unit behavior still work.
+- `https://tallotags.com/*`
+- `https://*.tallotags.com/*`
 
-## Open question
+And these APIs must be enabled on the same project:
 
-Do the land-type definitions above look right, or do you want to include/exclude any categories? For example:
-- Should **National Parks** and **National Wildlife Refuges** also be shaded, or left out?
-- Should **State Land** include all state-owned land, or only specific types like State Parks / State Wildlife Areas?
+- Maps JavaScript API
+- Places API (New) (optional, only if browser autocomplete is used)
 
-If you're happy with the proposed mapping, I can proceed.
+No changes are needed for `taggout.com` since you're not using it.
+
+## No code changes
+
+`src/pages/UnitMap.tsx` already reads `VITE_LOVABLE_CONNECTOR_GOOGLE_MAPS_BROWSER_KEY`, so once `.env` is refreshed and the app is republished the map will render on the custom domain.
