@@ -1,42 +1,56 @@
-## Goal
+Add a public-lands overlay to the Colorado GMU unit map using the uploaded `PADUS4_1Fee_StateCO.kmz`. The overlay will shade National Forest green, BLM yellow, and State Land blue.
 
-Fix outdated deer draw statistics on `/deer-draw` by pointing the table at the up-to-date `FullDeer26Final.csv` instead of the stale `FullDeer26FinalNewHarv.csv`.
+## What I found in the file
 
-## Why the data is wrong today
+The KMZ contains a single KML document with 6,582 placemarks. Each placemark has an HTML description table with these relevant fields:
 
-- `/deer-draw` → `DeerDrawNew` → `DeerDrawTableNew` currently fetches `FullDeer26FinalNewHarv.csv` (last updated 2026-05-14).
-- `FullDeer26Final.csv` (updated 2026-06-18) holds the correct, current draw stats.
-- Verified row `DM035O3R` / `A_NR`: NewHarv = `1 Pref Points` (wrong), Final = `2 Pref Points` (correct).
+| Field | Example values |
+|-------|---------------|
+| `Own_Name` | `BLM`, `USFS`, `SFW`, `SPR`, `SLB`, `NPS`, `FWS`, etc. |
+| `d_Own_Name` | `Bureau of Land Management`, `Forest Service`, `State Fish and Wildlife`, etc. |
+| `Own_Type` / `d_Own_Type` | `FED` / `Federal`, `STAT` / `State`, `LOC` / `Local Government`, etc. |
+| `Des_Tp` / `d_Des_Tp` | `NF` / `National Forest`, `NP` / `National Park`, `SP` / `State Park`, etc. |
 
-## Column differences to reconcile
+Proposed mapping for the overlay:
 
-`FullDeer26Final.csv` is missing three columns the new table currently uses:
+- **National Forest** → green: `Des_Tp === "NF"` OR `d_Des_Tp === "National Forest"` OR `Own_Name === "USFS"`
+- **BLM** → yellow: `Own_Name === "BLM"` OR `d_Own_Name === "Bureau of Land Management"`
+- **State Land** → blue: `Own_Type === "STAT"` OR `d_Own_Type === "State"`
 
-| Column | Used for | Resolution |
-|---|---|---|
-| `Quota` | Displayed as "Total tag quota" column | Remove from `visibleColumns`, `headerLabels`, `nonGroupedColumnsBefore`, and the row-rendering switch |
-| `Choice 1 Applicants` | Not referenced in the table — only present in subtable file | No change |
-| `New` | "View New Tags" toggle (bypasses point filters for new tags) | Remove the toggle + state + filter logic since the source no longer marks new tags |
+If you want different definitions (e.g., only State Parks in blue, or include National Parks), let me know.
 
-Columns that `Final` adds and the table can keep using as-is: `Drawn_out_level23/24/25`, `Chance_at_DOL23/24/25`, `DOAAdult*_1` (not currently rendered). The existing "Previous years" toggle already references the `25`/`24`/`23` columns, which now actually exist in the new source.
+## Plan
 
-## Changes
+1. **Convert and prepare the overlay data**
+   - Extract `doc.kml` from the KMZ.
+   - Convert KML → GeoJSON (using GDAL via `nix run nixpkgs#gdal`).
+   - Filter the GeoJSON to keep only features matching National Forest, BLM, or State Land definitions.
+   - Simplify geometries to keep the file small enough for web rendering (target < 5 MB; the raw KML is ~90 MB).
+   - Add a `Land_Type` property to each feature (`National Forest`, `BLM`, `State Land`) so the client can style by a single key.
+   - Save the result to `public/data/colorado_public_lands.geojson`.
 
-`src/components/tables/DeerDrawTableNew.tsx`
-1. Line 37 — change fetch URL:
-   ```ts
-   const { data, loading, error } = useCsvData(`/data/FullDeer26Final.csv?v=${CSV_VERSION}`);
-   ```
-2. Remove `Quota` from `visibleColumns` (lines 247-248), `headerLabels` (line 256), and `nonGroupedColumnsBefore` (line 285).
-3. Remove the `Quota` cell from the row-cell renderer further down in the same file (the `switch`/`if` branch that outputs `row.Quota`).
-4. Remove the "View New Tags" feature:
-   - Delete `showNewTags` state (line 69) and its dependency in the page-reset effect (line 80).
-   - Delete the `isNewTag` / `bypassPoints` lines (148-149) and any branches relying on `bypassPoints` (lines 186, 191).
-   - Remove the toggle UI in the filter sidebar.
-5. Bump `CSV_VERSION` in `src/utils/csvVersion.ts` from `"4"` to `"5"` so browsers re-fetch immediately after deploy.
+2. **Render the overlay on the unit map**
+   - In `src/pages/UnitMap.tsx`, load the new GeoJSON as a second `map.data` layer.
+   - Apply a `setStyle` callback that colors each feature by `Land_Type`:
+     - National Forest → green (`#22c55e`)
+     - BLM → yellow (`#eab308`)
+     - State Land → blue (`#3b82f6`)
+   - Use lower opacity fills and thin outlines so unit boundaries and labels remain visible on top.
+   - Keep the existing GMU boundary layer unchanged.
 
-## Out of scope
+3. **Add a legend**
+   - Add a small floating legend in the corner of the map showing the three colors and labels.
+   - Use the existing Tailwind/shadcn styling tokens.
 
-- `/deer-draw-old` (the legacy `DeerDrawTable`) already uses `FullDeer26Final.csv` and is unaffected.
-- Elk and Pronghorn draw pages — not part of this report.
-- Re-uploading `FullDeer26FinalNewHarv.csv` — no longer needed; the file becomes unused on `/deer-draw` (still listed in `serve-csv` allow-list, harmless to leave).
+4. **Verify**
+   - Confirm the GeoJSON loads without errors.
+   - Confirm the overlay renders and the colors match the requested land types.
+   - Confirm the GMU labels and click-to-identify-unit behavior still work.
+
+## Open question
+
+Do the land-type definitions above look right, or do you want to include/exclude any categories? For example:
+- Should **National Parks** and **National Wildlife Refuges** also be shaded, or left out?
+- Should **State Land** include all state-owned land, or only specific types like State Parks / State Wildlife Areas?
+
+If you're happy with the proposed mapping, I can proceed.

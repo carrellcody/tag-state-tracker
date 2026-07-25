@@ -16,6 +16,12 @@ const COLORADO_CENTER = { lat: 39.0, lng: -105.55 };
 const INITIAL_ZOOM = 7;
 const LABEL_MIN_ZOOM = 6;
 
+const LAND_COLORS: Record<string, { fill: string; stroke: string }> = {
+  "National Forest": { fill: "#22c55e", stroke: "#15803d" }, // green
+  BLM: { fill: "#eab308", stroke: "#a16207" }, // yellow
+  "State Land": { fill: "#3b82f6", stroke: "#1d4ed8" }, // blue
+};
+
 type GeoJsonFeature = Feature<Geometry, GeoJsonProperties>;
 type GoogleMapFeature = {
   getProperty?: (name: string) => unknown;
@@ -24,7 +30,8 @@ type GoogleMapFeature = {
 type GoogleMapFeatureEvent = { feature: GoogleMapFeature; latLng?: unknown };
 type GoogleMarker = { setVisible: (visible: boolean) => void; setMap: (map: null) => void };
 type GoogleMapData = {
-  setStyle: (style: Record<string, unknown>) => void;
+  setMap: (map: GoogleMap | null) => void;
+  setStyle: (style: Record<string, unknown> | ((feature: GoogleMapFeature) => Record<string, unknown>)) => void;
   addListener: (eventName: string, handler: (event: GoogleMapFeatureEvent) => void) => void;
   overrideStyle: (feature: GoogleMapFeature, style: Record<string, unknown>) => void;
   revertStyle: () => void;
@@ -38,6 +45,7 @@ type GoogleMap = {
 type GoogleMapsNamespace = {
   maps: {
     Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
+    Data: new () => GoogleMapData;
     InfoWindow: new () => {
       setContent: (content: string) => void;
       setPosition: (position: unknown) => void;
@@ -102,6 +110,7 @@ const UnitMap: React.FC = () => {
       const primaryColor = getCssHslToken("--primary");
       const boundaryColor = getCssHslToken("--map-boundary");
 
+      // GMU boundary layer (default map.data)
       map.data.setStyle({
         fillColor: primaryColor,
         fillOpacity: 0.08,
@@ -169,15 +178,33 @@ const UnitMap: React.FC = () => {
       };
       map.addListener("zoom_changed", updateLabelVisibility);
 
-      // Load boundaries
-      map.data.loadGeoJson(
-        "/data/colorado_gmu.geojson",
-        null,
-        () => {
+      // Public lands overlay layer
+      const publicLandsLayer = new window.google.maps.Data();
+      publicLandsLayer.setMap(map);
+      publicLandsLayer.setStyle((feature: GoogleMapFeature) => {
+        const landType = String(feature.getProperty?.("Land_Type") ?? "");
+        const colors = LAND_COLORS[landType] ?? { fill: "#9ca3af", stroke: "#6b7280" };
+        return {
+          fillColor: colors.fill,
+          fillOpacity: 0.25,
+          strokeColor: colors.stroke,
+          strokeOpacity: 0.9,
+          strokeWeight: 1,
+        };
+      });
+
+      // Load both GeoJSON sources, then mark ready
+      let loadedCount = 0;
+      const onLayerLoaded = () => {
+        loadedCount += 1;
+        if (loadedCount === 2) {
           updateLabelVisibility();
           setStatus("ready");
         }
-      );
+      };
+
+      map.data.loadGeoJson("/data/colorado_gmu.geojson", null, onLayerLoaded);
+      publicLandsLayer.loadGeoJson("/data/colorado_public_lands.geojson", null, onLayerLoaded);
     };
 
     // If the API is already loaded, just init.
@@ -221,7 +248,7 @@ const UnitMap: React.FC = () => {
     <>
       <SEOHead
         title="Colorado GMU Map | TalloTags"
-        description="Interactive satellite map of Colorado Game Management Unit boundaries with unit numbers."
+        description="Interactive satellite map of Colorado Game Management Unit boundaries with public land overlays."
       />
       <style>{`
         .gmu-unit-label {
@@ -248,6 +275,23 @@ const UnitMap: React.FC = () => {
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="bg-background px-4 py-3 rounded-md text-sm text-destructive shadow border border-border max-w-md text-center">
                 {errorMsg}
+              </div>
+            </div>
+          )}
+          {status === "ready" && (
+            <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm border border-border rounded-md shadow p-3 text-xs space-y-2">
+              <div className="font-semibold text-foreground">Public Lands</div>
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: LAND_COLORS["National Forest"].fill }} />
+                <span className="text-foreground">National Forest</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: LAND_COLORS["BLM"].fill }} />
+                <span className="text-foreground">BLM</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="inline-block w-3 h-3 rounded-sm" style={{ backgroundColor: LAND_COLORS["State Land"].fill }} />
+                <span className="text-foreground">State Land</span>
               </div>
             </div>
           )}
