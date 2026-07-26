@@ -1,3 +1,4 @@
+import { UnitMapLink } from "@/components/tables/UnitMapLink";
 import { useState, useMemo, useEffect, Fragment } from "react";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
@@ -833,9 +834,7 @@ export function DeerDrawTable() {
                             if (!harvestRow) return null;
                             return <tr key={unit}>
                                       <td className="border p-1 text-primary-dark">
-                                        {harvestRow.onx && !isMobile ? <a href={harvestRow.onx} target="_blank" rel="noopener noreferrer" className="hover:underline">
-                                            {harvestRow.Unit}
-                                          </a> : harvestRow.Unit}
+                                        <UnitMapLink unit={harvestRow.Unit} />
                                       </td>
                                       <td className="border p-1">{harvestRow.Category}</td>
                                       <td className="border p-1">{harvestRow.Bucks}</td>

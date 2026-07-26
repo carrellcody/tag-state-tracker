@@ -38,15 +38,21 @@ type GoogleMapData = {
   addGeoJson: (geoJson: unknown) => void;
   loadGeoJson: (url: string, options: unknown, callback: () => void) => void;
 };
+type GoogleLatLngBounds = {
+  extend: (position: { lat: number; lng: number }) => void;
+  isEmpty: () => boolean;
+};
 type GoogleMap = {
   data: GoogleMapData;
   getZoom: () => number | undefined;
   addListener: (eventName: string, handler: () => void) => void;
+  fitBounds: (bounds: GoogleLatLngBounds, padding?: number) => void;
 };
 type GoogleMapsNamespace = {
   maps: {
     Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
     Data: new () => GoogleMapData;
+    LatLngBounds: new () => GoogleLatLngBounds;
     InfoWindow: new () => {
       setContent: (content: string) => void;
       setPosition: (position: unknown) => void;
@@ -56,6 +62,7 @@ type GoogleMapsNamespace = {
     SymbolPath: { CIRCLE: unknown };
   };
 };
+
 
 declare global {
   interface Window {
@@ -164,14 +171,32 @@ function getCssHslToken(tokenName: string): string {
   return `hsl(${value})`;
 }
 
+function normalizeUnit(value: string): string {
+  return String(value).trim().replace(/^0+(?=\d)/, "").toUpperCase();
+}
+
+function collectPositions(coords: unknown, out: { lat: number; lng: number }[]): void {
+  if (!Array.isArray(coords)) return;
+  if (typeof coords[0] === "number" && typeof coords[1] === "number") {
+    out.push({ lng: Number(coords[0]), lat: Number(coords[1]) });
+    return;
+  }
+  coords.forEach((c) => collectPositions(c, out));
+}
+
 const UnitMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<GoogleMap | null>(null);
   const labelMarkersRef = useRef<GoogleMarker[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const targetUnit = React.useMemo(() => {
+    const raw = new URLSearchParams(window.location.search).get("unit");
+    return raw ? normalizeUnit(raw) : null;
+  }, []);
 
   useEffect(() => {
+
     if (!GOOGLE_MAPS_BROWSER_KEY) {
       setStatus("error");
       setErrorMsg("Google Maps browser key is not configured.");
@@ -226,10 +251,23 @@ const UnitMap: React.FC = () => {
         infoWindow.open(map);
       });
 
+      const targetBounds = new window.google.maps.LatLngBounds();
+
       const addLabelForFeature = (feature: GoogleMapFeature) => {
         const unit = pickUnitNumberFromFeature(feature);
         if (!unit) return;
         feature.toGeoJson((gj: GeoJsonFeature) => {
+          if (targetUnit && normalizeUnit(unit) === targetUnit) {
+            const positions: { lat: number; lng: number }[] = [];
+            collectPositions((gj.geometry as { coordinates?: unknown })?.coordinates, positions);
+            positions.forEach((p) => targetBounds.extend(p));
+            map.data.overrideStyle(feature, {
+              strokeWeight: 3.5,
+              strokeColor: "#ffffff",
+              fillOpacity: 0.2,
+            });
+          }
+
           try {
             const pt = pointOnFeature(gj);
             const [lng, lat] = pt.geometry.coordinates;
@@ -289,7 +327,17 @@ const UnitMap: React.FC = () => {
         .then(() => {
           updateLabelVisibility();
           setStatus("ready");
+          if (targetUnit) {
+            // toGeoJson callbacks are async; give them a tick to fill bounds.
+            setTimeout(() => {
+              if (!targetBounds.isEmpty()) {
+                map.fitBounds(targetBounds, 40);
+                updateLabelVisibility();
+              }
+            }, 400);
+          }
         })
+
         .catch((err) => {
           console.error("Map data failed to load", err);
           setStatus("error");
