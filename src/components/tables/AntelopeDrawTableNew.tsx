@@ -1,3 +1,4 @@
+import { UnitMapLink } from "@/components/tables/UnitMapLink";
 import { useState, useMemo, useEffect, Fragment } from "react";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
@@ -655,7 +656,7 @@ export function AntelopeDrawTableNew() {
                           const unitVal = String(subRow.Unit || '');
                           return <tr key={unitVal}>
                             <td className="border p-1 text-primary-dark">
-                              {onxUrl && !isMobile ? <a href={onxUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{unitVal}</a> : unitVal}
+                              <UnitMapLink unit={unitVal} />
                             </td>
                             <td className="border p-1">{subRow.Acres || ''}</td>
                             <td className="border p-1">{subRow['Acres Public'] || ''}</td>
