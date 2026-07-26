@@ -171,14 +171,32 @@ function getCssHslToken(tokenName: string): string {
   return `hsl(${value})`;
 }
 
+function normalizeUnit(value: string): string {
+  return String(value).trim().replace(/^0+(?=\d)/, "").toUpperCase();
+}
+
+function collectPositions(coords: unknown, out: { lat: number; lng: number }[]): void {
+  if (!Array.isArray(coords)) return;
+  if (typeof coords[0] === "number" && typeof coords[1] === "number") {
+    out.push({ lng: Number(coords[0]), lat: Number(coords[1]) });
+    return;
+  }
+  coords.forEach((c) => collectPositions(c, out));
+}
+
 const UnitMap: React.FC = () => {
   const mapRef = useRef<HTMLDivElement | null>(null);
   const mapInstanceRef = useRef<GoogleMap | null>(null);
   const labelMarkersRef = useRef<GoogleMarker[]>([]);
   const [status, setStatus] = useState<"loading" | "ready" | "error">("loading");
   const [errorMsg, setErrorMsg] = useState<string>("");
+  const targetUnit = React.useMemo(() => {
+    const raw = new URLSearchParams(window.location.search).get("unit");
+    return raw ? normalizeUnit(raw) : null;
+  }, []);
 
   useEffect(() => {
+
     if (!GOOGLE_MAPS_BROWSER_KEY) {
       setStatus("error");
       setErrorMsg("Google Maps browser key is not configured.");
