@@ -1,3 +1,4 @@
+import { UnitMapLink } from "@/components/tables/UnitMapLink";
 import { Fragment, useMemo, useState, useEffect } from "react";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
@@ -335,14 +336,8 @@ export function ElkUnitsTable() {
                       </td>
                       {visibleColumns.map((col) => (
                         <td key={col} className="border border-border p-2">
-                          {col === "Unit" && row.onx && !isMobile ? (
-                            <a href={row.onx} target="_blank" rel="noopener noreferrer" onClick={(e) => e.stopPropagation()} className="text-primary-dark group-hover:text-primary hover:underline">
-                              {row[col] || ""}
-                            </a>
-                          ) : col === "Unit" ? (
-                            <span className="text-primary-dark group-hover:text-primary">
-                              {row[col] || ""}
-                            </span>
+                          {col === "Unit" ? (
+                            <UnitMapLink unit={row[col] || ""} className="text-primary-dark group-hover:text-primary hover:underline" />
                           ) : col === "Success_DAU" && row[col] !== "" && row[col] != null && !isNaN(parseFloat(row[col])) ? (
                             `${(parseFloat(row[col]) * 100).toFixed(1)}%`
                           ) : (

@@ -653,7 +653,6 @@ export function AntelopeDrawTableNew() {
                       <tbody>
                         {matchingSubtableRows.map((subRow: any) => {
                           const unitVal = String(subRow.Unit || '');
-                          const onxUrl = subRow.onx;
                           return <tr key={unitVal}>
                             <td className="border p-1 text-primary-dark">
                               {onxUrl && !isMobile ? <a href={onxUrl} target="_blank" rel="noopener noreferrer" className="hover:underline">{unitVal}</a> : unitVal}
