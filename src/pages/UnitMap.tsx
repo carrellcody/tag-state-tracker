@@ -327,7 +327,17 @@ const UnitMap: React.FC = () => {
         .then(() => {
           updateLabelVisibility();
           setStatus("ready");
+          if (targetUnit) {
+            // toGeoJson callbacks are async; give them a tick to fill bounds.
+            setTimeout(() => {
+              if (!targetBounds.isEmpty()) {
+                map.fitBounds(targetBounds, 40);
+                updateLabelVisibility();
+              }
+            }, 400);
+          }
         })
+
         .catch((err) => {
           console.error("Map data failed to load", err);
           setStatus("error");
