@@ -251,10 +251,23 @@ const UnitMap: React.FC = () => {
         infoWindow.open(map);
       });
 
+      const targetBounds = new window.google.maps.LatLngBounds();
+
       const addLabelForFeature = (feature: GoogleMapFeature) => {
         const unit = pickUnitNumberFromFeature(feature);
         if (!unit) return;
         feature.toGeoJson((gj: GeoJsonFeature) => {
+          if (targetUnit && normalizeUnit(unit) === targetUnit) {
+            const positions: { lat: number; lng: number }[] = [];
+            collectPositions((gj.geometry as { coordinates?: unknown })?.coordinates, positions);
+            positions.forEach((p) => targetBounds.extend(p));
+            map.data.overrideStyle(feature, {
+              strokeWeight: 3.5,
+              strokeColor: "#ffffff",
+              fillOpacity: 0.2,
+            });
+          }
+
           try {
             const pt = pointOnFeature(gj);
             const [lng, lat] = pt.geometry.coordinates;
