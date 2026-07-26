@@ -38,15 +38,21 @@ type GoogleMapData = {
   addGeoJson: (geoJson: unknown) => void;
   loadGeoJson: (url: string, options: unknown, callback: () => void) => void;
 };
+type GoogleLatLngBounds = {
+  extend: (position: { lat: number; lng: number }) => void;
+  isEmpty: () => boolean;
+};
 type GoogleMap = {
   data: GoogleMapData;
   getZoom: () => number | undefined;
   addListener: (eventName: string, handler: () => void) => void;
+  fitBounds: (bounds: GoogleLatLngBounds, padding?: number) => void;
 };
 type GoogleMapsNamespace = {
   maps: {
     Map: new (element: HTMLElement, options: Record<string, unknown>) => GoogleMap;
     Data: new () => GoogleMapData;
+    LatLngBounds: new () => GoogleLatLngBounds;
     InfoWindow: new () => {
       setContent: (content: string) => void;
       setPosition: (position: unknown) => void;
@@ -56,6 +62,7 @@ type GoogleMapsNamespace = {
     SymbolPath: { CIRCLE: unknown };
   };
 };
+
 
 declare global {
   interface Window {
