@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">tag-state-tracker</string>
+    <string name="title_activity_main">tag-state-tracker</string>
+    <string name="package_name">app.lovable.project10d8996ca49749c694d5e5e9b7476207</string>
+    <string name="custom_url_scheme">app.lovable.project10d8996ca49749c694d5e5e9b7476207</string>
+</resources>
