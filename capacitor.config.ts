@@ -1,7 +1,7 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'app.lovable.10d8996ca49749c694d5e5e9b7476207',
+  appId: 'app.lovable.project10d8996ca49749c694d5e5e9b7476207',
   appName: 'tag-state-tracker',
   webDir: 'dist',
   server: {
