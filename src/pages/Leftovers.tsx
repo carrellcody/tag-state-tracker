@@ -390,13 +390,10 @@ export default function Leftovers() {
 
         <div className="lg:h-full lg:min-h-0 min-w-0">
           <Card className="lg:h-full flex flex-col min-w-0">
-            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0 items-center justify-center text-center py-12 space-y-4">
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0 items-center justify-center text-center py-12">
               <p className="text-lg text-muted-foreground max-w-md">
                 Leftover list will be published soon! Check in here for updates, or sign up for tag alerts to not miss the tag you're looking for!
               </p>
-              <Button asChild>
-                <Link to="/profile#tag-alerts">Sign up for tag alerts</Link>
-              </Button>
             </CardContent>
           </Card>
         </div>
