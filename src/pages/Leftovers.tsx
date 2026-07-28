@@ -229,7 +229,7 @@ export default function Leftovers() {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
           <span className="inline-flex items-center rounded-md bg-destructive/15 px-3 py-1 text-sm font-semibold text-destructive whitespace-nowrap">
-            Apply by the June 30th Deadline!
+            Leftover tags go on sale August 4th at 9 AM - Don't forget to apply!
           </span>
         </div>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
@@ -407,71 +407,13 @@ export default function Leftovers() {
                   Failed to load leftover tag data.
                 </div>
               ) : (
-                <div className="flex-1 flex flex-col lg:min-h-0 min-w-0">
-                  <div className="flex-1 lg:min-h-0 min-w-0 w-full max-w-full overflow-auto border rounded-md">
-                    <table className="min-w-max caption-bottom text-sm">
-                      <thead className="[&_tr]:border-b">
-                        <tr className="border-b transition-colors">
-                          {COLUMNS.map((c) => (
-                            <th
-                              key={c.key}
-                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
-                            >
-                              {c.label}
-                            </th>
-                          ))}
-                        </tr>
-                      </thead>
-                      <tbody className="[&_tr:last-child]:border-0">
-                        {filteredRows.length === 0 ? (
-                          <tr className="border-b">
-                            <td colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
-                              No tags match the current filters.
-                            </td>
-                          </tr>
-                        ) : (
-                          pagedRows.map((row, i) => (
-                            <tr key={i} className="border-b transition-colors hover:bg-muted/50">
-                              {COLUMNS.map((c) => (
-                                <td
-                                  key={c.key}
-                                  className={`px-4 py-2 align-middle ${c.className ? c.className : "whitespace-nowrap"}`}
-                                >
-                                  {row[c.key] ?? ""}
-                                </td>
-                              ))}
-                            </tr>
-                          ))
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-                  <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
-                    <div className="text-xs text-muted-foreground">
-                      Showing {startIdx}–{endIdx} of {filteredRows.length} tags
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage((p) => Math.max(1, p - 1))}
-                        disabled={safePage <= 1}
-                      >
-                        Previous
-                      </Button>
-                      <span className="text-xs text-muted-foreground">
-                        Page {safePage} of {totalPages}
-                      </span>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                        disabled={safePage >= totalPages}
-                      >
-                        Next
-                      </Button>
-                    </div>
-                  </div>
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
+                  <p className="text-lg text-muted-foreground max-w-md">
+                    Leftover list will be published soon! Check in here for updates, or sign up for tag alerts to not miss the tag you're looking for!
+                  </p>
+                  <Button asChild>
+                    <Link to="/profile#tag-alerts">Sign up for tag alerts</Link>
+                  </Button>
                 </div>
               )}
             </CardContent>
