@@ -113,17 +113,17 @@ export default function Profile() {
       }).eq('id', user.id);
       if (error) throw error;
 
-      // Clear pointsInitialized flags so draw tables re-fetch updated values
-      sessionStorage.removeItem('elkDraw_pointsInitialized');
-      sessionStorage.removeItem('antelopeDraw_pointsInitialized');
-      sessionStorage.removeItem('deerDraw_pointsInitialized');
-      // Also clear the cached preference point values
-      sessionStorage.removeItem('elkDraw_userPreferencePoints');
-      sessionStorage.removeItem('elkDraw_maxPoints');
-      sessionStorage.removeItem('antelopeDraw_userPreferencePoints');
-      sessionStorage.removeItem('antelopeDraw_maxPoints');
-      sessionStorage.removeItem('deerDraw_userPreferencePoints');
-      sessionStorage.removeItem('deerDraw_maxPoints');
+      // Clear every cached draw-table value derived from the profile so the
+      // tables re-initialize points and hunter class from the new values.
+      const stalePatterns = [
+        'pointsInitialized',
+        'userPreferencePoints',
+        'maxPoints',
+        'hunterClass',
+      ];
+      Object.keys(sessionStorage)
+        .filter((key) => stalePatterns.some((p) => key.includes(p)))
+        .forEach((key) => sessionStorage.removeItem(key));
 
       toast({
         title: "Success",
