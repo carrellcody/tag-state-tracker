@@ -84,7 +84,7 @@ const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3 };
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
 export default function Leftovers() {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v4", ["D", "E", "A", "B"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
