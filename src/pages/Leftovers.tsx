@@ -102,7 +102,7 @@ export default function Leftovers() {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
-    isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
+    `/data/leftovers26.csv?v=${CSV_VERSION}`
   );
 
   const toggleSpecies = (val: string, checked: boolean) => {
