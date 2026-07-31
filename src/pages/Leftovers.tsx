@@ -66,18 +66,20 @@ const LIST_OPTIONS = [
   { value: "C", label: "List C" },
 ];
 
-const COLUMNS: { key: string; label: string; className?: string }[] = [
+const COLUMNS: { key: string; label: string; className?: string; sortable?: boolean }[] = [
   { key: "Tag", label: "Tag" },
-  { key: "rem", label: "Remaining Tags" },
+  { key: "rem", label: "Remaining Tags", sortable: true },
   { key: "Valid_GMUs", label: "Valid GMUs", className: "max-w-[8rem] whitespace-normal" },
   { key: "Dates", label: "Dates", className: "w-28 whitespace-normal" },
   { key: "List", label: "List" },
-  { key: "Percent_Success", label: "Harvest Success Rate" },
-  { key: "Public_Acres", label: "Public Acres" },
-  { key: "Public_Percent", label: "Percent Public Land" },
+  { key: "Percent_Success", label: "Harvest Success Rate", sortable: true },
+  { key: "Public_Acres", label: "Public Acres", sortable: true },
+  { key: "Public_Percent", label: "Percent Public Land", sortable: true },
   { key: "Drawn_out_level_A_R", label: "Drawn out level (Resident 2026)" },
   { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident 2026)" },
 ];
+
+const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3 };
 
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
