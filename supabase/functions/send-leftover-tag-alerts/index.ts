@@ -19,7 +19,7 @@ const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 const LEFTOVER_FILE = "leftovers26.csv";
 const LEFTOVER_URL = "https://tallotags.com/leftovers";
 
-const CPW_LEFTOVER_URL = "https://cpw.state.co.us/leftover-list";
+const CPW_LEFTOVER_URL = "https://cpw.widencollective.com/assets/share/asset/o9u5wmxrdp";
 const LOGO_URL = "https://tallotags.com/longbluename.png";
 const PRIMARY = "#598749";
 
@@ -132,11 +132,11 @@ function buildEmailHtml(opts: {
           Remember, this batch of leftover tags go on sale this Tuesday at 9am. To apply for a tag, log into your CPW account just before 9 am and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
         </p>
         <p style="margin:20px 0 0 0;font-size:12px;color:#888;line-height:1.5;">
-          Want to stop receiving these alerts? <a href="https://tallotags.com/profile#tag-alerts" style="color:${PRIMARY};text-decoration:underline;">Click here</a> to manage your tag alerts, and remove all tag alerts to stop receiving email alerts.
+          Want to stop receiving these alerts? <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};text-decoration:underline;">Click here</a> to manage your tag alerts, and remove all tag alerts to stop receiving email alerts.
         </p>
       </div>
       <div style="padding:16px 24px;background:#fafafa;border-top:1px solid #eee;text-align:center;font-size:12px;color:#888;">
-        <a href="https://tallotags.com/profile#tag-alerts" style="color:${PRIMARY};text-decoration:none;">Manage your tag alerts</a>
+        <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};text-decoration:none;">Manage your tag alerts</a>
         &nbsp;·&nbsp;
         <a href="https://tallotags.com" style="color:${PRIMARY};text-decoration:none;">tallotags.com</a>
       </div>
