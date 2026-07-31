@@ -16,11 +16,8 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET")!;
 const resend = new Resend(RESEND_API_KEY);
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
-const SPECIES = [
-  { code: "elk", label: "Elk", file: "elk_Current_Leftover_Tags.csv", url: "https://tallotags.com/Elk-Leftovers" },
-  { code: "deer", label: "Deer", file: "deer_Current_Leftover_Tags.csv", url: "https://tallotags.com/Deer-Leftovers" },
-  { code: "ant", label: "Pronghorn", file: "ant_Current_Leftover_Tags.csv", url: "https://tallotags.com/Antelope-Leftovers" },
-];
+const LEFTOVER_FILE = "leftovers26.csv";
+const LEFTOVER_URL = "https://tallotags.com/leftovers";
 
 const CPW_LEFTOVER_URL = "https://cpw.state.co.us/leftover-list";
 const LOGO_URL = "https://tallotags.com/longbluename.png";
