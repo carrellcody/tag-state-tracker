@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Minus, Plus, AlertTriangle } from "lucide-react";
+import { Loader2, Minus, Plus, AlertTriangle, ArrowUp, ArrowDown } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
