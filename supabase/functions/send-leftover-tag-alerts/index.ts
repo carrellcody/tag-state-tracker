@@ -60,18 +60,18 @@ function findKey(row: Record<string, string>, candidates: string[]): string | nu
   return null;
 }
 
-async function loadSpeciesRows(file: string) {
-  const { data, error } = await supabase.storage.from("csv-data").download(file);
+async function loadLeftoverRows() {
+  const { data, error } = await supabase.storage.from("csv-data").download(LEFTOVER_FILE);
   if (error || !data) {
-    console.warn(`Could not download ${file}:`, error?.message);
+    console.warn(`Could not download ${LEFTOVER_FILE}:`, error?.message);
     return null;
   }
   const text = await data.text();
   const rows = parseCSV(text);
-  if (rows.length === 0) return { rows: [], tagKey: null, unitKey: null, seasonKey: null };
+  if (rows.length === 0) return { rows: [], tagKey: null, availableKey: null };
   const sample = rows[0];
-  const tagKey = findKey(sample, ["Tag", "TagCode", "Tag Code", "Hunt Code", "HuntCode"]);
-  const availableKey = findKey(sample, ["Available Tags", "AvailableTags", "Available"]);
+  const tagKey = findKey(sample, ["Tag"]);
+  const availableKey = findKey(sample, ["rem", "Remaining Tags", "Available"]);
   return { rows, tagKey, availableKey };
 }
 
