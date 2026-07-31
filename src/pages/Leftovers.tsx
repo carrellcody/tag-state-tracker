@@ -98,7 +98,7 @@ export default function Leftovers() {
   const [page, setPage] = useState(1);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
-    isSignedIn ? `/data/secondarydraw26.csv?v=${CSV_VERSION}` : ""
+    isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
   );
 
   const toggleSpecies = (val: string, checked: boolean) => {
