@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const PAGE_SIZE = 100;
 import { useAuth } from "@/contexts/AuthContext";
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Loader2, Minus, Plus, AlertTriangle } from "lucide-react";
+import { Loader2, Minus, Plus, AlertTriangle, ArrowUp, ArrowDown } from "lucide-react";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { useCsvData } from "@/hooks/useCsvData";
 import { CSV_VERSION } from "@/utils/csvVersion";
@@ -66,18 +66,20 @@ const LIST_OPTIONS = [
   { value: "C", label: "List C" },
 ];
 
-const COLUMNS: { key: string; label: string; className?: string }[] = [
+const COLUMNS: { key: string; label: string; className?: string; sortable?: boolean }[] = [
   { key: "Tag", label: "Tag" },
-  { key: "rem", label: "Remaining Tags" },
+  { key: "rem", label: "Remaining Tags", sortable: true },
   { key: "Valid_GMUs", label: "Valid GMUs", className: "max-w-[8rem] whitespace-normal" },
   { key: "Dates", label: "Dates", className: "w-28 whitespace-normal" },
   { key: "List", label: "List" },
-  { key: "Percent_Success", label: "Harvest Success Rate" },
-  { key: "Public_Acres", label: "Public Acres" },
-  { key: "Public_Percent", label: "Percent Public Land" },
+  { key: "Percent_Success", label: "Harvest Success Rate", sortable: true },
+  { key: "Public_Acres", label: "Public Acres", sortable: true },
+  { key: "Public_Percent", label: "Percent Public Land", sortable: true },
   { key: "Drawn_out_level_A_R", label: "Drawn out level (Resident 2026)" },
   { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident 2026)" },
 ];
+
+const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3 };
 
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
@@ -97,6 +99,7 @@ export default function Leftovers() {
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
   const [bannerOpen, setBannerOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
     isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
@@ -174,9 +177,53 @@ export default function Leftovers() {
 
   useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
 
+  const getSortValue = useCallback((row: Record<string, string>, key: string) => {
+    const val = row[key];
+    if (key === "rem" || key === "Percent_Success" || key === "Public_Acres" || key === "Public_Percent") {
+      const num = parseFloat(val);
+      return isNaN(num) ? -Infinity : num;
+    }
+    return val ?? "";
+  }, []);
+
+  const sortedRows = useMemo(() => {
+    const rows = [...filteredRows];
+    if (sortConfig) {
+      rows.sort((a, b) => {
+        const aVal = getSortValue(a, sortConfig.key);
+        const bVal = getSortValue(b, sortConfig.key);
+        let cmp = 0;
+        if (typeof aVal === "number" && typeof bVal === "number") {
+          cmp = aVal - bVal;
+        } else {
+          cmp = String(aVal).localeCompare(String(bVal));
+        }
+        if (cmp === 0) {
+          cmp = (SPECIES_ORDER[(a.Animal || "").trim()] ?? 99) - (SPECIES_ORDER[(b.Animal || "").trim()] ?? 99);
+        }
+        return sortConfig.direction === "asc" ? cmp : -cmp;
+      });
+    } else {
+      rows.sort((a, b) => {
+        return (SPECIES_ORDER[(a.Animal || "").trim()] ?? 99) - (SPECIES_ORDER[(b.Animal || "").trim()] ?? 99);
+      });
+    }
+    return rows;
+  }, [filteredRows, sortConfig, getSortValue]);
+
+  const handleSort = useCallback((key: string) => {
+    setSortConfig((current) => {
+      if (current?.key === key) {
+        if (current.direction === "asc") return { key, direction: "desc" };
+        return null;
+      }
+      return { key, direction: "asc" };
+    });
+  }, []);
+
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
-  const pagedRows = filteredRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pagedRows = sortedRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
   const startIdx = filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
   const endIdx = Math.min(safePage * PAGE_SIZE, filteredRows.length);
 
@@ -416,9 +463,17 @@ export default function Leftovers() {
                           {COLUMNS.map((c) => (
                             <th
                               key={c.key}
-                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
+                              onClick={() => c.sortable && handleSort(c.key)}
+                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.sortable ? "cursor-pointer hover:bg-muted/50 select-none" : ""} ${c.className || ""}`}
                             >
-                              {c.label}
+                              <div className="flex items-center gap-1">
+                                {c.label}
+                                {c.sortable && sortConfig?.key === c.key && (
+                                  sortConfig.direction === "asc"
+                                    ? <ArrowUp className="h-3.5 w-3.5 shrink-0" />
+                                    : <ArrowDown className="h-3.5 w-3.5 shrink-0" />
+                                )}
+                              </div>
                             </th>
                           ))}
                         </tr>
