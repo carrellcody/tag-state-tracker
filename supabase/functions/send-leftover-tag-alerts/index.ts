@@ -208,14 +208,9 @@ const handler = async (req: Request): Promise<Response> => {
         });
       }
       const sampleSections = [
-        { label: "Elk", url: SPECIES[0].url, matches: [
+        { label: "Leftover Tags", url: LEFTOVER_URL, matches: [
           { tag: "EE001O1R", availableTags: "3" },
-          { tag: "EM024O1R", availableTags: "1" },
-        ]},
-        { label: "Deer", url: SPECIES[1].url, matches: [
           { tag: "DM061O1A", availableTags: "2" },
-        ]},
-        { label: "Pronghorn", url: SPECIES[2].url, matches: [
           { tag: "PF301O1R", availableTags: "5" },
         ]},
       ];
