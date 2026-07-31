@@ -177,9 +177,53 @@ export default function Leftovers() {
 
   useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
 
+  const getSortValue = useCallback((row: Record<string, string>, key: string) => {
+    const val = row[key];
+    if (key === "rem" || key === "Percent_Success" || key === "Public_Acres" || key === "Public_Percent") {
+      const num = parseFloat(val);
+      return isNaN(num) ? -Infinity : num;
+    }
+    return val ?? "";
+  }, []);
+
+  const sortedRows = useMemo(() => {
+    const rows = [...filteredRows];
+    if (sortConfig) {
+      rows.sort((a, b) => {
+        const aVal = getSortValue(a, sortConfig.key);
+        const bVal = getSortValue(b, sortConfig.key);
+        let cmp = 0;
+        if (typeof aVal === "number" && typeof bVal === "number") {
+          cmp = aVal - bVal;
+        } else {
+          cmp = String(aVal).localeCompare(String(bVal));
+        }
+        if (cmp === 0) {
+          cmp = (SPECIES_ORDER[(a.Animal || "").trim()] ?? 99) - (SPECIES_ORDER[(b.Animal || "").trim()] ?? 99);
+        }
+        return sortConfig.direction === "asc" ? cmp : -cmp;
+      });
+    } else {
+      rows.sort((a, b) => {
+        return (SPECIES_ORDER[(a.Animal || "").trim()] ?? 99) - (SPECIES_ORDER[(b.Animal || "").trim()] ?? 99);
+      });
+    }
+    return rows;
+  }, [filteredRows, sortConfig, getSortValue]);
+
+  const handleSort = useCallback((key: string) => {
+    setSortConfig((current) => {
+      if (current?.key === key) {
+        if (current.direction === "asc") return { key, direction: "desc" };
+        return null;
+      }
+      return { key, direction: "asc" };
+    });
+  }, []);
+
   const totalPages = Math.max(1, Math.ceil(filteredRows.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
-  const pagedRows = filteredRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const pagedRows = sortedRows.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
   const startIdx = filteredRows.length === 0 ? 0 : (safePage - 1) * PAGE_SIZE + 1;
   const endIdx = Math.min(safePage * PAGE_SIZE, filteredRows.length);
 
