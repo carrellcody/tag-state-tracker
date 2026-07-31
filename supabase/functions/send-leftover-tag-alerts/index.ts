@@ -331,7 +331,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, available_tags: m.availableTags })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag, available_tags: m.availableTags })),
           status: "sent",
         });
       } catch (sendErr: any) {
@@ -341,7 +341,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag })),
           status: "failed",
           error_message: String(sendErr?.message || sendErr),
         });
