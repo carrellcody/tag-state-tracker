@@ -49,12 +49,12 @@ const PUBLIC_FILES = new Set([
   "antOTC25Test.csv",
   "antOTC25.csv",
   "AntDraw25Subtable.csv",
+  "leftovers26.csv",
 ]);
 
 // Files that require any authenticated user (no Pro subscription required)
 const SIGNED_IN_FILES = new Set([
   "secondarydraw26.csv",
-  "leftovers26.csv",
 ]);
 
 const PRO_PRODUCT_IDS = new Set([

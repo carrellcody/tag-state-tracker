@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const PAGE_SIZE = 100;
 import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/SEOHead";
@@ -84,9 +84,7 @@ const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3 };
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
 export default function Leftovers() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
-  const isSignedIn = !!user;
+  const { loading } = useAuth();
 
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v4", ["D", "E", "A", "B"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
@@ -102,7 +100,7 @@ export default function Leftovers() {
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
-    isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
+    `/data/leftovers26.csv?v=${CSV_VERSION}`
   );
 
   const toggleSpecies = (val: string, checked: boolean) => {
@@ -439,14 +437,7 @@ export default function Leftovers() {
         <div className="lg:h-full lg:min-h-0 min-w-0">
           <Card className="lg:h-full flex flex-col min-w-0">
             <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0">
-              {!isSignedIn ? (
-                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
-                  <p className="text-muted-foreground">
-                    Sign up for a free account to view the leftover tag list.
-                  </p>
-                  <Button onClick={() => navigate("/auth")}>Sign up for free</Button>
-                </div>
-              ) : csvLoading || loading ? (
+              {csvLoading || loading ? (
                 <div className="flex-1 flex items-center justify-center py-12">
                   <Loader2 className="h-6 w-6 animate-spin text-primary" />
                 </div>
