@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 const PAGE_SIZE = 100;
 import { useAuth } from "@/contexts/AuthContext";
 import { SEOHead } from "@/components/SEOHead";
@@ -85,8 +85,6 @@ const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
 export default function Leftovers() {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
-  const isSignedIn = !!user;
 
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v4", ["D", "E", "A", "B"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
