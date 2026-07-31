@@ -309,16 +309,14 @@ const handler = async (req: Request): Promise<Response> => {
         continue;
       }
 
-      // Group by species
-      const sections = SPECIES
-        .map((sp) => ({
-          label: sp.label,
-          url: sp.url,
-          matches: userMatches
-            .filter((m) => m.speciesCode === sp.code)
-            .map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
-        }))
-        .filter((s) => s.matches.length > 0);
+      // Build single leftover section
+      const sections = [
+        {
+          label: "Leftover Tags",
+          url: LEFTOVER_URL,
+          matches: userMatches.map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
+        },
+      ];
 
       const html = buildEmailHtml({ firstName: profile.first_name || undefined, sections });
       const totalMatches = userMatches.length;
