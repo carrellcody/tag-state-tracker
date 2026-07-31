@@ -241,33 +241,27 @@ const handler = async (req: Request): Promise<Response> => {
     const runId = crypto.randomUUID();
     console.log(`[${runId}] Starting leftover-tag alert run`);
 
-    // Load all species CSVs in parallel
-    const speciesData = await Promise.all(
-      SPECIES.map(async (sp) => ({ sp, data: await loadSpeciesRows(sp.file) }))
-    );
+    // Load the single leftover CSV
+    const leftoverData = await loadLeftoverRows();
 
     // Build a normalized lookup: tagCode (uppercase) -> matches
-    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; availableTags: string };
+    type Match = { tag: string; availableTags: string };
     const tagIndex = new Map<string, Match[]>();
-    for (const { sp, data } of speciesData) {
-      if (!data || !data.tagKey) continue;
-      for (const row of data.rows) {
-        const tag = (row[data.tagKey] || "").trim();
+    if (leftoverData && leftoverData.tagKey) {
+      for (const row of leftoverData.rows) {
+        const tag = (row[leftoverData.tagKey] || "").trim();
         if (!tag) continue;
         const key = tag.toUpperCase();
         const match: Match = {
-          speciesCode: sp.code,
-          speciesLabel: sp.label,
-          url: sp.url,
           tag,
-          availableTags: data.availableKey ? row[data.availableKey] || "" : "",
+          availableTags: leftoverData.availableKey ? row[leftoverData.availableKey] || "" : "",
         };
         const arr = tagIndex.get(key) || [];
         arr.push(match);
         tagIndex.set(key, arr);
       }
     }
-    console.log(`[${runId}] Indexed ${tagIndex.size} unique tag codes from leftover CSVs`);
+    console.log(`[${runId}] Indexed ${tagIndex.size} unique tag codes from ${LEFTOVER_FILE}`);
 
     // Get every user with at least one tag alert
     const { data: alerts, error: alertsErr } = await supabase
