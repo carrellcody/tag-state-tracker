@@ -105,7 +105,7 @@ function buildEmailHtml(opts: {
           <tbody>${rows}</tbody>
         </table>
         <div style="margin-top:10px;">
-          <a href="${s.url}" style="display:inline-block;background:${PRIMARY};color:#fff;text-decoration:none;padding:10px 16px;border-radius:6px;font-weight:600;">View ${s.label} Leftovers</a>
+          <a href="${s.url}" style="display:inline-block;background:${PRIMARY};color:#fff;text-decoration:none;padding:10px 16px;border-radius:6px;font-weight:600;">View Leftovers</a>
         </div>
       </div>`;
   }).join("");
