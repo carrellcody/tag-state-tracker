@@ -463,9 +463,17 @@ export default function Leftovers() {
                           {COLUMNS.map((c) => (
                             <th
                               key={c.key}
-                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
+                              onClick={() => c.sortable && handleSort(c.key)}
+                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.sortable ? "cursor-pointer hover:bg-muted/50 select-none" : ""} ${c.className || ""}`}
                             >
-                              {c.label}
+                              <div className="flex items-center gap-1">
+                                {c.label}
+                                {c.sortable && sortConfig?.key === c.key && (
+                                  sortConfig.direction === "asc"
+                                    ? <ArrowUp className="h-3.5 w-3.5 shrink-0" />
+                                    : <ArrowDown className="h-3.5 w-3.5 shrink-0" />
+                                )}
+                              </div>
                             </th>
                           ))}
                         </tr>
