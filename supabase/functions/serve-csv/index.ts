@@ -36,6 +36,7 @@ const ALLOWED_FILES = new Set([
   "antOTC25.csv",
   "sheepfinal26.csv",
   "secondarydraw26.csv",
+  "leftovers26.csv",
 ]);
 
 const PUBLIC_FILES = new Set([
