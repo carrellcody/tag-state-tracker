@@ -351,8 +351,8 @@ const AdminDashboard: React.FC = () => {
               Leftover Tag Alerts
             </CardTitle>
             <CardDescription>
-              Sends to every user whose saved tag alerts match this week's leftover CSVs
-              (<span className="font-mono">elk_/deer_/ant__Current_Leftover_Tags.csv</span>).
+              Sends to every user whose saved tag alerts match tags in
+              <span className="font-mono"> leftovers26.csv</span>.
               Auto-runs every Monday at 8:00 AM Mountain Time.
             </CardDescription>
           </CardHeader>

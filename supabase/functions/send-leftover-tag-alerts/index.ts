@@ -16,11 +16,8 @@ const CRON_SECRET = Deno.env.get("CRON_SECRET")!;
 const resend = new Resend(RESEND_API_KEY);
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY);
 
-const SPECIES = [
-  { code: "elk", label: "Elk", file: "elk_Current_Leftover_Tags.csv", url: "https://tallotags.com/Elk-Leftovers" },
-  { code: "deer", label: "Deer", file: "deer_Current_Leftover_Tags.csv", url: "https://tallotags.com/Deer-Leftovers" },
-  { code: "ant", label: "Pronghorn", file: "ant_Current_Leftover_Tags.csv", url: "https://tallotags.com/Antelope-Leftovers" },
-];
+const LEFTOVER_FILE = "leftovers26.csv";
+const LEFTOVER_URL = "https://tallotags.com/leftovers";
 
 const CPW_LEFTOVER_URL = "https://cpw.state.co.us/leftover-list";
 const LOGO_URL = "https://tallotags.com/longbluename.png";
@@ -63,18 +60,18 @@ function findKey(row: Record<string, string>, candidates: string[]): string | nu
   return null;
 }
 
-async function loadSpeciesRows(file: string) {
-  const { data, error } = await supabase.storage.from("csv-data").download(file);
+async function loadLeftoverRows() {
+  const { data, error } = await supabase.storage.from("csv-data").download(LEFTOVER_FILE);
   if (error || !data) {
-    console.warn(`Could not download ${file}:`, error?.message);
+    console.warn(`Could not download ${LEFTOVER_FILE}:`, error?.message);
     return null;
   }
   const text = await data.text();
   const rows = parseCSV(text);
-  if (rows.length === 0) return { rows: [], tagKey: null, unitKey: null, seasonKey: null };
+  if (rows.length === 0) return { rows: [], tagKey: null, availableKey: null };
   const sample = rows[0];
-  const tagKey = findKey(sample, ["Tag", "TagCode", "Tag Code", "Hunt Code", "HuntCode"]);
-  const availableKey = findKey(sample, ["Available Tags", "AvailableTags", "Available"]);
+  const tagKey = findKey(sample, ["Tag"]);
+  const availableKey = findKey(sample, ["rem", "Remaining Tags", "Available"]);
   return { rows, tagKey, availableKey };
 }
 
@@ -211,14 +208,9 @@ const handler = async (req: Request): Promise<Response> => {
         });
       }
       const sampleSections = [
-        { label: "Elk", url: SPECIES[0].url, matches: [
+        { label: "Leftover Tags", url: LEFTOVER_URL, matches: [
           { tag: "EE001O1R", availableTags: "3" },
-          { tag: "EM024O1R", availableTags: "1" },
-        ]},
-        { label: "Deer", url: SPECIES[1].url, matches: [
           { tag: "DM061O1A", availableTags: "2" },
-        ]},
-        { label: "Pronghorn", url: SPECIES[2].url, matches: [
           { tag: "PF301O1R", availableTags: "5" },
         ]},
       ];
@@ -244,33 +236,27 @@ const handler = async (req: Request): Promise<Response> => {
     const runId = crypto.randomUUID();
     console.log(`[${runId}] Starting leftover-tag alert run`);
 
-    // Load all species CSVs in parallel
-    const speciesData = await Promise.all(
-      SPECIES.map(async (sp) => ({ sp, data: await loadSpeciesRows(sp.file) }))
-    );
+    // Load the single leftover CSV
+    const leftoverData = await loadLeftoverRows();
 
     // Build a normalized lookup: tagCode (uppercase) -> matches
-    type Match = { speciesCode: string; speciesLabel: string; url: string; tag: string; availableTags: string };
+    type Match = { tag: string; availableTags: string };
     const tagIndex = new Map<string, Match[]>();
-    for (const { sp, data } of speciesData) {
-      if (!data || !data.tagKey) continue;
-      for (const row of data.rows) {
-        const tag = (row[data.tagKey] || "").trim();
+    if (leftoverData && leftoverData.tagKey) {
+      for (const row of leftoverData.rows) {
+        const tag = (row[leftoverData.tagKey] || "").trim();
         if (!tag) continue;
         const key = tag.toUpperCase();
         const match: Match = {
-          speciesCode: sp.code,
-          speciesLabel: sp.label,
-          url: sp.url,
           tag,
-          availableTags: data.availableKey ? row[data.availableKey] || "" : "",
+          availableTags: leftoverData.availableKey ? row[leftoverData.availableKey] || "" : "",
         };
         const arr = tagIndex.get(key) || [];
         arr.push(match);
         tagIndex.set(key, arr);
       }
     }
-    console.log(`[${runId}] Indexed ${tagIndex.size} unique tag codes from leftover CSVs`);
+    console.log(`[${runId}] Indexed ${tagIndex.size} unique tag codes from ${LEFTOVER_FILE}`);
 
     // Get every user with at least one tag alert
     const { data: alerts, error: alertsErr } = await supabase
@@ -318,16 +304,14 @@ const handler = async (req: Request): Promise<Response> => {
         continue;
       }
 
-      // Group by species
-      const sections = SPECIES
-        .map((sp) => ({
-          label: sp.label,
-          url: sp.url,
-          matches: userMatches
-            .filter((m) => m.speciesCode === sp.code)
-            .map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
-        }))
-        .filter((s) => s.matches.length > 0);
+      // Build single leftover section
+      const sections = [
+        {
+          label: "Leftover Tags",
+          url: LEFTOVER_URL,
+          matches: userMatches.map((m) => ({ tag: m.tag, availableTags: m.availableTags })),
+        },
+      ];
 
       const html = buildEmailHtml({ firstName: profile.first_name || undefined, sections });
       const totalMatches = userMatches.length;
@@ -347,7 +331,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode, available_tags: m.availableTags })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag, available_tags: m.availableTags })),
           status: "sent",
         });
       } catch (sendErr: any) {
@@ -357,7 +341,7 @@ const handler = async (req: Request): Promise<Response> => {
           user_id: userId,
           recipient_email: profile.email,
           match_count: totalMatches,
-          matched_codes: userMatches.map((m) => ({ tag: m.tag, species: m.speciesCode })),
+          matched_codes: userMatches.map((m) => ({ tag: m.tag })),
           status: "failed",
           error_message: String(sendErr?.message || sendErr),
         });
