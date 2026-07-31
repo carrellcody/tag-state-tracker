@@ -99,6 +99,7 @@ export default function Leftovers() {
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
   const [bannerOpen, setBannerOpen] = useState(true);
   const [page, setPage] = useState(1);
+  const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
     isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
