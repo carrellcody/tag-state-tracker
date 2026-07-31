@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 const PAGE_SIZE = 100;
 import { useAuth } from "@/contexts/AuthContext";
