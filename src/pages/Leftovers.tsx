@@ -20,6 +20,7 @@ const SPECIES_OPTIONS = [
   { value: "D", label: "Deer" },
   { value: "E", label: "Elk" },
   { value: "A", label: "Pronghorn" },
+  { value: "B", label: "Bear" },
 ];
 
 const SEASON_WEAPON_OPTIONS = [
@@ -85,7 +86,7 @@ export default function Leftovers() {
   const navigate = useNavigate();
   const isSignedIn = !!user;
 
-  const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v2", ["D", "E", "A"]);
+  const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v2", ["D", "E", "A", "B"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("leftovers_sex_v2", ["M", "F", "E"]);
   const [listFilter, setListFilter] = usePersistedState<string>("leftovers_list", "any");
