@@ -98,7 +98,7 @@ export default function Leftovers() {
   const [page, setPage] = useState(1);
 
   const { data, loading: csvLoading, error } = useCsvData<Record<string, string>>(
-    isSignedIn ? `/data/secondarydraw26.csv?v=${CSV_VERSION}` : ""
+    isSignedIn ? `/data/leftovers26.csv?v=${CSV_VERSION}` : ""
   );
 
   const toggleSpecies = (val: string, checked: boolean) => {
@@ -390,10 +390,90 @@ export default function Leftovers() {
 
         <div className="lg:h-full lg:min-h-0 min-w-0">
           <Card className="lg:h-full flex flex-col min-w-0">
-            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0 items-center justify-center text-center py-12">
-              <p className="text-lg text-muted-foreground max-w-md">
-                Leftover list will be published soon! Check in here for updates, or sign up for tag alerts to not miss the tag you're looking for!
-              </p>
+            <CardContent className="p-2 sm:p-4 flex-1 flex flex-col lg:min-h-0 min-w-0">
+              {!isSignedIn ? (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 space-y-4">
+                  <p className="text-muted-foreground">
+                    Sign up for a free account to view the leftover tag list.
+                  </p>
+                  <Button onClick={() => navigate("/auth")}>Sign up for free</Button>
+                </div>
+              ) : csvLoading || loading ? (
+                <div className="flex-1 flex items-center justify-center py-12">
+                  <Loader2 className="h-6 w-6 animate-spin text-primary" />
+                </div>
+              ) : error ? (
+                <div className="flex-1 flex flex-col items-center justify-center text-center py-12 text-destructive text-sm">
+                  Failed to load leftover tag data.
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col lg:min-h-0 min-w-0">
+                  <div className="flex-1 lg:min-h-0 min-w-0 w-full max-w-full overflow-auto border rounded-md">
+                    <table className="min-w-max caption-bottom text-sm">
+                      <thead className="[&_tr]:border-b">
+                        <tr className="border-b transition-colors">
+                          {COLUMNS.map((c) => (
+                            <th
+                              key={c.key}
+                              className={`h-10 px-4 text-left align-middle font-medium text-muted-foreground whitespace-nowrap sticky top-0 z-10 bg-background shadow-[inset_0_-1px_0_hsl(var(--border))] ${c.className || ""}`}
+                            >
+                              {c.label}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody className="[&_tr:last-child]:border-0">
+                        {filteredRows.length === 0 ? (
+                          <tr className="border-b">
+                            <td colSpan={COLUMNS.length} className="text-center text-muted-foreground py-8">
+                              No tags match the current filters.
+                            </td>
+                          </tr>
+                        ) : (
+                          pagedRows.map((row, i) => (
+                            <tr key={i} className="border-b transition-colors hover:bg-muted/50">
+                              {COLUMNS.map((c) => (
+                                <td
+                                  key={c.key}
+                                  className={`px-4 py-2 align-middle ${c.className ? c.className : "whitespace-nowrap"}`}
+                                >
+                                  {row[c.key] ?? ""}
+                                </td>
+                              ))}
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex items-center justify-between gap-2 mt-2 px-2 flex-wrap">
+                    <div className="text-xs text-muted-foreground">
+                      Showing {startIdx}–{endIdx} of {filteredRows.length} tags
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.max(1, p - 1))}
+                        disabled={safePage <= 1}
+                      >
+                        Previous
+                      </Button>
+                      <span className="text-xs text-muted-foreground">
+                        Page {safePage} of {totalPages}
+                      </span>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                        disabled={safePage >= totalPages}
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

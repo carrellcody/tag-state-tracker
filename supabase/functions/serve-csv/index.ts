@@ -36,6 +36,7 @@ const ALLOWED_FILES = new Set([
   "antOTC25.csv",
   "sheepfinal26.csv",
   "secondarydraw26.csv",
+  "leftovers26.csv",
 ]);
 
 const PUBLIC_FILES = new Set([
@@ -53,6 +54,7 @@ const PUBLIC_FILES = new Set([
 // Files that require any authenticated user (no Pro subscription required)
 const SIGNED_IN_FILES = new Set([
   "secondarydraw26.csv",
+  "leftovers26.csv",
 ]);
 
 const PRO_PRODUCT_IDS = new Set([
