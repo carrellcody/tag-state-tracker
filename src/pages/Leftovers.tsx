@@ -104,7 +104,7 @@ export default function Leftovers() {
   const { loading } = useAuth();
 
   const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v4", ["D", "E", "A", "B"]);
-  const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons", ["Any"]);
+  const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons_v2", ["Any"]);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("leftovers_sex_v2", ["M", "F", "E"]);
   const [listFilter, setListFilter] = usePersistedState<string>("leftovers_list", "any");
   const [ploFilter, setPloFilter] = usePersistedState<string>("leftovers_plo", "any");
