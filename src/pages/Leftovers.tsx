@@ -30,28 +30,45 @@ const SEASON_WEAPON_OPTIONS = [
   { value: "Rifle 1", label: "1st Rifle" },
   { value: "Rifle 2", label: "2nd Rifle" },
   { value: "Rifle 3", label: "3rd Rifle" },
+  { value: "Rifle 4", label: "4th Rifle" },
   { value: "Late Rifle", label: "Late Rifle" },
   { value: "RFW", label: "Ranching for Wildlife" },
   { value: "Youth", label: "Youth Rifle" },
+  { value: "Other", label: "Other" },
 ];
+
+const matchesOption = (v: string, option: string): boolean => {
+  const weapon = v.charAt(2);
+  const seasonType = v.charAt(0);
+  switch (option) {
+    case "Archery": return weapon === "A";
+    case "Muzzleloader": return weapon === "M";
+    case "Rifle 1": return v.includes("1R");
+    case "Rifle 2": return v.includes("2R");
+    case "Rifle 3": return v.includes("3R");
+    case "Rifle 4": return v.includes("4R");
+    case "Late Rifle": return seasonType === "L";
+    case "RFW": return v.includes("W");
+    case "Youth": return v.includes("K");
+    default: return false;
+  }
+};
+
+const CONCRETE_OPTIONS = SEASON_WEAPON_OPTIONS
+  .map((o) => o.value)
+  .filter((v) => v !== "Any" && v !== "Other");
 
 const matchSeasonWeapon = (sw: string, selected: string[]): boolean => {
   if (selected.includes("Any") || selected.length === 0) return true;
   const v = (sw || "").toUpperCase();
   return selected.some((s) => {
-    switch (s) {
-      case "Archery": return v.includes("A");
-      case "Muzzleloader": return v.includes("M");
-      case "Rifle 1": return v === "O1";
-      case "Rifle 2": return v === "O2";
-      case "Rifle 3": return v === "O3";
-      case "Late Rifle": return v.includes("L");
-      case "RFW": return v.includes("W");
-      case "Youth": return v.includes("K");
-      default: return false;
+    if (s === "Other") {
+      return !CONCRETE_OPTIONS.some((opt) => matchesOption(v, opt));
     }
+    return matchesOption(v, s);
   });
 };
+
 
 const SEX_OPTIONS = [
   { value: "M", label: "Buck / Bull" },
