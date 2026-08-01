@@ -39,15 +39,15 @@ const SEASON_WEAPON_OPTIONS = [
 
 const matchesOption = (v: string, option: string): boolean => {
   const weapon = v.charAt(2);
-  const seasonType = v.charAt(0);
+  const hasL = v.includes("L");
   switch (option) {
     case "Archery": return weapon === "A";
     case "Muzzleloader": return weapon === "M";
-    case "Rifle 1": return v.includes("1R");
-    case "Rifle 2": return v.includes("2R");
-    case "Rifle 3": return v.includes("3R");
-    case "Rifle 4": return v.includes("4R");
-    case "Late Rifle": return seasonType === "L";
+    case "Rifle 1": return !hasL && v.includes("1R");
+    case "Rifle 2": return !hasL && v.includes("2R");
+    case "Rifle 3": return !hasL && v.includes("3R");
+    case "Rifle 4": return !hasL && v.includes("4R");
+    case "Late Rifle": return hasL;
     case "RFW": return v.includes("W");
     case "Youth": return v.includes("K");
     default: return false;
