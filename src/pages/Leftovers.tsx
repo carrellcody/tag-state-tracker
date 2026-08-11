@@ -257,7 +257,7 @@ export default function Leftovers() {
             <div className="relative">
               <div className="space-y-2 text-center px-10">
                 <p><strong>Welcome to the leftover page!</strong> All leftover tags from the secondary draw or on the reissue lists will be updated here.</p>
-                <p>Reissued tags are published weekly starting in August. To get alerted when a specific tag you're looking hits the reissue list, <strong>sign up for Tag Alerts</strong> to receive an email when your tag shows up.</p>
+                <p>Reissued tags are posted weekly throughout the season on Tuesdays at 11 AM MTN time. The tags on the weekly reissue list will go on sale 24 hours later (Wednesday at 11 AM MTN). To get alerted when a specific tag you're looking hits the reissue list, <strong>sign up for Tag Alerts</strong> to receive an email when your tag shows up.</p>
                 <p>To enable tag alerts, <Link to="/subscription" className="text-primary underline underline-offset-4 hover:text-primary/80 font-medium">sign up for our Pro account now</Link> for 50% off (only $10/year!) using promo code <strong>50TALLO</strong>, and also gain access to all tables for draw odds, harvest stats, and unit information.</p>
               </div>
               <Button
