@@ -292,7 +292,7 @@ export default function Leftovers() {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
           <span className="inline-flex items-center rounded-md bg-destructive/15 px-3 py-1 text-sm font-semibold text-destructive whitespace-nowrap">
-            Leftover tags go on sale August 4th at 9 AM - Don't forget to apply!
+            Reissued tags for 8.11.26 are now published and updated below. These tags will go on sale Wednesday August 12th at 11 AM.
           </span>
         </div>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
