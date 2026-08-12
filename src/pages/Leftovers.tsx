@@ -312,6 +312,17 @@ export default function Leftovers() {
               <CardDescription>Narrow the leftover list</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
+              <div className="flex items-center justify-between rounded-md border border-primary/30 bg-primary/5 px-3 py-2">
+                <Label htmlFor="leftovers-reissue-toggle" className="cursor-pointer font-medium text-sm">
+                  Only show new reissued tags
+                </Label>
+                <Checkbox
+                  id="leftovers-reissue-toggle"
+                  checked={onlyReissued}
+                  onCheckedChange={(c) => setOnlyReissued(c === true)}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="leftovers-unit-search">Search Units</Label>
                 <Input
