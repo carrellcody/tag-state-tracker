@@ -124,9 +124,11 @@ function buildEmailHtml(opts: {
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
           <p style="margin:0 0 8px 0;font-size:14px;">
-            You can also view the official leftover list directly from Colorado Parks &amp; Wildlife:
+            You can also view the official lists directly from Colorado Parks &amp; Wildlife:
           </p>
           <a href="${CPW_LEFTOVER_URL}" style="color:${PRIMARY};font-weight:600;">Official CPW Leftover List →</a>
+          <br/>
+          <a href="https://cpw.widencollective.com/assets/share/asset/8jqx7mho70" style="color:${PRIMARY};font-weight:600;">Official CPW Reissued List →</a>
         </div>
         <p style="margin:24px 0 0 0;font-size:13px;color:#666;">
           Remember, reissued tags will go on sale this Wednesday at 11 am MT. To apply for a tag, log into your CPW account just before 11am MT and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
