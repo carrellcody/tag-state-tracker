@@ -112,6 +112,7 @@ export default function Leftovers() {
   const [unitSearch, setUnitSearch] = usePersistedState<string>("leftovers_unitSearch", "");
   const [tagSearch, setTagSearch] = usePersistedState<string>("leftovers_tagSearch", "");
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
+  const [onlyReissued, setOnlyReissued] = usePersistedState<boolean>("leftovers_onlyReissued_v1", false);
   const [bannerOpen, setBannerOpen] = useState(true);
   const [page, setPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
@@ -160,6 +161,7 @@ export default function Leftovers() {
 
   const filteredRows = useMemo(() => {
     return (data || []).filter((row) => {
+      if (onlyReissued && (row.Reissue || "").trim().toLowerCase() !== "yes") return false;
       if (species.length > 0 && !species.includes((row.Animal || "").trim())) return false;
       if (sexFilter.length > 0 && !sexFilter.includes((row.Sex || "").trim())) return false;
       if (listFilter !== "any" && (row.List || "").trim() !== listFilter) return false;
@@ -188,9 +190,9 @@ export default function Leftovers() {
 
       return true;
     });
-  }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
+  }, [data, onlyReissued, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
 
-  useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
+  useEffect(() => { setPage(1); }, [onlyReissued, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
 
   const getSortValue = useCallback((row: Record<string, string>, key: string) => {
     const val = row[key];
@@ -310,6 +312,17 @@ export default function Leftovers() {
               <CardDescription>Narrow the leftover list</CardDescription>
             </CardHeader>
             <CardContent className="space-y-5">
+              <div className="flex items-center justify-between rounded-md border border-primary/30 bg-primary/5 px-3 py-2">
+                <Label htmlFor="leftovers-reissue-toggle" className="cursor-pointer font-medium text-sm">
+                  Only show new reissued tags
+                </Label>
+                <Checkbox
+                  id="leftovers-reissue-toggle"
+                  checked={onlyReissued}
+                  onCheckedChange={(c) => setOnlyReissued(c === true)}
+                />
+              </div>
+
               <div className="space-y-2">
                 <Label htmlFor="leftovers-unit-search">Search Units</Label>
                 <Input
