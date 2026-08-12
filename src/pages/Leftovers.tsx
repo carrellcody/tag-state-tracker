@@ -21,6 +21,7 @@ const SPECIES_OPTIONS = [
   { value: "E", label: "Elk" },
   { value: "A", label: "Pronghorn" },
   { value: "B", label: "Bear" },
+  { value: "M", label: "Moose" },
 ];
 
 const SEASON_WEAPON_OPTIONS = [
@@ -96,14 +97,14 @@ const COLUMNS: { key: string; label: string; className?: string; sortable?: bool
   { key: "Drawn_out_level_A_NR", label: "Drawn out level (Non-resident 2026)" },
 ];
 
-const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3 };
+const SPECIES_ORDER: Record<string, number> = { E: 0, D: 1, A: 2, B: 3, M: 4 };
 
 const TAG_REGEX = /^[A-Za-z]{2}\d{3}[A-Za-z]\d[A-Za-z]$/;
 
 export default function Leftovers() {
   const { loading } = useAuth();
 
-  const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v4", ["D", "E", "A", "B"]);
+  const [species, setSpecies] = usePersistedState<string[]>("leftovers_species_v5", ["D", "E", "A", "B", "M"]);
   const [seasonWeapons, setSeasonWeapons] = usePersistedState<string[]>("leftovers_seasonWeapons_v2", ["Any"]);
   const [sexFilter, setSexFilter] = usePersistedState<string[]>("leftovers_sex_v2", ["M", "F", "E"]);
   const [listFilter, setListFilter] = usePersistedState<string>("leftovers_list", "any");
