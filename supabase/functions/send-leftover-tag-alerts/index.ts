@@ -119,7 +119,7 @@ function buildEmailHtml(opts: {
       <div style="padding:24px;">
         <p style="margin:0 0 12px 0;font-size:16px;">${greeting}</p>
         <p style="margin:0 0 8px 0;font-size:15px;line-height:1.5;">
-          Good news — one or more of the tags on your alert list just showed up on Colorado's leftover/reissued list! To view just reissued/returned tags new to the list, you can filter by reissued tags <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};font-weight:600;text-decoration:underline;">here</a>.
+          Good news — one or more of the tags on your alert list is either still on the leftover list, or just showed up on the reissue list! To view just reissued/returned tags new to the list, you can filter by reissued tags <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};font-weight:600;text-decoration:underline;">here</a>.
         </p>
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
