@@ -21,6 +21,7 @@ const SPECIES_OPTIONS = [
   { value: "E", label: "Elk" },
   { value: "A", label: "Pronghorn" },
   { value: "B", label: "Bear" },
+  { value: "M", label: "Moose" },
 ];
 
 const SEASON_WEAPON_OPTIONS = [
