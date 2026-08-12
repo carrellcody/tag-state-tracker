@@ -161,6 +161,7 @@ export default function Leftovers() {
 
   const filteredRows = useMemo(() => {
     return (data || []).filter((row) => {
+      if (onlyReissued && (row.Reissue || "").trim().toLowerCase() !== "yes") return false;
       if (species.length > 0 && !species.includes((row.Animal || "").trim())) return false;
       if (sexFilter.length > 0 && !sexFilter.includes((row.Sex || "").trim())) return false;
       if (listFilter !== "any" && (row.List || "").trim() !== listFilter) return false;
@@ -189,9 +190,9 @@ export default function Leftovers() {
 
       return true;
     });
-  }, [data, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
+  }, [data, onlyReissued, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitTerms, tagTerms, minDOL]);
 
-  useEffect(() => { setPage(1); }, [species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
+  useEffect(() => { setPage(1); }, [onlyReissued, species, sexFilter, listFilter, ploFilter, minSuccessRate, seasonWeapons, unitSearch, tagSearch, minDOL]);
 
   const getSortValue = useCallback((row: Record<string, string>, key: string) => {
     const val = row[key];
