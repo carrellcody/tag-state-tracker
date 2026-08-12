@@ -119,14 +119,16 @@ function buildEmailHtml(opts: {
       <div style="padding:24px;">
         <p style="margin:0 0 12px 0;font-size:16px;">${greeting}</p>
         <p style="margin:0 0 8px 0;font-size:15px;line-height:1.5;">
-          Good news — one or more of the tags on your alert list just showed up on Colorado's leftover/reissued list! To view just reissued/returned tags new to the list, you can filter by reissued tags <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};font-weight:600;text-decoration:underline;">here</a>.
+          Good news — one or more of the tags on your alert list is either still on the leftover list, or just showed up on the reissue list! To view just reissued/returned tags new to the list, you can filter by reissued tags <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};font-weight:600;text-decoration:underline;">here</a>.
         </p>
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
           <p style="margin:0 0 8px 0;font-size:14px;">
-            You can also view the official leftover list directly from Colorado Parks &amp; Wildlife:
+            You can also view the official lists directly from Colorado Parks &amp; Wildlife:
           </p>
           <a href="${CPW_LEFTOVER_URL}" style="color:${PRIMARY};font-weight:600;">Official CPW Leftover List →</a>
+          <br/>
+          <a href="https://cpw.widencollective.com/assets/share/asset/8jqx7mho70" style="color:${PRIMARY};font-weight:600;">Official CPW Reissued List →</a>
         </div>
         <p style="margin:24px 0 0 0;font-size:13px;color:#666;">
           Remember, reissued tags will go on sale this Wednesday at 11 am MT. To apply for a tag, log into your CPW account just before 11am MT and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
