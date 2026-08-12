@@ -119,7 +119,7 @@ function buildEmailHtml(opts: {
       <div style="padding:24px;">
         <p style="margin:0 0 12px 0;font-size:16px;">${greeting}</p>
         <p style="margin:0 0 8px 0;font-size:15px;line-height:1.5;">
-          Good news — one or more of the tags on your alert list just showed up on this week's Colorado leftover list.
+          Good news — one or more of the tags on your alert list just showed up on Colorado's leftover/reissued list! To view just reissued/returned tags new to the list, you can filter by reissued tags <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};font-weight:600;text-decoration:underline;">here</a>.
         </p>
         ${sectionHtml}
         <div style="margin:28px 0 8px 0;padding:16px;background:#f6f8f4;border-left:4px solid ${PRIMARY};border-radius:4px;">
@@ -129,7 +129,7 @@ function buildEmailHtml(opts: {
           <a href="${CPW_LEFTOVER_URL}" style="color:${PRIMARY};font-weight:600;">Official CPW Leftover List →</a>
         </div>
         <p style="margin:24px 0 0 0;font-size:13px;color:#666;">
-          Remember, this batch of leftover tags go on sale this Tuesday at 9am. To apply for a tag, log into your CPW account just before 9 am and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
+          Remember, reissued tags will go on sale this Wednesday at 11 am MT. To apply for a tag, log into your CPW account just before 11am MT and you'll be placed in a waiting list. If you're lucky, when you gain access the tag you're after will still be available!
         </p>
         <p style="margin:20px 0 0 0;font-size:12px;color:#888;line-height:1.5;">
           Want to stop receiving these alerts? <a href="https://tallotags.com/leftovers" style="color:${PRIMARY};text-decoration:underline;">Click here</a> to manage your tag alerts, and remove all tag alerts to stop receiving email alerts.
