@@ -112,6 +112,7 @@ export default function Leftovers() {
   const [unitSearch, setUnitSearch] = usePersistedState<string>("leftovers_unitSearch", "");
   const [tagSearch, setTagSearch] = usePersistedState<string>("leftovers_tagSearch", "");
   const [minDOL, setMinDOL] = usePersistedState<number>("leftovers_minDOL", 0);
+  const [onlyReissued, setOnlyReissued] = usePersistedState<boolean>("leftovers_onlyReissued_v1", false);
   const [bannerOpen, setBannerOpen] = useState(true);
   const [page, setPage] = useState(1);
   const [sortConfig, setSortConfig] = useState<{ key: string; direction: "asc" | "desc" } | null>(null);
