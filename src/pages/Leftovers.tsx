@@ -295,7 +295,7 @@ export default function Leftovers() {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="text-2xl sm:text-3xl font-bold">Secondary / Leftover Tags</h1>
           <span className="inline-flex items-center rounded-md bg-destructive/15 px-3 py-1 text-sm font-semibold text-destructive whitespace-nowrap">
-            Reissued tags for 8.11.26 are now published and updated below. These tags will go on sale Wednesday August 12th at 11 AM.
+            New reissued tags will be published by CPW and updated on TalloTags on Aug 18th. These reissued tags will go on sale Aug 19th at 11 AM. The list below is current  as of Aug 13th.
           </span>
         </div>
         <p className="text-sm sm:text-base text-muted-foreground mt-1">
