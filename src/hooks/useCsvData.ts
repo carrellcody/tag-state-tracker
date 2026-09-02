@@ -7,6 +7,14 @@ import { supabase } from '@/integrations/supabase/client';
 // full page load, so updated CSVs can never be served from a stale cache.
 const memoryCache = new Map<string, unknown[]>();
 
+const normalizeHeaderLine = (line: string) =>
+  line
+    .replace(/^\uFEFF/, '')
+    .split(',')
+    .map((h) => h.replace(/[\u00A0]/g, ' ').trim())
+    .join(',');
+
+
 export function useCsvData<T = any>(csvPath: string) {
   const [data, setData] = useState<T[]>(() => (memoryCache.get(csvPath) as T[]) ?? []);
   const [loading, setLoading] = useState(() => !memoryCache.has(csvPath));
@@ -52,21 +60,25 @@ export function useCsvData<T = any>(csvPath: string) {
           throw new Error(`Failed to fetch CSV: ${response.status} ${errBody}`);
         }
 
-        const csvText = await response.text();
+        const rawText = await response.text();
 
         if (cancelled) return;
+
+        // Normalize the header row up front (strip BOM / non-breaking spaces,
+        // trim). Doing it here instead of via transformHeader keeps the parse
+        // config function-free, which is required for worker mode.
+        const newlineIdx = rawText.search(/\r?\n/);
+        const csvText =
+          newlineIdx === -1
+            ? normalizeHeaderLine(rawText)
+            : normalizeHeaderLine(rawText.slice(0, newlineIdx)) + rawText.slice(newlineIdx);
 
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
           // Parse off the main thread so large files don't freeze the UI.
           worker: true,
-          transformHeader: (header) => {
-            return header
-              .replace(/^\uFEFF/, '')
-              .replace(/[\u00A0]/g, ' ')
-              .trim();
-          },
+
           complete: (results) => {
             const rows = results.data as T[];
             memoryCache.set(csvPath, rows as unknown[]);
