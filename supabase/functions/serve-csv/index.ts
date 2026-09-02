@@ -113,22 +113,25 @@ serve(async (req) => {
 
       // Files that only require sign-in skip the Pro check
       if (!isSignedInFile) {
-        const { data: roleRow } = await adminClient
-          .from("user_roles")
-          .select("role")
-          .eq("user_id", userId)
-          .eq("role", "admin")
-          .maybeSingle();
-
-        if (!roleRow) {
-          const { data: profile, error: profileError } = await adminClient
+        // Run both authorization lookups in parallel to save a round trip
+        const [roleResult, profileResult] = await Promise.all([
+          adminClient
+            .from("user_roles")
+            .select("role")
+            .eq("user_id", userId)
+            .eq("role", "admin")
+            .maybeSingle(),
+          adminClient
             .from("profiles")
             .select("subscription_status, subscription_manual_override, product_id")
             .eq("id", userId)
-            .single();
+            .maybeSingle(),
+        ]);
 
+        if (!roleResult.data) {
+          const profile = profileResult.data;
           const hasActiveProSubscription =
-            !profileError &&
+            !profileResult.error &&
             profile?.subscription_status === "active" &&
             (profile.subscription_manual_override === true || PRO_PRODUCT_IDS.has(profile.product_id ?? ""));
 
@@ -151,9 +154,8 @@ serve(async (req) => {
       });
     }
 
-    const text = await data.text();
-
-    return new Response(text, {
+    // Stream the file body straight through instead of buffering it to a string
+    return new Response(data.stream(), {
       headers: {
         ...corsHeaders,
         "Content-Type": "text/csv; charset=utf-8",

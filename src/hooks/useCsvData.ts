@@ -2,13 +2,27 @@ import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
 import { supabase } from '@/integrations/supabase/client';
 
+// In-memory only cache (no sessionStorage/localStorage), keyed by the full
+// csvPath which already includes the CSV_VERSION query param. Cleared on every
+// full page load, so updated CSVs can never be served from a stale cache.
+const memoryCache = new Map<string, unknown[]>();
+
 export function useCsvData<T = any>(csvPath: string) {
-  const [data, setData] = useState<T[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState<T[]>(() => (memoryCache.get(csvPath) as T[]) ?? []);
+  const [loading, setLoading] = useState(() => !memoryCache.has(csvPath));
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
+
+    const cached = memoryCache.get(csvPath) as T[] | undefined;
+    if (cached) {
+      setData(cached);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -45,6 +59,8 @@ export function useCsvData<T = any>(csvPath: string) {
         Papa.parse(csvText, {
           header: true,
           skipEmptyLines: true,
+          // Parse off the main thread so large files don't freeze the UI.
+          worker: true,
           transformHeader: (header) => {
             return header
               .replace(/^\uFEFF/, '')
@@ -52,8 +68,10 @@ export function useCsvData<T = any>(csvPath: string) {
               .trim();
           },
           complete: (results) => {
+            const rows = results.data as T[];
+            memoryCache.set(csvPath, rows as unknown[]);
             if (!cancelled) {
-              setData(results.data as T[]);
+              setData(rows);
               setLoading(false);
             }
           },
