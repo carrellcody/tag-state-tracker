@@ -25,18 +25,19 @@ Every table page loads its data through the `serve-csv` backend function:
 
 With files this size, that stack means several seconds on each visit, and it gets worse as the CSVs grow.
 
-## Fix plan
+## Fix plan (approved scope)
 
-1. **Cache CSVs in the client for the session.** Add a shared in-memory + `sessionStorage` cache in `src/hooks/useCsvData.ts`, keyed by filename plus the existing `CSV_VERSION`. Repeat visits to a table become instant, and back/forward navigation stops refetching.
-2. **Let public files be cached by the CDN.** In `supabase/functions/serve-csv/index.ts`, return `Cache-Control: public, max-age=3600, stale-while-revalidate=86400` for files in `PUBLIC_FILES` (Pronghorn tables, leftovers), keeping `private` only for gated files. This removes the round trip entirely for repeat loads of public data.
-3. **Stream instead of buffering.** Return the storage object's body directly rather than `await data.text()`, so bytes start reaching the browser immediately instead of after the whole file is in function memory.
-4. **Skip the redundant auth work.** Read the user id from the JWT claims once and run the admin-role and profile lookups in parallel instead of sequentially, cutting one round trip from every gated request.
-5. **Parse without blocking the UI.** Enable Papa Parse's worker mode (or chunked parsing) in `useCsvData` so a large file no longer stalls rendering, and keep the loading skeleton visible until parsing completes.
-6. **Measure before/after.** Load the Deer, Elk, and Leftovers pages and record the function response time and time-to-table for each so we can confirm the improvement rather than assume it.
+1. **Cache CSVs in memory only, for the current page load.** Add a module-level in-memory cache in `src/hooks/useCsvData.ts`, keyed by filename plus the existing `CSV_VERSION`. Nothing is written to `sessionStorage` or `localStorage`, and nothing survives a page refresh, so a user can never be served yesterday's table. This only prevents refetching the same file while the user clicks between pages in one visit — the exact staleness problem we fixed before stays fixed. Bumping `CSV_VERSION` after an admin upload also changes the key, so even within one visit new data wins.
+2. **Skipped by request.** Public files keep `Cache-Control: private` — no CDN or shared caching for any file.
+3. **Stream instead of buffering.** In `supabase/functions/serve-csv/index.ts`, return the storage object's body directly rather than `await data.text()`, so bytes start reaching the browser immediately instead of after the whole file is buffered in function memory.
+4. **Skip the redundant auth work.** Read the user id from the JWT claims once, then run the admin-role and profile lookups in parallel instead of sequentially, cutting a round trip from every gated request.
+5. **Parse without blocking the UI.** Enable Papa Parse's worker mode in `useCsvData` so a large file no longer stalls rendering, with the loading skeleton visible until parsing completes.
+6. **Measure before/after.** Load the Deer, Elk, and Leftovers pages and record function response time and time-to-table so the improvement is confirmed, not assumed.
 
 ## Technical notes
 
 - Files touched: `src/hooks/useCsvData.ts`, `supabase/functions/serve-csv/index.ts`.
 - No schema changes, no migrations, no compute resize.
-- Cache invalidation stays tied to the existing `CSV_VERSION` value in `src/utils/csvVersion.ts`, so bumping it after an admin CSV upload continues to force fresh data everywhere.
-- Gated files keep exactly the same access rules (sign-in, Pro, admin bypass); only public files gain shared caching.
+- Cache scope: a plain JS `Map` in the hook's module, cleared on every full page load. Key = `filename + CSV_VERSION`. No persistent storage is involved anywhere in this change.
+- All access rules stay identical (public / signed-in / Pro / admin bypass) and all responses stay `private`.
+
