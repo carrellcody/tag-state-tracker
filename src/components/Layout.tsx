@@ -291,7 +291,7 @@ export default function Layout({ children }: LayoutProps) {
       <footer className={`border-t border-border bg-card mt-auto ${isFixedHeightPage ? "lg:hidden" : ""}`}>
         <div className="container mx-auto px-4 py-[10px]">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
-            <p>© 2025 Tag Season. All rights reserved.</p>
+            <p>© 2026 TalloTags. All rights reserved.</p>
             <div className="flex flex-wrap justify-center gap-x-4 gap-y-2">
               <Link to="/about" className="hover:text-foreground transition-colors">
                 About
