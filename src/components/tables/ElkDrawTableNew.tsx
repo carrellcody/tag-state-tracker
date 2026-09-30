@@ -17,6 +17,7 @@ import { TableHeaderHelp } from "./TableHeaderHelp";
 import { usePersistedState } from "@/hooks/usePersistedState";
 import { HuntCodeSearchFilter } from "./HuntCodeSearchFilter";
 import { DolYearChart } from "./DolYearChart";
+import { SuccessRateYearChart } from "./SuccessRateYearChart";
 const ROWS_PER_PAGE = 50;
 
 function normalizeCsvKey(key: string) {
@@ -1143,7 +1144,10 @@ export function ElkDrawTableNew() {
                               })}
                             </tbody>
                           </table>
-                          <DolYearChart row={row} />
+                          <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <DolYearChart row={row} />
+                            <SuccessRateYearChart row={row} />
+                          </div>
                         </td>
                       </tr>
                     )}

@@ -63,7 +63,7 @@ export function DolYearChart({ row }: DolYearChartProps) {
   for (let i = yMin; i <= yMax; i++) ticks.push(i);
 
   return (
-    <div className="mt-4 w-full md:w-1/2 mx-auto">
+    <div className="w-full min-w-0">
       <div className="text-sm font-semibold mb-2 text-center">Drawn Out Level by Year</div>
       <div className="bg-card rounded-md p-2" style={{ width: "100%", height: 200 }}>
         <div className="relative h-full w-full pl-10">
